@@ -1,0 +1,769 @@
+#root {
+  width: 100%;
+}
+
+main {
+  margin: auto;
+  max-width: 1600px;
+  min-height: calc(100vh - 100px);
+  display: flex;
+  align-items: stretch;
+}
+
+.page-margin {
+  margin-left: calc(10% + 36px);
+  margin-right: calc(10% + 36px);
+}
+
+.navbar-wrapper {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  /* background: linear-gradient(to left, #434343, #000000); */
+  background: white;
+  border-bottom: 1px solid rgb(9, 34, 50);
+  z-index: 999;
+}
+
+nav {
+  margin: auto;
+  padding: 20px;
+  max-width: 1600px;
+  position: relative;
+}
+
+.nav-links li {
+  display: flex;
+  padding: 10px;
+  list-style: none;
+}
+
+.nav-links li a,
+.mob-nav-link-item a,
+.mob-nav-link-item button,
+.nav-links li button {
+  color: #0c0c0c;
+  font-family: "Montserrat", sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.mob-nav-link-item {
+  width: 100%;
+}
+
+.mob-nav-link-item .custom-accordion {
+  font-family: "Montserrat", sans-serif;
+  color: #0c0c0c;
+}
+
+.nav-login-reg,
+.nav-logout {
+  font-family: "Montserrat", sans-serif;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  margin: 10px;
+  padding: 4px 15px;
+  text-align: center;
+}
+
+.nav-links li a:hover,
+.nav-links li button:hover {
+  text-decoration: underline;
+}
+
+.nav-links li a:hover,
+.mob-nav-link-item a:hover,
+.mob-nav-link-item .custom-accordion-title:hover {
+  color: rgb(64, 64, 252);
+}
+
+.nav-links li:hover .mega-box {
+  top: 58px;
+  bottom: auto;
+  left: 0;
+  right: 0;
+  padding-top: 25px;
+  opacity: 1;
+  visibility: visible;
+  border-radius: 0 6px 0;
+  transition: all 0.3s ease;
+}
+
+.nav-links li:hover .mega-menu-dropdown .sub-menu-arrow {
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.3s ease;
+}
+
+.mega-box {
+  width: 100%;
+  position: fixed;
+  top: 58px;
+  left: 0;
+  padding-top: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  min-height: 320px;
+}
+
+.mega-menu-dropdown {
+  padding: 0;
+  display: block;
+  position: relative;
+}
+
+.sub-menu-arrow {
+  position: absolute;
+  top: 172%;
+  left: 50%;
+  transform: translate(-50%, -10%);
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #faf9f6;
+  border-left: 10px solid transparent;
+  align-items: flex-start;
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.mega-box-content-wrapper {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-bottom: 5px solid #10546e;
+}
+
+.mega-box .content {
+  width: 100%;
+  padding: 20px 40px;
+  /* margin-left: calc(5% + 20px);
+    margin-right: calc(5% + 20px); */
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  font-family: "Montserrat", sans-serif;
+  color: #212427;
+}
+
+.mega-menu-intro-block {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 25%;
+}
+
+.mega-menu-block {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mega-menu-block.stretched {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.w-layout-grid {
+  grid-row-gap: 16px;
+  grid-column-gap: 16px;
+  grid-template-rows: auto auto;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-columns: 1fr;
+  display: grid;
+}
+
+.mega-menu-grid {
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+}
+
+.mega-menu-grid._2-cols {
+  grid-column-gap: 32px;
+  grid-row-gap: 32px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.mega-menu-grid._3-cols {
+  grid-column-gap: 16px;
+  grid-row-gap: 16px;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.mega-menu-links li a {
+  color: #212427;
+}
+
+.category-list li,
+.courses-list li,
+.resource-nav-links li {
+  padding: 2px;
+}
+
+.mobile-menu {
+  display: none;
+  opacity: 0;
+}
+
+.mobile-menu-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.hero-s-one {
+  position: relative;
+}
+
+.hero-s-one .hero-bg-one-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("./assets/images/hc_hero_section_banner.jpg");
+}
+
+.hero-bg-one-wrapper img {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  opacity: 0.2;
+}
+
+.primary-badge {
+  background: linear-gradient(to right, #335e9a 0%, #10546e 100%);
+  color: #faf9f6;
+}
+
+.vertical-btn {
+  width: 150px;
+  height: 40px;
+  position: fixed;
+  top: 50vh;
+  right: -50px;
+  transform: matrix(0, -1, 1, 0, 0, 0);
+  background-color: #dc143c;
+  color: #fffbfb;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #e4e4e4;
+  border-radius: 99px;
+  z-index: 999;
+}
+.vertical-btn:hover {
+  background-color: #fd224e;
+}
+
+/*-----------------------------Login/Register------------------------------------*/
+
+.p-prof-login-wrapper {
+  width: 100%;
+  padding: 50px 5px;
+}
+
+.log-reg-box {
+  width: 100%;
+  max-width: 500px;
+}
+
+.log-reg-tab:hover,
+.log-reg-active-tab {
+  color: #faf9f6;
+  background-color: #3d8ce0;
+}
+
+.log-reg-active-tab,
+.log-reg-active-tab:hover {
+  background-color: #0071bc;
+}
+
+/*--------------------------Webinar Listing----------------------------------------------*/
+.webinar-wrapper,
+.newsletter-wrapper,
+.webinarInfo-container {
+  width: 100%;
+  margin-left: calc(10% + 36px);
+  margin-right: calc(10% + 36px);
+}
+
+.webinar-list-wrapper,
+.webinarInfo-container,
+.newsletter-list-wrapper {
+  box-shadow: 10px 7px 15px 5px #f9f9f9;
+}
+
+.card-scale:hover {
+  transform: scale(0.98, 0.98);
+  transform-origin: center center;
+  transition: 0.1s ease-in;
+}
+.card-scale-bg:hover {
+  background: #f6f9fc;
+}
+
+.grid-card-title {
+  padding: 12px;
+  width: 100%;
+  min-height: 50px;
+  background-color: #fbfbfe;
+}
+
+/*-------------------------------------Dashboard-----------------------------------*/
+.user-dash-layout {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  min-height: 80vh;
+}
+
+.user-dash-webinars {
+  grid-column-start: 1;
+  grid-column-end: 7;
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+  position: relative;
+}
+
+.user-dash-webinars::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  min-height: 100%;
+  opacity: 0.3;
+  background-image: url("./assets/images/hcp_dash_background.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: auto 100%;
+  z-index: -99;
+}
+
+.dashboard-navs {
+  display: none;
+  padding: 20px 0;
+}
+
+.user-webinar-list {
+  position: relative;
+}
+
+.side-menu-wrapper {
+  grid-column: 7/10;
+  padding: 0 10px;
+  border-left: 5px solid #e4e4e4;
+  display: flex;
+  flex-direction: column;
+  color: #faf9f6;
+  background: #f3f1f2;
+}
+
+/*-----------------------------Website Footer--------------------------------------*/
+.hcp-footer {
+  /* background: linear-gradient(to left, #434343, #000000); */
+  font-family: "Montserrat", sans-serif;
+  background: #343a40;
+  border-top: #343739;
+  border-bottom: #343739;
+}
+
+.footer-nav-wrapper {
+  max-width: 1600px;
+  margin: auto;
+  padding: 20px;
+}
+
+.footer-links {
+  flex: 0 0 25%;
+}
+
+.footer-links a {
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #faf9f6;
+}
+
+.footer-links a {
+  transition: all 0.3s ease-in;
+}
+
+.footer-links a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #ead8ff;
+}
+
+.footer-social-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.footer-social-group a {
+  background-color: #1e4356;
+}
+
+.social-favicon:hover {
+  background-color: #4b88a6;
+  color: #faf9f6 !important;
+}
+
+.org-address,
+.work-time {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+/*=======================================Components=============================================*/
+
+/*-------------------------------------Menu Button/Hamburger----------------------------*/
+
+.mobile-menu-button {
+  display: none;
+  opacity: 0;
+}
+
+.burger {
+  width: 2rem;
+  height: 0.25rem;
+  border-radius: 10px;
+  background-color: black;
+  transform-origin: 1px;
+  transition: all 0.1s linear;
+}
+
+/*-----------------------------------Input------------------------------*/
+.app-input:focus,
+textarea:focus {
+  box-shadow: 0 0 0 0.1rem #0099ff;
+}
+textarea {
+  outline: none;
+}
+
+/*--------------------------------- Dropdown--------------------------- */
+.country-selector {
+  font-size: 14px;
+}
+.country-selector:focus {
+  outline: none;
+}
+.country-selector > option {
+  background-color: transparent;
+}
+
+.p-dropdown-items-wrapper {
+  box-shadow: 0 0 0 0.1rem #e4e4e4;
+  border: 1px solid #e4e4e4;
+  background-color: white;
+}
+
+.p-dropdown-items {
+  font-size: 12px;
+  line-height: 32px;
+  padding: 0 5px;
+}
+
+.p-dropdown-item:hover {
+  font-weight: 600;
+}
+
+/*------------------------ Accordion--------------------------------------- */
+
+.p-accordion-header-link svg {
+  display: none;
+}
+.accordion-wrapper .p-accordion-tab .chevron {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+.accordion-wrapper .p-accordion-tab-active .chevron {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+.chevron {
+  border: solid #6f6767;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  position: absolute;
+  top: 0;
+  right: 10px;
+}
+
+.custom-accordion {
+  color: #faf9f6;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.custom-accordion-title {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.custom-accordion-title,
+.custom-accordion-content {
+  padding: 5px;
+}
+
+.custom-accordion-content {
+  background-color: #39b9d2;
+}
+
+/*-----------------------------------Checkbox-------------------------*/
+input[type="checkbox"] {
+  visibility: hidden;
+}
+
+.webinar-purchase-label,
+.role-label {
+  display: block;
+  text-align: left;
+  position: relative;
+  padding-left: 24px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.check-mark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background-color: transparent;
+  border: 1px solid #e4e4e4;
+}
+
+.webinar-purchase-label:hover input ~ .check-mark,
+.role-label:hover input ~ .check-mark {
+  background-color: #a0d9ff;
+}
+.webinar-purchase-label input:active ~ .check-mark,
+.role-label input:active ~ .check-mark {
+  background-color: transparent;
+}
+.webinar-purchase-label input:checked ~ .check-mark,
+.role-label input:checked ~ .check-mark {
+  background-color: #c8e4f5;
+}
+.webinar-purchase-label input:disabled ~ .check-mark,
+.role-label input:disabled ~ .check-mark {
+  background-color: #c2c2c2;
+  cursor: not-allowed;
+}
+.check-mark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.webinar-purchase-label input:checked ~ .check-mark:after,
+.role-label input:checked ~ .check-mark:after {
+  display: block;
+  left: 4px;
+}
+
+.webinar-purchase-label .check-mark:after,
+.role-label .check-mark:after {
+  height: 10px;
+  width: 6px;
+  border-bottom: 1px solid #0071bc;
+  border-right: 1px solid #0071bc;
+  transform: rotate(45deg);
+}
+
+/*-----------------------------------Radio---------------------------------*/
+
+.radio-label {
+  color: #333333;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.radio-input {
+  visibility: hidden;
+}
+
+.radio-input:checked + span {
+  border: 2px solid #4ba2a2;
+}
+
+.radio-input:checked + span:after {
+  opacity: 1;
+}
+
+.custom-radio {
+  left: -8px;
+  top: 6px;
+  cursor: pointer;
+  width: 17px;
+  height: 17px;
+  border: 2px solid #e4e4e4;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+/* for inner filled circle */
+.custom-radio::after {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: #007c7c;
+  position: absolute;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/*------------------------------------Table--------------------------------*/
+.webinar-reg-table table {
+  font-size: 14px;
+  font-weight: 400;
+  border-collapse: separate;
+  border-spacing: 0 20px;
+}
+
+.webinar-reg-table table label {
+  color: #6d6969;
+  font-weight: 600;
+}
+.webinar-reg-table thead {
+  text-align: left;
+}
+.webinar-reg-table tbody {
+  text-align: center;
+}
+
+/*-----------------------------Banner-------------------------------------*/
+.site-banner {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f9f9f9;
+  background-color: #ff0033;
+  z-index: 9999;
+}
+
+/*--------------------Dialog----------------------------*/
+
+.p-dialog-header {
+  padding: 10px;
+}
+
+.p-dialog-header-icons {
+  align-self: center;
+}
+
+/*------------------------Button--------------------------------*/
+.btn-custom:focus,
+.btn-custom-secondary {
+  outline: none;
+}
+.btn-custom:focus {
+  box-shadow: 0 0 0 0.1rem #0071bc;
+}
+.btn-custom-secondary:focus {
+  box-shadow: 0 0 0 0.1rem #efefefd4;
+}
+
+/*---------------------------media queries-----------------------------*/
+
+@media only screen and (max-width: 980px) {
+  .page-margin,
+  .webinar-wrapper,
+  .newsletter-wrapper,
+  .footer-nav-wrapper {
+    margin: 0;
+  }
+
+  #wrapper-primary-nav {
+    display: none;
+  }
+
+  .mobile-menu {
+    min-height: 100vh;
+    /* background: linear-gradient(to bottom, #434343, #000000); */
+    background: linear-gradient(to bottom, #fdfdfd, #fff);
+    overflow: auto;
+  }
+
+  .mobile-menu-button {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: space-around;
+    flex-flow: column nowrap;
+    cursor: pointer;
+    z-index: 999;
+    opacity: 1;
+  }
+
+  .vertical-btn {
+    display: none;
+  }
+
+  .hero-sec-vid-box video {
+    width: 100%;
+    height: 100%;
+  }
+
+  .speaker-carousel-image {
+    width: 75% !important;
+    object-fit: fill !important;
+    border: 2px solid #e4e4e4;
+    border-radius: 8px;
+  }
+
+  .webinarInfo-container {
+    margin: 0 10px;
+  }
+
+  .user-dash-webinars {
+    grid-column-start: 1;
+    grid-column-end: 10;
+  }
+
+  .side-menu-wrapper {
+    display: none;
+  }
+
+  .dashboard-navs {
+    display: block;
+  }
+
+  .footer-social-group {
+    place-items: center;
+  }
+
+  .footer-social-group .org-address {
+    text-align: center;
+  }
+}

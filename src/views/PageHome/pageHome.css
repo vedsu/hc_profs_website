@@ -1,0 +1,15 @@
+.hero-sec-vid-box {
+  border-radius: 12px;
+  box-shadow: 4px 3px 10px 4px rgb(0 0 0 / 50%);
+}
+.hero-sec-vid-box video {
+  /* border: 1px solid transparent; */
+  border-radius: 12px;
+}
+
+.highlights-line {
+  width: 100%;
+  height: 1px;
+  background-color: #e6e6e6;
+  background-image: linear-gradient(to right, #fff 2%, #007c7c 50%, #fff 98%);
+}

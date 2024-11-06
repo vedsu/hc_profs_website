@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("./assets/fonts/Montserrat-Regular.woff2") format("woff2"),
+    url("./assets/fonts/Montserrat-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat-Bold";
+  src: url("./assets/fonts/Montserrat-Bold.woff2") format("woff2"),
+    url("./assets/fonts/Montserrat-Bold.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat-Light";
+  src: url("./assets/fonts/Montserrat-Light.woff2") format("woff2"),
+    url("./assets/fonts/Montserrat-Light.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat-Medium";
+  src: url("./assets/fonts/Montserrat-Medium.woff2") format("woff2"),
+    url("./assets/fonts/Montserrat-Medium.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat-SemiBold";
+  src: url("./assets/fonts/Montserrat-SemiBold.woff2") format("woff2"),
+    url("./assets/fonts/Montserrat-SemiBold.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Alata-Regular";
+  src: url("./assets/fonts/Alata-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  color: #0c0c0c;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  /* font-family: "Montserrat", sans-serif; */
+  font-family: "Alata-Regular", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat-Bold", sans-serif;
+}
