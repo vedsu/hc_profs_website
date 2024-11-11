@@ -89,7 +89,12 @@ const Header: React.FC = () => {
             <ul className="nav-links inline-flex items-center justify-center gap-4 text-primary-pLabel">
               {isUserLoggedIn ? (
                 <li className="nav-link-item">
-                  <button onClick={gotoDashboard}>Dashboard</button>
+                  <button
+                    className="hover:text-primary-link-500"
+                    onClick={gotoDashboard}
+                  >
+                    Dashboard
+                  </button>
                 </li>
               ) : null}
               <li className="nav-link-item">
@@ -459,8 +464,13 @@ const Header: React.FC = () => {
         <div className="mobile-menu-wrapper">
           <ul className="p-5 flex flex-col items-center justify-center gap-4 text-primary-pLabel">
             {isUserLoggedIn ? (
-              <li className="mob-nav-link-item px-1">
-                <button onClick={gotoDashboard}>Dashboard</button>
+              <li className="mob-nav-link-item px-1 ">
+                <button
+                  className="hover:text-primary-link-500"
+                  onClick={gotoDashboard}
+                >
+                  Dashboard
+                </button>
               </li>
             ) : null}
             <li className="mob-nav-link-item px-1">

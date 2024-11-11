@@ -5,6 +5,9 @@ export default {
     extend: {
       colors: {
         primary: {
+          link: {
+            500: "#0755ef",
+          },
           light: {
             100: "#f5f5f7",
             200: "#faf9f6",
