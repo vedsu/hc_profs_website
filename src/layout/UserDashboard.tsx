@@ -215,7 +215,6 @@ const UserDashboardLayout = (props: IUserDashboard) => {
                     (cardItem: any) => cardItem?.id !== clickedCardItem?.id
                   );
                   if (!filteredCardsInfo?.length) {
-                    debugger;
                     setShowCardContinuePurchase(false);
                   }
                   setContinuePurchaseCardData(filteredCardsInfo);
