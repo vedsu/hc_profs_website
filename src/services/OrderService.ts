@@ -7,6 +7,10 @@ class OrderService extends BaseApiService {
     let path = DEFAULT_PATH + "order";
     return this.makePostRequest(path, payload);
   };
+  createNewsletterOrder = (payload: any) => {
+    let path = DEFAULT_PATH + "newsletterorder";
+    return this.makePostRequest(path, payload);
+  };
 }
 
 export default new OrderService();

@@ -95,7 +95,7 @@ const PageLoginOrRegister = () => {
   const onLogin = async () => {
     const jsonPayload = prepareLoginPayload();
     const loginDataAsFormData = jsonToFormData(jsonPayload, FORM_DATA_OPTIONS);
-    debugger;
+
     try {
       const res = await AuthService.login("login", loginDataAsFormData);
       if (validatePostRequest(res)) {

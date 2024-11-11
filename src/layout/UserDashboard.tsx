@@ -48,8 +48,11 @@ const UserDashboardLayout = (props: IUserDashboard) => {
   useEffect(() => {
     const onMount = async () => {
       const userInfo = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
-      const cardContinuePurchaseInfo = localStorage.getItem(
+      const cardContinuePurchaseInfoWebinar = localStorage.getItem(
         LOCAL_STORAGE_ITEMS.CARD_CONTINUE_PURCHASE
+      );
+      const cardContinuePurchaseInfoNewsletter = localStorage.getItem(
+        LOCAL_STORAGE_ITEMS.CARD_CONTINUE_PURCHASE_NEWSLETTER
       );
 
       if (userInfo) {
@@ -61,28 +64,45 @@ const UserDashboardLayout = (props: IUserDashboard) => {
         } else if (parsedUserInfo?.role?.attendee) {
           setUserInstructions(dashboardInstructionsAttendee);
         }
-      }
 
-      if (userInfo && cardContinuePurchaseInfo) {
-        const parsedUserInfo = JSON.parse(userInfo);
-        const parsedCardContinuePurchaseInfo = JSON.parse(
-          cardContinuePurchaseInfo
-        );
+        const parsedCardContinuePurchaseInfoWebinar =
+          cardContinuePurchaseInfoWebinar
+            ? JSON.parse(cardContinuePurchaseInfoWebinar)
+            : null;
+
+        const parsedCardContinuePurchaseInfoNewsletter =
+          cardContinuePurchaseInfoNewsletter
+            ? JSON.parse(cardContinuePurchaseInfoNewsletter)
+            : null;
+
+        const continuePurchaseCardsList = [
+          parsedCardContinuePurchaseInfoWebinar,
+          parsedCardContinuePurchaseInfoNewsletter,
+        ];
+
         if (
           parsedUserInfo?.role?.attendee &&
-          parsedCardContinuePurchaseInfo.display
+          (parsedCardContinuePurchaseInfoWebinar ||
+            parsedCardContinuePurchaseInfoNewsletter)
         ) {
+          const cardsToDisplay = continuePurchaseCardsList
+            ?.map((cardItem) => {
+              if (cardItem) {
+                return {
+                  id: cardItem?.id,
+                  title: cardItem?.topic,
+                  cardCategory: cardItem?.purchaseType,
+                };
+              }
+            })
+            ?.filter((cardInfo) => cardInfo);
           setShowCardContinuePurchase(true);
-          setContinuePurchaseCardData({
-            webinarTitle: parsedCardContinuePurchaseInfo.topic,
-            webinarId: parsedCardContinuePurchaseInfo.id,
-          });
+          setContinuePurchaseCardData(cardsToDisplay);
         }
       }
     };
     onMount();
   }, []);
-
   /*-----------------Sectional Renders-----------------------*/
   const renderWebinarCards = (data: any) => {
     return (
@@ -186,12 +206,19 @@ const UserDashboardLayout = (props: IUserDashboard) => {
       <div className="user-dash-layout">
         <div className="user-dash-webinars">
           {showCardContinuePurchase ? (
-            <div className="relative border-4 border-primary-light-900 bg-transparent rounded-lg">
+            <div className="mb-5 relative border border-primary-light-900 bg-transparent rounded-lg">
               <CardTemplates
                 variant={CARD_SUGGESTIONS.CONTINUE_PURCHASE}
                 cardData={continuePurchaseCardData}
-                callBack={() => {
-                  setShowCardContinuePurchase(false);
+                callBack={(clickedCardItem: any) => {
+                  const filteredCardsInfo = continuePurchaseCardData?.filter(
+                    (cardItem: any) => cardItem?.id !== clickedCardItem?.id
+                  );
+                  if (!filteredCardsInfo?.length) {
+                    debugger;
+                    setShowCardContinuePurchase(false);
+                  }
+                  setContinuePurchaseCardData(filteredCardsInfo);
                 }}
               />
             </div>

@@ -6,24 +6,31 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AuthValidator from "../../components/AuthValidator";
 import ButtonCustom from "../../components/ButtonCustom";
 import CountrySelector from "../../components/CountrySelector";
 import Input from "../../components/Input";
 import {
   FORM_DATA_OPTIONS,
+  HEALTH_PROFS,
   LOCAL_STORAGE_ITEMS,
   PAYMENT_STATUS,
-  HEALTH_PROFS,
 } from "../../constant";
-import { LINK_PAGE_CHECKOUT, LINK_PAGE_WEBINAR_LISTING } from "../../routes";
+import {
+  LINK_PAGE_CHECKOUT,
+  LINK_PAGE_NEWSLETTERS,
+  LINK_PAGE_WEBINAR_LISTING,
+} from "../../routes";
+import NewsletterService from "../../services/NewsletterService";
 import OrderService from "../../services/OrderService";
 import WebinarService from "../../services/WebinarService";
 import {
   validateGetRequest,
   validatePostRequest,
 } from "../../utils/commonUtils";
+
+type PURCHASE_TYPE = "NEWSLETTER" | "WEBINAR" | null;
 
 const initialCartFormData = {
   customerName: "",
@@ -35,12 +42,30 @@ const initialCartFormData = {
   address: "",
 };
 
+export const PURCHASE_TYPE_LITERAL: {
+  NEWSLETTER: PURCHASE_TYPE;
+  WEBINAR: PURCHASE_TYPE;
+} = {
+  NEWSLETTER: "NEWSLETTER",
+  WEBINAR: "WEBINAR",
+};
+
 const PageCart: React.FC = () => {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const purchaseType: PURCHASE_TYPE = location?.search?.includes(
+    "purchase-category=webinar"
+  )
+    ? "WEBINAR"
+    : location?.search?.includes("purchase-category=newsletter")
+    ? "NEWSLETTER"
+    : null;
   const [userData, setUserData] = useState<any>(null);
-  const [purchaseWebinarData, setPurchaseWebinarData] = useState<any>(null);
   const [webinarData, setWebinarData] = useState<any>(null);
+  const [purchaseWebinarData, setPurchaseWebinarData] = useState<any>(null);
+  const [newsletterData, setNewsletterData] = useState<any>(null);
+  const [purchaseNewsletterData, setPurchaseNewsletterData] =
+    useState<any>(null);
   const [isLoadingCartItem, setIsLoadingCartItem] = useState(true);
   const [cartFormData, setCartFormData] = useState(initialCartFormData);
 
@@ -64,24 +89,58 @@ const PageCart: React.FC = () => {
     }
   }, []);
 
+  const getNewsletterDetails = async (newsletterId: string) => {
+    try {
+      const response = await NewsletterService.getNewsletterById(
+        "/" + newsletterId
+      );
+      if (validateGetRequest(response)) {
+        const newsletter = response?.data;
+        // newsletter info
+        if (newsletter) {
+          setNewsletterData(newsletter);
+          setIsLoadingCartItem(false);
+        } else {
+          setNewsletterData(null);
+          setIsLoadingCartItem(false);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   /*------------------------useEffect----------------------------*/
   useEffect(() => {
     const onMount = async () => {
       const userInfo = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
-      const purChaseInfo = localStorage.getItem(
-        LOCAL_STORAGE_ITEMS.PURCHASE_INFO
-      );
 
-      if (userInfo && purChaseInfo) {
+      if (userInfo) {
         const parsedUserInfo = JSON.parse(userInfo);
-        const parsedPurchaseInfo = JSON.parse(purChaseInfo);
         setUserData(parsedUserInfo);
-        setPurchaseWebinarData(parsedPurchaseInfo);
-        getWebinarDetails(parsedPurchaseInfo.webinarId);
+        if (purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR) {
+          const purChaseInfo = localStorage.getItem(
+            LOCAL_STORAGE_ITEMS.PURCHASE_INFO
+          );
+          if (purChaseInfo) {
+            const parsedPurchaseInfo = JSON.parse(purChaseInfo);
+            setPurchaseWebinarData(parsedPurchaseInfo);
+            getWebinarDetails(parsedPurchaseInfo.webinarId);
+          }
+        } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
+          const purchaseInfoNewsletterInfo = localStorage.getItem(
+            LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER
+          );
+          if (purchaseInfoNewsletterInfo) {
+            const parsedPurchaseInfo = JSON.parse(purchaseInfoNewsletterInfo);
+            setPurchaseNewsletterData(parsedPurchaseInfo);
+            getNewsletterDetails(parsedPurchaseInfo?.newsletterId);
+          }
+        }
       }
     };
     onMount();
-  }, [getWebinarDetails]);
+  }, []);
 
   /*-----------------------Event Handlers------------------------------*/
 
@@ -104,28 +163,83 @@ const PageCart: React.FC = () => {
   };
 
   const onCheckout = async () => {
-    localStorage.setItem(
-      LOCAL_STORAGE_ITEMS.CART_DATA,
-      JSON.stringify({
-        ...userData,
+    let cartInfo = { ...userData, ...cartFormData };
+    let stripePaymentInfo: any = {
+      customerName: cartFormData.customerName,
+      email: cartFormData.billingEmail || userData.email,
+      country: cartFormData?.country,
+      purchaseType: purchaseType,
+    };
+    if (purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR) {
+      cartInfo = {
+        ...cartInfo,
         ...webinarData,
         ...purchaseWebinarData,
-        ...cartFormData,
-      })
+      };
+      stripePaymentInfo = {
+        ...stripePaymentInfo,
+        amount: purchaseWebinarData?.cartTotal,
+      };
+    } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
+      cartInfo = { ...cartInfo, ...newsletterData, ...purchaseNewsletterData };
+      stripePaymentInfo = {
+        ...stripePaymentInfo,
+        amount: purchaseNewsletterData?.cartTotal,
+      };
+    }
+
+    localStorage.setItem(
+      LOCAL_STORAGE_ITEMS.CART_DATA,
+      JSON.stringify(cartInfo)
     );
 
     navigate(LINK_PAGE_CHECKOUT, {
       state: {
-        amount: purchaseWebinarData?.cartTotal,
-        customerName: cartFormData.customerName,
-        email: cartFormData.billingEmail || userData.email,
-        country: cartFormData?.country,
+        ...stripePaymentInfo,
       },
     });
   };
 
   const onCancel = async () => {
-    const jsonPayload = {
+    if (purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR) {
+      const webinarOrderPayloadJSON = prepareWebinarCancelPayload();
+
+      const formDataPayload = jsonToFormData(
+        webinarOrderPayloadJSON,
+        FORM_DATA_OPTIONS
+      );
+
+      try {
+        const res = await OrderService.createOrder(formDataPayload);
+        if (validatePostRequest(res)) {
+          localStorage.removeItem(LOCAL_STORAGE_ITEMS.PURCHASE_INFO);
+          navigate(LINK_PAGE_WEBINAR_LISTING);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
+      const newsletterOrderPayloadJSON = prepareNewsletterCancelPayload();
+
+      const formDataPayload = jsonToFormData(
+        newsletterOrderPayloadJSON,
+        FORM_DATA_OPTIONS
+      );
+
+      try {
+        const res = await OrderService.createNewsletterOrder(formDataPayload);
+        if (validatePostRequest(res)) {
+          localStorage.removeItem(LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER);
+          navigate(LINK_PAGE_NEWSLETTERS);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const prepareWebinarCancelPayload = () => {
+    return {
       customeremail: userData?.email,
       paymentstatus: PAYMENT_STATUS.PENDING,
       billingemail: null,
@@ -149,18 +263,15 @@ const PageCart: React.FC = () => {
       address: null,
       invoice_number: null,
     };
+  };
 
-    const formDataPayload = jsonToFormData(jsonPayload, FORM_DATA_OPTIONS);
-
-    try {
-      const res = await OrderService.createOrder(formDataPayload);
-      if (validatePostRequest(res)) {
-        localStorage.removeItem(LOCAL_STORAGE_ITEMS.PURCHASE_INFO);
-        navigate(LINK_PAGE_WEBINAR_LISTING);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const prepareNewsletterCancelPayload = () => {
+    return {
+      customeremail: userData?.email,
+      paymentstatus: PAYMENT_STATUS.PENDING,
+      topic: newsletterData?.topic,
+      orderamount: null,
+    };
   };
 
   return (
@@ -257,20 +368,30 @@ const PageCart: React.FC = () => {
               </div>
             ) : (
               <div className="w-[40%] mt-5 p-5 flex flex-col gap-5 border border-primary-light-900 rounded-lg">
-                <div className="text-base">{webinarData?.topic ?? "N.A."}</div>
+                <div className="text-base">
+                  {purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR
+                    ? webinarData?.topic ?? "N.A."
+                    : purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER
+                    ? newsletterData?.topic ?? "N.A."
+                    : "N.A"}
+                </div>
 
                 <div className="flex items-center justify-between font-bold">
                   <span className="text-sm">Order Amount</span>
                   <span className="text-lg">
                     {"$"}
-                    {purchaseWebinarData?.cartTotal ?? "N.A."}
+                    {purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR
+                      ? purchaseWebinarData?.cartTotal ?? "N.A."
+                      : purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER
+                      ? purchaseNewsletterData?.cartTotal
+                      : "N.A."}
                   </span>
                 </div>
 
                 <div className="w-full flex  items-center justify-center flex-wrap gap-5">
                   <div>
                     <ButtonCustom
-                      className="btn-custom-secondary w-32 px-2 flex gap-2 justify-center text-primary-pLabel border-2 border-primary-light-900 rounded-full hover:bg-slate-50"
+                      className="btn-custom-secondary w-32 px-2 py-1 flex gap-2 justify-center text-primary-pLabel border-2 border-primary-light-900 rounded-full hover:bg-slate-50"
                       label={"Cancel"}
                       type="button"
                       handleClickWithLoader={onCancel}
@@ -278,7 +399,7 @@ const PageCart: React.FC = () => {
                   </div>
                   <div>
                     <ButtonCustom
-                      className="w-32 px-2 flex gap-2 justify-center text-primary-pTextLight bg-primary-bg-teal border border-primary-light-900 rounded-full hover:bg-primary-bg-lightTeal"
+                      className="w-32 px-2 py-1 flex gap-2 justify-center text-white font-semibold bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-interactiveBlueHover"
                       label={"Checkout"}
                       type="submit"
                       handleClickWithLoader={onCheckout}

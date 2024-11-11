@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import brandLogo from "../assets/images/hc_profs_logo.png";
+import brandLogo from "../assets/images/hc_profs_logo_variant1.png";
 import { ENV_VAR, LOCAL_STORAGE_ITEMS } from "../constant";
 import {
   LINK_ATTENDEE_DASHBOARD,
@@ -76,7 +76,7 @@ const Header: React.FC = () => {
             }}
           >
             <img
-              className="w-40 h-12 screen_var_one:w-64 screen_var_one:h-16"
+              className="w-36 h-12 screen_var_one:w-52 screen_var_one:h-16"
               src={brandLogo}
               alt="logo"
             />

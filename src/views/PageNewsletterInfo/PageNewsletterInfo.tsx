@@ -1,12 +1,27 @@
+import jsonToFormData from "json-form-data";
 import React, { ReactNode, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ButtonCustom from "../../components/ButtonCustom";
+import {
+  FORM_DATA_OPTIONS,
+  LOCAL_STORAGE_ITEMS,
+  PAYMENT_STATUS,
+  SESSION_STORAGE_ITEMS,
+} from "../../constant";
+import {
+  LINK_PAGE_CART,
+  LINK_PAGE_CONFIRM_PAYMENT,
+  LINK_PAGE_LOGIN_REG,
+} from "../../routes";
 import NewsletterService from "../../services/NewsletterService";
+import OrderService from "../../services/OrderService";
 import {
   getInitialLetterUpperCase,
   monDayYear,
   validateGetRequest,
+  validatePostRequest,
 } from "../../utils/commonUtils";
+import { PURCHASE_TYPE_LITERAL } from "../PageCart/PageCart";
 
 const PageNewsletterInfo = () => {
   const params = useParams();
@@ -47,7 +62,94 @@ const PageNewsletterInfo = () => {
 
   /*--------------------------Event Handlers-----------------*/
 
-  const onBuyNow = async () => {};
+  const onBuyNow = async () => {
+    const isUserLoggedIn = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
+
+    if (isUserLoggedIn && parseInt(newsletterData?.price, 10) > 0) {
+      navigate(`${LINK_PAGE_CART}?purchase-category=newsletter`);
+      localStorage.setItem(
+        LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER,
+        JSON.stringify({
+          ...newsletterData,
+          newsletterId: params?.newsletterId,
+          cartTotal: parseInt(newsletterData?.price, 10),
+        })
+      );
+    } else if (isUserLoggedIn && parseInt(newsletterData?.price, 10) === 0) {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      let mm: any = today.getMonth() + 1;
+      let dd: any = today.getDate();
+
+      if (dd < 10) dd = "0" + dd;
+      if (mm < 10) mm = "0" + mm;
+
+      const formattedToday = dd + mm + yyyy;
+      const invoiceFormattedToday = dd + "/" + mm + "/" + yyyy;
+
+      const userInfo = JSON.parse(isUserLoggedIn);
+      if (userInfo) {
+        const jsonPayloadNewsletterOrder = {
+          customeremail: userInfo?.email,
+          paymentstatus: PAYMENT_STATUS.PURCHASED,
+          topic: newsletterData?.topic,
+          orderamount: 0,
+          billingemail: null,
+          customername: null,
+          country: null,
+          order_datetimezone: new Date(),
+          invoice_number: `${formattedToday}_HC_${
+            Math.random().toString(36).substring(2)?.toUpperCase() +
+            Math.random().toString(36).substring(2)?.toUpperCase()
+          }`,
+        };
+
+        localStorage.setItem(
+          LOCAL_STORAGE_ITEMS.PURCHASE_INFO_FREE_NEWSLETTER,
+          JSON.stringify({
+            generatedInvoiceNum: jsonPayloadNewsletterOrder.invoice_number,
+            generatedDate: invoiceFormattedToday,
+          })
+        );
+
+        const formDataPayload = jsonToFormData(
+          jsonPayloadNewsletterOrder,
+          FORM_DATA_OPTIONS
+        );
+
+        try {
+          const response = await OrderService.createNewsletterOrder(
+            formDataPayload
+          );
+          if (validatePostRequest(response)) {
+            navigate(LINK_PAGE_CONFIRM_PAYMENT);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    } else {
+      sessionStorage.setItem(
+        SESSION_STORAGE_ITEMS.REG_BANNER,
+        JSON.stringify({
+          display: true,
+        })
+      );
+      localStorage.setItem(
+        LOCAL_STORAGE_ITEMS.CARD_CONTINUE_PURCHASE_NEWSLETTER,
+        JSON.stringify({
+          display: true,
+          ...newsletterData,
+          purchaseType: PURCHASE_TYPE_LITERAL.NEWSLETTER,
+        })
+      );
+      navigate(LINK_PAGE_LOGIN_REG, {
+        state: {
+          showRegCheckOutBanner: true,
+        },
+      });
+    }
+  };
 
   /*---------------------Sectional Renders------------------*/
   const renderNewsletterInfo = (): ReactNode => {

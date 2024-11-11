@@ -54,12 +54,17 @@ export const SUBSCRIPTION_TYPE = {
 
 export const CARD_SUGGESTIONS = {
   CONTINUE_PURCHASE: "continuePurchaseAfterReg",
+  CONTINUE_PURCHASE_NEWSLETTER: "continuePurchaseNewsletterAfterReg",
 };
 
 export const LOCAL_STORAGE_ITEMS = {
   USERINFO: "userInfo",
   CARD_CONTINUE_PURCHASE: CARD_SUGGESTIONS.CONTINUE_PURCHASE,
+  CARD_CONTINUE_PURCHASE_NEWSLETTER:
+    CARD_SUGGESTIONS.CONTINUE_PURCHASE_NEWSLETTER,
   PURCHASE_INFO: "purchaseWebinarInfo",
+  PURCHASE_INFO_NEWSLETTER: "purchaseNewsletterInfo",
+  PURCHASE_INFO_FREE_NEWSLETTER: "purchaseFreeNewsletterInfo",
   CART_DATA: "cartDataInfo",
   PAYMENT_STATUS_SUCCESS: "paymentSuccessInfo",
   PURCHASE_SUCCESS_MESSAGE: "purchaseSuccessMessageInfo",

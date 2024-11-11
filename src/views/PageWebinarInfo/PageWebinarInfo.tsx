@@ -2,8 +2,8 @@ import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ButtonCustom from "../../components/ButtonCustom";
 import {
-  LOCAL_STORAGE_ITEMS,
   HEALTH_PROFS,
+  LOCAL_STORAGE_ITEMS,
   SESSION_STORAGE_ITEMS,
 } from "../../constant";
 import { LINK_PAGE_CART, LINK_PAGE_LOGIN_REG } from "../../routes";
@@ -13,6 +13,7 @@ import {
   monDayYear,
   validateGetRequest,
 } from "../../utils/commonUtils";
+import { PURCHASE_TYPE_LITERAL } from "../PageCart/PageCart";
 
 const initialPurchaseData = {
   webinarSessionLive: false,
@@ -113,7 +114,7 @@ const PageWebinarInfo: React.FC = () => {
     const isUserLoggedIn = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
 
     if (isUserLoggedIn && cartTotal > 0) {
-      navigate(LINK_PAGE_CART);
+      navigate(`${LINK_PAGE_CART}?purchase-category=webinar`);
       localStorage.setItem(
         LOCAL_STORAGE_ITEMS.PURCHASE_INFO,
         JSON.stringify({
@@ -136,6 +137,7 @@ const PageWebinarInfo: React.FC = () => {
         JSON.stringify({
           display: true,
           ...webinarData,
+          purchaseType: PURCHASE_TYPE_LITERAL.WEBINAR,
         })
       );
       navigate(LINK_PAGE_LOGIN_REG, {
@@ -335,7 +337,7 @@ const PageWebinarInfo: React.FC = () => {
               {renderWebinarInfo()}
             </div>
 
-            <div className="flex flex-col-reverse gap-10 place-items-center screen_var_one:flex-row screen_var_one:place-items-start">
+            <div className="w-full flex flex-col-reverse gap-10 place-items-center screen_var_one:flex-row screen_var_one:place-items-start">
               <div className="w-full screen_var_one:w-[60%] p-5 border border-primary-light-900">
                 <div className="text-sm leading-6 text-justify text-pretty">
                   <h4 className="text-left">{"Description"}</h4>

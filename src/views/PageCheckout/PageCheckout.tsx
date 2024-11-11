@@ -4,10 +4,10 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import ppLogo from "../../assets/images/PP_favicon.png";
 import { loadStripe } from "@stripe/stripe-js";
 import { BaseSyntheticEvent, ReactNode, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import hcpLogo from "../../assets/images/hc_profs_logo_variant1.png";
 import AuthValidator from "../../components/AuthValidator";
 import ButtonCustom from "../../components/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom";
@@ -123,29 +123,34 @@ const CheckoutForm = (props: any) => {
   return (
     <div className="stripe-gateway-wrapper my-5 p-5">
       <form
-        className="my-4 px-5 py-4 flex flex-col items-center justify-center"
+        className="w-full my-4 px-5 py-4 flex flex-col items-center justify-center text-primary-pText"
         onSubmit={handleStripePay}
       >
-        <div className="pp-payment-card-wrapper px-10 pb-12 pt-6 min-w-[400px] border border-primary-light-900 rounded-lg">
-          <div className="flex items-center justify-center">
-            <img className="w-8 h-8" alt="pp-icon" src={ppLogo} />
-            <h4 className="text-primary-bg-teal text-2xl">PharmaProfs</h4>
+        <div className="hcp-payment-card-wrapper w-full px-10 pb-12 pt-6 flex flex-col border border-primary-light-900 rounded-lg md:w-[720px]">
+          <div className="w-full flex items-center justify-center">
+            <img
+              className="w-[300px] h-20 object-contain sm:h-28"
+              alt="pp-icon"
+              src={hcpLogo}
+            />
+            {/* <h4 className="text-2xl">HC Profs</h4> */}
           </div>
 
-          <div className="mb-10 text-left text-sm text-primary-bg-teal font-bold">
+          <div className="mb-10 text-left text-sm font-medium">
             Complete your payment by filling in the requested information.
           </div>
 
-          <div className="w-full flex flex-col gap-12 items-center">
+          <div className="w-full flex flex-col gap-10 items-center">
             <div className="w-full">
-              <div className="mb-4 text-left text-sm text-primary-bg-teal font-bold">
+              <div className="mb-4 text-left text-sm  font-medium">
                 Please enter your card details
               </div>
               <CardElement className="" />
             </div>
+
             <ButtonCustom
               containerClassName="w-full"
-              className="w-full p-2 text-center bg-primary-bg-teal text-primary-pTextLight rounded-md"
+              className="w-full p-2 text-center bg-primary-bg-interactiveBlue text-white rounded-md"
               type={"submit"}
               label={`Pay $${props?.checkoutInfo?.amount}`}
               isLoading={showPaymentInProgress}
