@@ -21,6 +21,7 @@ const initialRegisterFormData = {
   name: "",
   email: "",
   password: "",
+  contact: "",
   registrationRole: "",
   role: {
     speaker: false,
@@ -163,9 +164,11 @@ const PageLoginOrRegister = () => {
 
   const prepareRegisterPayload = () => {
     let payload = {
+      Name: registerFormData.name,
       Email: registerFormData.email,
       Password: registerFormData.password,
       ConfirmPassword: registerFormData.password,
+      Contact: registerFormData.contact,
       Role: registerFormData.registrationRole,
       UserType: registerFormData.role.attendee
         ? USER_ROLE.ATTENDEE
@@ -297,6 +300,15 @@ const PageLoginOrRegister = () => {
             name={"password"}
             placeholder="Your password"
             value={registerFormData.password}
+            handler={handleRegisterFormInputChange}
+          />
+        </div>
+        <div className="w-full">
+          <Input
+            label={""}
+            placeholder="Your contact"
+            name={"contact"}
+            value={registerFormData.contact}
             handler={handleRegisterFormInputChange}
           />
         </div>

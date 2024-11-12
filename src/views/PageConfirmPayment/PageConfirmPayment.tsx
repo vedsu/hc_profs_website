@@ -256,10 +256,9 @@ const PageConfirmPayment = () => {
               We appreciate the trust you have placed in us and aim to provide
               you with the highest quality of service. If you have any questions
               or need further assistance, please do not hesitate to contact our
-              customer service team at [customer service email address] or
-              [customer service phone number].
+              customer service team at cs@hcprofs.com or +1-830-256-0384.
               <br />
-              Thank you for choosing PharmaProfs.
+              Thank you for choosing HCProfs.
               <br />
               We value your business and look forward to serving you again. A
               confirmation email has been sent to your registered email.

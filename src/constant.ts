@@ -90,3 +90,8 @@ export const PAYMENT_STATUS = {
   PURCHASED: "purchased",
   PENDING: "pending",
 };
+
+export const COUPON_TYPE = {
+  BY_PERCENTAGE: "per",
+  BY_AMOUNT: "dollar",
+};

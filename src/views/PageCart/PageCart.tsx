@@ -12,6 +12,7 @@ import ButtonCustom from "../../components/ButtonCustom";
 import CountrySelector from "../../components/CountrySelector";
 import Input from "../../components/Input";
 import {
+  COUPON_TYPE,
   FORM_DATA_OPTIONS,
   HEALTH_PROFS,
   LOCAL_STORAGE_ITEMS,
@@ -22,6 +23,7 @@ import {
   LINK_PAGE_NEWSLETTERS,
   LINK_PAGE_WEBINAR_LISTING,
 } from "../../routes";
+import CouponService from "../../services/CouponService";
 import NewsletterService from "../../services/NewsletterService";
 import OrderService from "../../services/OrderService";
 import WebinarService from "../../services/WebinarService";
@@ -68,6 +70,9 @@ const PageCart: React.FC = () => {
     useState<any>(null);
   const [isLoadingCartItem, setIsLoadingCartItem] = useState(true);
   const [cartFormData, setCartFormData] = useState(initialCartFormData);
+  const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const [coupon, setCoupon] = useState("");
+  const [couponList, setCouponList] = useState([]);
 
   /*---------------------------Service Calls------------------------------*/
   const getWebinarDetails = useCallback(async (webinarId: string) => {
@@ -110,6 +115,15 @@ const PageCart: React.FC = () => {
     }
   };
 
+  const getCoupons = async () => {
+    try {
+      const response = await CouponService.getCouponList();
+      if (validateGetRequest(response)) {
+        setCouponList(response?.data);
+      }
+    } catch (error) {}
+  };
+
   /*------------------------useEffect----------------------------*/
   useEffect(() => {
     const onMount = async () => {
@@ -137,6 +151,8 @@ const PageCart: React.FC = () => {
             getNewsletterDetails(parsedPurchaseInfo?.newsletterId);
           }
         }
+
+        getCoupons();
       }
     };
     onMount();
@@ -160,6 +176,59 @@ const PageCart: React.FC = () => {
         country: selectedCountry,
       };
     });
+  };
+
+  const onApplyCoupon = async () => {
+    let cartOrderValue = 0;
+    const validSelectedCoupon: any = couponList?.find(
+      (couponItem: any) => couponItem?.coupon === coupon
+    );
+
+    if (
+      validSelectedCoupon &&
+      validSelectedCoupon?.type === COUPON_TYPE.BY_PERCENTAGE
+    ) {
+      if (purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR) {
+        cartOrderValue = purchaseWebinarData?.cartTotal;
+        cartOrderValue =
+          cartOrderValue - cartOrderValue * validSelectedCoupon?.amount * 0.01;
+        setPurchaseWebinarData((prev: any) => ({
+          ...prev,
+          cartTotal: Math.floor(cartOrderValue),
+        }));
+      } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
+        cartOrderValue = purchaseNewsletterData?.cartTotal;
+        cartOrderValue =
+          cartOrderValue - cartOrderValue * validSelectedCoupon?.amount * 0.01;
+        setPurchaseNewsletterData((prev: any) => ({
+          ...prev,
+          cartTotal: Math.floor(cartOrderValue),
+        }));
+      }
+    } else if (
+      validSelectedCoupon &&
+      validSelectedCoupon?.type === COUPON_TYPE.BY_AMOUNT
+    ) {
+      if (purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR) {
+        cartOrderValue = purchaseWebinarData?.cartTotal;
+        cartOrderValue = cartOrderValue - validSelectedCoupon?.amount;
+        setPurchaseWebinarData((prev: any) => ({
+          ...prev,
+          cartTotal:
+            Math.floor(cartOrderValue) <= 0 ? 10 : Math.floor(cartOrderValue),
+        }));
+      } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
+        cartOrderValue = purchaseNewsletterData?.cartTotal;
+        cartOrderValue = cartOrderValue - validSelectedCoupon?.amount;
+        setPurchaseNewsletterData((prev: any) => ({
+          ...prev,
+          cartTotal:
+            Math.floor(cartOrderValue) <= 0 ? 10 : Math.floor(cartOrderValue),
+        }));
+      }
+    }
+
+    setIsCouponApplied(true);
   };
 
   const onCheckout = async () => {
@@ -388,10 +457,32 @@ const PageCart: React.FC = () => {
                   </span>
                 </div>
 
+                <div className="w-full flex gap-10 items-center justify-between">
+                  <input
+                    className="flex-grow app-input h-8 p-2 border border-primary-light-900 !outline-none text-sm text-primary-pText"
+                    name={"coupon"}
+                    type={"text"}
+                    placeholder="Coupon code"
+                    value={coupon}
+                    disabled={isCouponApplied}
+                    onChange={(event: BaseSyntheticEvent) => {
+                      setCoupon(event.target.value);
+                    }}
+                  />
+
+                  <button
+                    className="max-w-fit px-5 h-full text-center leading-6 border rounded-full text-xs hover:bg-primary-bg-teal hover:text-white disabled:bg-disabled disabled:text-primary-dark-100"
+                    onClick={onApplyCoupon}
+                    disabled={isCouponApplied}
+                  >
+                    <span>Apply</span>
+                  </button>
+                </div>
+
                 <div className="w-full flex  items-center justify-center flex-wrap gap-5">
                   <div>
                     <ButtonCustom
-                      className="btn-custom-secondary w-32 px-2 py-1 flex gap-2 justify-center text-primary-pLabel border-2 border-primary-light-900 rounded-full hover:bg-slate-50"
+                      className="btn-custom-secondary w-full sm:w-32 px-2 py-1 flex gap-2 justify-center text-primary-pLabel border-2 border-primary-light-900 rounded-full hover:bg-slate-50"
                       label={"Cancel"}
                       type="button"
                       handleClickWithLoader={onCancel}
@@ -399,7 +490,7 @@ const PageCart: React.FC = () => {
                   </div>
                   <div>
                     <ButtonCustom
-                      className="w-32 px-2 py-1 flex gap-2 justify-center text-white font-semibold bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-interactiveBlueHover"
+                      className="w-full sm:w-32 px-2 py-1 flex gap-2 justify-center text-white font-semibold bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-interactiveBlueHover"
                       label={"Checkout"}
                       type="submit"
                       handleClickWithLoader={onCheckout}
