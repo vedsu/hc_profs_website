@@ -346,86 +346,84 @@ const PageCart: React.FC = () => {
   return (
     <AuthValidator>
       <div className="page-margin">
-        <section className="py-5 flex flex-col items-center justify-center">
-          <div className="w-full flex items-start justify-between">
-            <div className="w-[50%] flex flex-col gap-5">
-              <div className="py-5 flex flex-col gap-5">
-                <div className="px-2">
-                  <Input
-                    className=""
-                    name={"customerName"}
-                    label={"Customer Name"}
-                    type={"text"}
-                    value={cartFormData.customerName}
-                    handler={handleCartFormChange}
-                    mandatory
-                  />
-                </div>
-                <div className="px-2">
-                  <Input
-                    className=""
-                    name={"billingEmail"}
-                    label={"Billing Email"}
-                    type={"email"}
-                    value={cartFormData.billingEmail}
-                    handler={handleCartFormChange}
-                    mandatory
-                  />
-                </div>
-                <div className="px-2 flex flex-col gap-1">
-                  <label>
-                    {"Country"}
-                    <span className="text-primary-asterisk">*</span>
-                  </label>
-                  <CountrySelector getSelectedCountry={handleCountryChange} />
-                  {/* <small></small> */}
-                </div>
-                <div className="px-2">
-                  <Input
-                    className=""
-                    name={"state"}
-                    label={"State"}
-                    type={"text"}
-                    value={cartFormData.state}
-                    handler={handleCartFormChange}
-                  />
-                </div>
-                <div className="px-2">
-                  <Input
-                    className=""
-                    name={"city"}
-                    label={"City"}
-                    type={"text"}
-                    value={cartFormData.city}
-                    handler={handleCartFormChange}
-                  />
-                </div>
-                <div className="px-2">
-                  <Input
-                    className=""
-                    name={"zipcode"}
-                    label={"Zipcode"}
-                    type={"text"}
-                    value={cartFormData.zipcode}
-                    handler={handleCartFormChange}
-                  />
-                </div>
+        <section className="p-5 flex flex-col items-center justify-center">
+          <div className="w-full flex flex-col-reverse screen_var_one:flex-row gap-10 items-start justify-between">
+            <div className="w-full screen_var_one:w-[50%] py-5 flex flex-col gap-5">
+              <div className="px-2">
+                <Input
+                  className=""
+                  name={"customerName"}
+                  label={"Customer Name"}
+                  type={"text"}
+                  value={cartFormData.customerName}
+                  handler={handleCartFormChange}
+                  mandatory
+                />
+              </div>
+              <div className="px-2">
+                <Input
+                  className=""
+                  name={"billingEmail"}
+                  label={"Billing Email"}
+                  type={"email"}
+                  value={cartFormData.billingEmail}
+                  handler={handleCartFormChange}
+                  mandatory
+                />
+              </div>
+              <div className="px-2 flex flex-col gap-1">
+                <label>
+                  {"Country"}
+                  <span className="text-primary-asterisk">*</span>
+                </label>
+                <CountrySelector getSelectedCountry={handleCountryChange} />
+                {/* <small></small> */}
+              </div>
+              <div className="px-2">
+                <Input
+                  className=""
+                  name={"state"}
+                  label={"State"}
+                  type={"text"}
+                  value={cartFormData.state}
+                  handler={handleCartFormChange}
+                />
+              </div>
+              <div className="px-2">
+                <Input
+                  className=""
+                  name={"city"}
+                  label={"City"}
+                  type={"text"}
+                  value={cartFormData.city}
+                  handler={handleCartFormChange}
+                />
+              </div>
+              <div className="px-2">
+                <Input
+                  className=""
+                  name={"zipcode"}
+                  label={"Zipcode"}
+                  type={"text"}
+                  value={cartFormData.zipcode}
+                  handler={handleCartFormChange}
+                />
+              </div>
 
-                <div className="px-2 flex flex-col gap-1">
-                  <label>
-                    {"Address"}
-                    <span className="text-primary-asterisk">{"*"}</span>
-                  </label>
-                  <InputTextarea
-                    className={
-                      "w-full min-h-40 p-2 border border-primary-light-900"
-                    }
-                    name="address"
-                    value={cartFormData.address}
-                    onChange={handleCartFormChange}
-                    maxLength={2000}
-                  />
-                </div>
+              <div className="px-2 flex flex-col gap-1">
+                <label>
+                  {"Address"}
+                  <span className="text-primary-asterisk">{"*"}</span>
+                </label>
+                <InputTextarea
+                  className={
+                    "w-full min-h-40 p-2 border border-primary-light-900"
+                  }
+                  name="address"
+                  value={cartFormData.address}
+                  onChange={handleCartFormChange}
+                  maxLength={2000}
+                />
               </div>
             </div>
 
@@ -436,7 +434,7 @@ const PageCart: React.FC = () => {
                 </span>
               </div>
             ) : (
-              <div className="w-[40%] mt-5 p-5 flex flex-col gap-5 border border-primary-light-900 rounded-lg">
+              <div className="w-full screen_var_one:w-[50%] mt-5 p-5 flex flex-col gap-10 border border-primary-light-900 rounded-lg">
                 <div className="text-base">
                   {purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR
                     ? webinarData?.topic ?? "N.A."
@@ -457,9 +455,9 @@ const PageCart: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="w-full flex gap-10 items-center justify-between">
+                <div className="w-full flex items-center justify-between gap-5">
                   <input
-                    className="flex-grow app-input h-8 p-2 border border-primary-light-900 !outline-none text-sm text-primary-pText"
+                    className="app-input w-full h-8 p-2 border border-primary-light-900 !outline-none text-sm text-primary-pText"
                     name={"coupon"}
                     type={"text"}
                     placeholder="Coupon code"
@@ -471,7 +469,7 @@ const PageCart: React.FC = () => {
                   />
 
                   <button
-                    className="max-w-fit px-5 h-full text-center leading-6 border rounded-full text-xs hover:bg-primary-bg-teal hover:text-white disabled:bg-disabled disabled:text-primary-dark-100"
+                    className="w-24 h-full text-center leading-6 border rounded-full text-xs hover:bg-primary-bg-teal hover:text-white disabled:bg-disabled disabled:text-primary-dark-100"
                     onClick={onApplyCoupon}
                     disabled={isCouponApplied}
                   >
@@ -479,18 +477,18 @@ const PageCart: React.FC = () => {
                   </button>
                 </div>
 
-                <div className="w-full flex  items-center justify-center flex-wrap gap-5">
-                  <div>
+                <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-5">
+                  <div className="w-full">
                     <ButtonCustom
-                      className="btn-custom-secondary w-full sm:w-32 px-2 py-1 flex gap-2 justify-center text-primary-pLabel border-2 border-primary-light-900 rounded-full hover:bg-slate-50"
+                      className="btn-custom-secondary w-full px-2 py-1 flex gap-2 justify-center text-primary-pLabel border-2 border-primary-light-900 rounded-full hover:bg-slate-50"
                       label={"Cancel"}
                       type="button"
                       handleClickWithLoader={onCancel}
                     />
                   </div>
-                  <div>
+                  <div className="w-full">
                     <ButtonCustom
-                      className="w-full sm:w-32 px-2 py-1 flex gap-2 justify-center text-white font-semibold bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-interactiveBlueHover"
+                      className="w-full px-2 py-1 flex gap-2 justify-center text-white font-semibold bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-interactiveBlueHover"
                       label={"Checkout"}
                       type="submit"
                       handleClickWithLoader={onCheckout}
