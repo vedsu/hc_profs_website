@@ -85,24 +85,24 @@ const PageWebinarList: React.FC = () => {
   React.useEffect(() => {
     if (webinarCategoriesList && webinarCategoriesList?.length) {
       let webinarCategory = "";
-      if (queryParams?.includes("quality control"))
-        webinarCategory = WEBINAR_CATEGORIES.QUALITY_CONTROL;
-      else if (queryParams?.includes("quality assurance"))
-        webinarCategory = WEBINAR_CATEGORIES.QUALITY_ASSURANCE;
-      else if (queryParams?.includes("pharmaceutical automation"))
-        webinarCategory = WEBINAR_CATEGORIES.PHARMACEUTICAL_AUTOMATION;
-      else if (queryParams?.includes("medical device"))
-        webinarCategory = WEBINAR_CATEGORIES.MEDICAL_DEVICE;
-      else if (queryParams?.includes("manufacturing"))
-        webinarCategory = WEBINAR_CATEGORIES.MANUFACTURING_COMPLIANCE;
-      else if (queryParams?.includes("research and development"))
-        webinarCategory = WEBINAR_CATEGORIES.RESEARCH_DEVELOPMENT;
-      else if (queryParams?.includes("regulatory affairs"))
-        webinarCategory = WEBINAR_CATEGORIES.REGULATORY_AFFAIRS;
-      else if (queryParams?.includes("regulatory compliance"))
-        webinarCategory = WEBINAR_CATEGORIES.REGULATORY_COMPLIANCE;
-      else if (queryParams?.includes("supply chain"))
-        webinarCategory = WEBINAR_CATEGORIES.SUPPLY_CHAIN_WAREHOUSING;
+      if (queryParams?.includes("nursing"))
+        webinarCategory = WEBINAR_CATEGORIES.NURSING;
+      else if (queryParams?.includes("healthcare management"))
+        webinarCategory = WEBINAR_CATEGORIES.HEALTHCARE_MANAGEMENT;
+      else if (queryParams?.includes("medical billing and coding"))
+        webinarCategory = WEBINAR_CATEGORIES.MEDICAL_BILLING_AND_CODING;
+      else if (queryParams?.includes("hipaa and compliance"))
+        webinarCategory = WEBINAR_CATEGORIES.HIPAA_AND_COMPLIANCE;
+      else if (queryParams?.includes("e/m services"))
+        webinarCategory = WEBINAR_CATEGORIES.E_M_SERVICES;
+      else if (queryParams?.includes("hospital and compliance"))
+        webinarCategory = WEBINAR_CATEGORIES.HOSPITAL_AND_COMPLIANCE;
+      else if (queryParams?.includes("hospice and home care"))
+        webinarCategory = WEBINAR_CATEGORIES.HOSPICE_AND_HOME_CARE;
+      else if (queryParams?.includes("cms compliance"))
+        webinarCategory = WEBINAR_CATEGORIES.CMS_COMPLIANCE;
+      else if (queryParams?.includes("cpt/icd updates"))
+        webinarCategory = WEBINAR_CATEGORIES.CPT_ICD_UPDATES;
 
       setWebinarCategory(webinarCategory);
     }

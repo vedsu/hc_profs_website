@@ -77,7 +77,7 @@ const PageNewsletterInfo = () => {
       );
     } else if (isUserLoggedIn && parseInt(newsletterData?.price, 10) === 0) {
       const today = new Date();
-      const yyyy = today.getFullYear();
+      const yyyy = today.getFullYear() % 100;
       let mm: any = today.getMonth() + 1;
       let dd: any = today.getDate();
 
@@ -94,14 +94,14 @@ const PageNewsletterInfo = () => {
           paymentstatus: PAYMENT_STATUS.PURCHASED,
           topic: newsletterData?.topic,
           orderamount: 0,
-          billingemail: null,
+          billingemail: userInfo?.email,
           customername: null,
           country: null,
           order_datetimezone: new Date(),
-          invoice_number: `${formattedToday}_HC_${
-            Math.random().toString(36).substring(2)?.toUpperCase() +
-            Math.random().toString(36).substring(2)?.toUpperCase()
-          }`,
+          invoice_number: `${formattedToday}_HCP_${Math.random()
+            .toString(36)
+            .substring(2, 10)
+            ?.toUpperCase()}`,
         };
 
         localStorage.setItem(
@@ -155,9 +155,9 @@ const PageNewsletterInfo = () => {
   const renderNewsletterInfo = (): ReactNode => {
     return (
       <div className="p-5 w-full flex flex-col gap-6 screen_var_one:p-0">
-        <div className="w-full h-[300px] flex items-center justify-center font-semibold text-xs">
+        <div className="w-[500px] h-[300px] flex items-center justify-center font-semibold text-xs">
           <img
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
             src={newsletterData?.thumbnail}
             alt="newsletter-thumbnail"
           />
@@ -198,7 +198,7 @@ const PageNewsletterInfo = () => {
 
         <div className="flex flex-col gap-1 text-left text-sm">
           <div className="w-full font-semibold">{"Description : "}</div>
-          <p className="w-full ">{newsletterData?.description ?? "N.A."}</p>
+          <p className="w-full">{newsletterData?.description ?? "N.A."}</p>
         </div>
       </div>
     );

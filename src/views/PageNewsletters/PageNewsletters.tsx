@@ -102,7 +102,7 @@ const PageNewsletters = () => {
                                 </span>
                               </div>
 
-                              <div className="w-full font-normal text-sm">
+                              <div className="w-full font-normal text-sm h-28 overflow-clip text-ellipsis">
                                 {newsletter?.description}
                               </div>
 

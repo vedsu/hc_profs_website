@@ -108,10 +108,10 @@ const PageConfirmPayment = () => {
           city: parsedCartInfo?.city,
           zipcode: parsedCartInfo?.zipcode,
           address: parsedCartInfo?.address,
-          invoice_number: `${formattedToday}_PP_${
-            Math.random().toString(36).substring(2)?.toUpperCase() +
-            Math.random().toString(36).substring(2)?.toUpperCase()
-          }`,
+          invoice_number: `${formattedToday}_HCP_${Math.random()
+            .toString(36)
+            .substring(2, 10)
+            ?.toUpperCase()}`,
         };
 
         const templateMessageData = {
@@ -176,10 +176,10 @@ const PageConfirmPayment = () => {
           customername: parsedCartInfo?.customerName,
           country: parsedCartInfo?.country,
           order_datetimezone: parsedPaymentSuccessInfo?.date_time,
-          invoice_number: `${formattedToday}_PP_${
-            Math.random().toString(36).substring(2)?.toUpperCase() +
-            Math.random().toString(36).substring(2)?.toUpperCase()
-          }`,
+          invoice_number: `${formattedToday}_HCP_${Math.random()
+            .toString(36)
+            .substring(2, 10)
+            ?.toUpperCase()}`,
         };
 
         const templateMessageData = {
@@ -234,14 +234,14 @@ const PageConfirmPayment = () => {
   return (
     <AuthValidator>
       <div className="page-margin">
-        <div className="py-5 w-full h-screen flex flex-col gap-2 items-center justify-start">
+        <div className="p-5 w-full h-screen flex flex-col gap-2 items-center justify-start">
           <div className="text-2xl">
             <h4 className="font-bold text-xl text-primary-bg-teal">
               Your payment was successful !
             </h4>
           </div>
 
-          <div className="max-w-fit-content flex gap-5 font-semibold text-sm text-left leading-8">
+          <div className="max-w-fit-content flex gap-5 font-semibold text-sm text-left leading-6">
             <p>
               Thank you for placing an order with HCProfs. We are pleased to
               confirm the receipt of your order

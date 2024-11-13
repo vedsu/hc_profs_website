@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { LOCAL_STORAGE_ITEMS, USER_ROLE } from "../../constant";
 import DashboardService from "../../services/DashboardService";
 import { validateGetRequest } from "../../utils/commonUtils";
+import AuthValidator from "../../components/AuthValidator";
 
 function PageUserHistory() {
   const [
@@ -46,7 +47,7 @@ function PageUserHistory() {
   };
 
   return (
-    <React.Fragment>
+    <AuthValidator>
       <div className="w-full p-5 flex flex-col text-sm">
         <h4 className="font-semibold text-2xl text-primary-pLabel ">History</h4>
         {isLoading ? (
@@ -115,7 +116,7 @@ function PageUserHistory() {
           </React.Fragment>
         )}
       </div>
-    </React.Fragment>
+    </AuthValidator>
   );
 }
 

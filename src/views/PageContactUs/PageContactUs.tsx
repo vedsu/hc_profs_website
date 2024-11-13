@@ -4,7 +4,6 @@ import ButtonCustom from "../../components/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom";
 import Input from "../../components/Input";
 import ContactUsService from "../../services/ContactUsService";
-import { validatePostRequest } from "../../utils/commonUtils";
 
 const initialContactUsFormData = {
   name: "",
@@ -35,10 +34,7 @@ const PageContactUs: React.FC = () => {
     };
 
     try {
-      const res = await ContactUsService.contactUs(payload);
-      if (validatePostRequest(res)) {
-        console.log(res);
-      }
+      await ContactUsService.contactUs(payload);
     } catch (error) {
       console.error(error);
     }

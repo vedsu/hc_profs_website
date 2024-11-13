@@ -6,10 +6,11 @@ import ButtonCustom from "../components/ButtonCustom";
 import CardTemplates from "../components/CardTemplates";
 import { CARD_SUGGESTIONS, LOCAL_STORAGE_ITEMS } from "../constant";
 import { LINK_ATTENDEE_RECOMMENDATIONS, LINK_USER_HISTORY } from "../routes";
+import { ddmmyy } from "../utils/commonUtils";
 
 interface IUserDashboard {
   userInterfaceData: {
-    webinarData: any[];
+    dashboardData: any[];
     accordionTemplateData: any;
     onClickWebinarCardHandler: any;
   };
@@ -33,8 +34,14 @@ const dashboardNavs = [
 ];
 
 const UserDashboardLayout = (props: IUserDashboard) => {
-  const { webinarData, accordionTemplateData, onClickWebinarCardHandler } =
+  const { dashboardData, accordionTemplateData, onClickWebinarCardHandler } =
     props.userInterfaceData;
+
+  const navigate = useNavigate();
+
+  //prepare data
+  const webinarData = dashboardData?.filter((data) => data?.webinar);
+  const newsletterData = dashboardData?.filter((data) => data?.newsletter);
 
   const [isRoleSpeaker, setIsRoleSpeaker] = useState(false);
   const [userInstructions, setUserInstructions] = useState<string[]>([]);
@@ -42,8 +49,6 @@ const UserDashboardLayout = (props: IUserDashboard) => {
     useState(false);
   const [continuePurchaseCardData, setContinuePurchaseCardData] =
     useState<any>(null);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const onMount = async () => {
@@ -103,15 +108,65 @@ const UserDashboardLayout = (props: IUserDashboard) => {
     };
     onMount();
   }, []);
+
   /*-----------------Sectional Renders-----------------------*/
+
+  const renderNewsletterCards = (data: any) => {
+    return (
+      <div key={Math.random().toString(36)?.substring(2, 8)}>
+        <div className="p-3 card-scale flex flex-col gap-2 border-2 text-sm rounded-md">
+          <h4 className="max-w-fit px-2 font-semibold border rounded-full bg-primary-bg-teal text-white">
+            Newsletter
+          </h4>
+          <div>
+            <span className="font-semibold">Topic : </span>
+            <span className="font-medium">{data?.newsletter ?? "N.A."}</span>
+          </div>
+
+          <div className="col-span-1">
+            <span className="font-semibold">Published Date : </span>
+            <span className="">{ddmmyy(data?.published_date) ?? "N.A."}</span>
+          </div>
+
+          <div className="w-full flex items-center gap-10">
+            <div>
+              <ButtonCustom
+                className="py-1 px-2 max-w-fit font-semibold text-sm"
+                handleClick={() => {
+                  window.open(data?.newsletter_doc, "_blank");
+                }}
+                label={"Download Newsletter"}
+              >
+                <i className="mx-1 pi pi-book text-sm"></i>
+              </ButtonCustom>
+            </div>
+            <div>
+              <ButtonCustom
+                className="py-1 px-2 max-w-fit font-semibold text-sm"
+                handleClick={() => {
+                  window.location.href = data?.document;
+                }}
+                label={"Download Receipt"}
+              >
+                <i className="mx-1 pi pi-download text-sm"></i>
+              </ButtonCustom>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderWebinarCards = (data: any) => {
     return (
       <div
         key={Math.random().toString(36)?.substring(2, 8)}
-        className=""
         onClick={onClickWebinarCardHandler}
       >
-        <div className="p-3 card-scale flex flex-col gap-2 border-2 text-sm rounded-md cursor-pointer">
+        <div className="p-3 card-scale flex flex-col gap-2 border-2 text-sm rounded-md">
+          <h4 className="max-w-fit px-2 font-semibold border rounded-full bg-primary-bg-lightCyan text-white">
+            Webinar
+          </h4>
           <div>
             <span className="font-semibold">Topic : </span>
             <span className="font-medium">{data?.webinar ?? "N.A."}</span>
@@ -185,7 +240,7 @@ const UserDashboardLayout = (props: IUserDashboard) => {
 
               <div>
                 <ButtonCustom
-                  className="py-1 px-2 max-w-fit font-semibold text-sm bg-primary-bg-lightCyan rounded-full"
+                  className="py-1 px-2 max-w-fit font-semibold text-sm"
                   handleClick={() => {
                     window.location.href = data?.document;
                   }}
@@ -251,12 +306,18 @@ const UserDashboardLayout = (props: IUserDashboard) => {
                   </ol>
                   <p className="mt-2 font-bold text-sm">
                     {isRoleSpeaker
-                      ? "For any queries, please contact Brian at brian@pharmaprofs.com"
-                      : "For any queries, please contact the Webinar Team at support@pharmaprofs.com."}
+                      ? "For any queries, please contact Brian at brian@profstraining.com"
+                      : "For any queries, please contact the Webinar Team at cs@hcprofs.com."}
                   </p>
                 </div>
 
-                {webinarData.map((data) => {
+                {newsletterData?.length
+                  ? newsletterData?.map((data) => {
+                      return renderNewsletterCards(data);
+                    })
+                  : null}
+
+                {webinarData?.map((data) => {
                   return renderWebinarCards(data);
                 })}
               </React.Fragment>

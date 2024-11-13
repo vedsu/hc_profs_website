@@ -20,6 +20,7 @@ export default {
           },
           bg: {
             purple: "#bb86fc",
+            lightCyan: "#17a2b8",
             teal: "#03dac6",
             darkTeal: "#03dac6",
             interactiveBlue: "#0071bc",

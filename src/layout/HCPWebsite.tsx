@@ -83,6 +83,10 @@ const HCPWebsite: React.FC = () => {
     } catch (error) {
       console.error(error);
     }
+
+    if (window.innerWidth <= 980) {
+      window.location.reload();
+    }
   };
 
   const renderSubscriptionDialog = (): ReactNode => {
@@ -172,7 +176,7 @@ const HCPWebsite: React.FC = () => {
         </div>
         <div className="self-center my-2">
           <ButtonCustom
-            className="w-32 px-2 flex gap-2 justify-center text-primary-pTextLight bg-primary-bg-teal border border-primary-light-900 rounded-full hover:bg-primary-bg-lightTeal"
+            className="w-32 px-2 flex gap-2 justify-center text-primary-pTextLight bg-primary-bg-interactiveBlue border-primary-light-900 rounded-full hover:bg-primary-bg-interactiveBlueHover"
             label={"Submit"}
             handleClickWithLoader={onSubmitSubscriptionForm}
           />
@@ -184,7 +188,11 @@ const HCPWebsite: React.FC = () => {
   return (
     <React.Fragment>
       {showRegistrationBanner ? registerBeforeCheckOutBanner : null}
-      <Header />
+      <Header
+        subscribeButtonHandler={() => {
+          setShowSubscribeFormDialog(true);
+        }}
+      />
       <main>
         <Outlet />
       </main>

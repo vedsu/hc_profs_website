@@ -215,7 +215,7 @@ const PageCart: React.FC = () => {
         setPurchaseWebinarData((prev: any) => ({
           ...prev,
           cartTotal:
-            Math.floor(cartOrderValue) <= 0 ? 10 : Math.floor(cartOrderValue),
+            Math.floor(cartOrderValue) <= 0 ? 1 : Math.floor(cartOrderValue),
         }));
       } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
         cartOrderValue = purchaseNewsletterData?.cartTotal;
@@ -223,7 +223,7 @@ const PageCart: React.FC = () => {
         setPurchaseNewsletterData((prev: any) => ({
           ...prev,
           cartTotal:
-            Math.floor(cartOrderValue) <= 0 ? 10 : Math.floor(cartOrderValue),
+            Math.floor(cartOrderValue) <= 0 ? 1 : Math.floor(cartOrderValue),
         }));
       }
     }

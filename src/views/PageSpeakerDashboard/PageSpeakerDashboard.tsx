@@ -68,8 +68,8 @@ const PageSpeakerDashboard = () => {
   };
 
   /*----------------------Events Handlers-------------------*/
-  const onClickListCard = (e: any) => {
-    console.log(e);
+  const onClickListCard = () => {
+    //
   };
 
   /*-------------------Main Render------------------------*/

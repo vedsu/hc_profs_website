@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import brandLogo from "../assets/images/hc_profs_logo_variant1.png";
 import { ENV_VAR, LOCAL_STORAGE_ITEMS } from "../constant";
@@ -17,6 +17,10 @@ import { getEnvVariableValues } from "../utils/commonUtils";
 import ButtonCustom from "./ButtonCustom";
 import MobileAccordion from "./MobileAccordion";
 
+interface IHeaderProps {
+  subscribeButtonHandler: any;
+}
+
 const orderFormURL = getEnvVariableValues(ENV_VAR.VITE_ORDER_FORM_URL);
 
 const resourcesVideos = [
@@ -34,7 +38,9 @@ const resourcesVideos = [
   },
 ];
 
-const Header: React.FC = () => {
+const Header = (props: IHeaderProps) => {
+  const { subscribeButtonHandler } = props;
+
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -142,7 +148,7 @@ const Header: React.FC = () => {
                                 </li>
                                 <li>
                                   <Link
-                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=quality assurance`}
+                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=nursing`}
                                     className="font-thin"
                                   >
                                     {`Nursing`}
@@ -150,7 +156,7 @@ const Header: React.FC = () => {
                                 </li>
                                 <li>
                                   <Link
-                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=quality control`}
+                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=healthcare management`}
                                     className="font-thin"
                                   >
                                     {`Healthcare Management`}
@@ -158,7 +164,7 @@ const Header: React.FC = () => {
                                 </li>
                                 <li>
                                   <Link
-                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=regulatory affairs`}
+                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=medical billing and coding`}
                                     className="font-thin"
                                   >
                                     {`Medical Billing and Coding`}
@@ -166,7 +172,7 @@ const Header: React.FC = () => {
                                 </li>
                                 <li>
                                   <Link
-                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=regulatory compliance`}
+                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=hipaa and compliance`}
                                     className="font-thin"
                                   >
                                     {`HIPAA and Compliance`}
@@ -174,7 +180,7 @@ const Header: React.FC = () => {
                                 </li>
                                 <li>
                                   <Link
-                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=medical device`}
+                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=e/m services`}
                                     className="font-thin"
                                   >
                                     {`E/M Services`}
@@ -182,7 +188,7 @@ const Header: React.FC = () => {
                                 </li>
                                 <li>
                                   <Link
-                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=research and development`}
+                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=hospital and compliance`}
                                     className="font-thin"
                                   >
                                     {`Hospital and Compliance`}
@@ -190,7 +196,7 @@ const Header: React.FC = () => {
                                 </li>
                                 <li>
                                   <Link
-                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=manufacturing compliance`}
+                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=hospice and home care`}
                                     className="font-thin"
                                   >
                                     {`Hospice and Home Care`}
@@ -198,15 +204,15 @@ const Header: React.FC = () => {
                                 </li>
                                 <li>
                                   <Link
-                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=pharmaceutical automation`}
+                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=cms compliance`}
                                     className="font-thin"
                                   >
-                                    {`CMS ComplianceCMS Compliance`}
+                                    {`CMS Compliance`}
                                   </Link>
                                 </li>
                                 <li>
                                   <Link
-                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=supply chain and warehousing`}
+                                    to={`${LINK_PAGE_WEBINAR_LISTING}?category=cpt/icd updates`}
                                     className="font-thin"
                                   >
                                     {`CPT/ ICD Updates`}
@@ -464,10 +470,13 @@ const Header: React.FC = () => {
         <div className="mobile-menu-wrapper">
           <ul className="p-5 flex flex-col items-center justify-center gap-4 text-primary-pLabel">
             {isUserLoggedIn ? (
-              <li className="mob-nav-link-item px-1 ">
+              <li className="mob-nav-link-item px-1">
                 <button
                   className="hover:text-primary-link-500"
-                  onClick={gotoDashboard}
+                  onClick={() => {
+                    gotoDashboard();
+                    window?.location?.reload();
+                  }}
                 >
                   Dashboard
                 </button>
@@ -483,43 +492,67 @@ const Header: React.FC = () => {
                   <div>
                     <ul className="px-5 flex flex-col gap-3">
                       <li>
-                        <a href={LINK_PAGE_WEBINAR_LISTING}>Nursing</a>
+                        <a
+                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=nursing`}
+                        >
+                          Nursing
+                        </a>
                       </li>
                       <li>
-                        <a href={LINK_PAGE_WEBINAR_LISTING}>
+                        <a
+                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=healthcare management`}
+                        >
                           Healthcare Management
                         </a>
                       </li>
                       <li>
-                        <a href={LINK_PAGE_WEBINAR_LISTING}>
+                        <a
+                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=medical billing and coding`}
+                        >
                           Medical Billing and Coding
                         </a>
                       </li>
                       <li>
-                        <a href={LINK_PAGE_WEBINAR_LISTING}>
+                        <a
+                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=hipaa and compliance`}
+                        >
                           HIPAA and Compliance
                         </a>
                       </li>
                       <li>
-                        <a href={LINK_PAGE_WEBINAR_LISTING}>E/M Services</a>
+                        <a
+                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=e/m services`}
+                        >
+                          E/M Services
+                        </a>
                       </li>
                       <li>
-                        <a href={LINK_PAGE_WEBINAR_LISTING}>
+                        <a
+                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=hospital and compliance`}
+                        >
                           Hospital and Compliance
                         </a>
                       </li>
                       <li>
-                        <a href={LINK_PAGE_WEBINAR_LISTING}>
+                        <a
+                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=hospice and home care`}
+                        >
                           Hospice and Home Care
                         </a>
                       </li>
                       <li>
-                        <a href={LINK_PAGE_WEBINAR_LISTING}>
-                          CMS ComplianceCMS Compliance
+                        <a
+                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=cms compliance`}
+                        >
+                          CMS Compliance
                         </a>
                       </li>
                       <li>
-                        <a href={LINK_PAGE_WEBINAR_LISTING}>CPT/ ICD Updates</a>
+                        <a
+                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=cpt/icd updates`}
+                        >
+                          CPT/ ICD Updates
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -531,7 +564,7 @@ const Header: React.FC = () => {
                 title={"Company"}
                 content={
                   <div>
-                    <ul className="px-5 flex flex-col gap-3">
+                    <ul className="px-5 flex flex-col gap-1">
                       <li>
                         <a href={LINK_PAGE_ABOUT_US}>About Us</a>
                       </li>
@@ -553,7 +586,7 @@ const Header: React.FC = () => {
                   <div className="flex flex-col gap-5">
                     <div className="px-5">
                       <div>Demo Videos</div>
-                      <ul className="px-5 flex flex-col gap-3">
+                      <ul className="px-5 py-1 flex flex-col gap-1">
                         {resourcesVideos?.map((resource, idx) => {
                           return (
                             <li key={idx + 1}>
@@ -571,7 +604,7 @@ const Header: React.FC = () => {
                     </div>
                     <div className="px-5">
                       <div>Publications (*coming soon)</div>
-                      <ul className="px-5 flex flex-col gap-3">
+                      <ul className="px-5 py-1 flex flex-col gap-1">
                         <li>
                           <a href={LINK_PAGE_NEWSLETTERS}>Newsletter</a>
                         </li>
@@ -582,7 +615,7 @@ const Header: React.FC = () => {
                     </div>
                     <div className="px-5">
                       <div>Get Inspired (*coming soon)</div>
-                      <ul className="px-5 flex flex-col gap-3">
+                      <ul className="px-5 py-1 flex flex-col gap-1">
                         <li>
                           <a href={"#"}>Blog</a>
                         </li>
@@ -600,6 +633,14 @@ const Header: React.FC = () => {
                 Order Form
               </a>
             </li>
+            <li className="mob-nav-link-item px-1">
+              <button
+                className="hover:text-primary-link-500"
+                onClick={subscribeButtonHandler}
+              >
+                Subscribe
+              </button>
+            </li>
           </ul>
 
           {isUserLoggedIn ? (
@@ -614,13 +655,13 @@ const Header: React.FC = () => {
             </div>
           ) : (
             <div>
-              <Link
-                to={LINK_PAGE_LOGIN_REG}
+              <a
+                href={LINK_PAGE_LOGIN_REG}
                 className="nav-login-reg bg-primary-bg-purple text-primary-pText rounded-full"
               >
                 <span>Login / Register</span>
                 <i className="mx-2 text-xs pi pi-sign-in"></i>
-              </Link>
+              </a>
             </div>
           )}
         </div>

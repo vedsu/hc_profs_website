@@ -14,7 +14,7 @@ import {
 const PageAttendeeDashboard = () => {
   const navigate = useNavigate();
 
-  const [attendeeDashboardData, setAttendeeDashboardInfo] = useState([]);
+  const [attendeeDashboardData, setAttendeeDashboardInfo] = useState<any[]>([]);
   const [
     attendeeDashboardHistoryPurchased,
     setAttendeeDashboardHistoryPurchased,
@@ -172,7 +172,9 @@ const PageAttendeeDashboard = () => {
       try {
         const res = await DashboardService.getUserDashboardInfo(path);
         if (validateGetRequest(res)) {
-          setAttendeeDashboardInfo(res?.data?.[0]);
+          //webinar and newsletter info
+          setAttendeeDashboardInfo([...res?.data?.[0], ...res?.data?.[3]]);
+          //other necessary informations
           setAttendeeDashboardHistoryPending(res?.data?.[1]);
           setAttendeeDashboardHistoryPurchased(res?.data?.[2]);
           setAttendeeDashboardNewsletterPurchased(res?.data[4]);
@@ -213,8 +215,8 @@ const PageAttendeeDashboard = () => {
   };
 
   /*----------------------Events Handlers-------------------*/
-  const onClickListCard = (e: any) => {
-    console.log(e);
+  const onClickListCard = () => {
+    //
   };
 
   const onClickRecommendation = (webinarId: string) => {
@@ -226,7 +228,7 @@ const PageAttendeeDashboard = () => {
   return (
     <UserDashboardLayout
       userInterfaceData={{
-        webinarData: attendeeDashboardData,
+        dashboardData: attendeeDashboardData,
         onClickWebinarCardHandler: onClickListCard,
         accordionTemplateData: accordionTemplateData,
       }}

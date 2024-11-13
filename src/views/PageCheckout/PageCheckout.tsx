@@ -130,7 +130,7 @@ const CheckoutForm = (props: any) => {
           <div className="w-full flex items-center justify-center">
             <img
               className="w-[300px] h-20 object-contain sm:h-28"
-              alt="pp-icon"
+              alt="hcp-logo"
               src={hcpLogo}
             />
             {/* <h4 className="text-2xl">HC Profs</h4> */}
