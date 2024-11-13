@@ -428,7 +428,7 @@ const PageCart: React.FC = () => {
             </div>
 
             {isLoadingCartItem ? (
-              <div className="w-[40%] h-[400px] mt-5 flex items-center justify-center border border-primary-light-900 rounded-lg">
+              <div className="w-full screen_var_one:w-[50%] h-[300px] mt-5 flex items-center justify-center border border-primary-light-900 rounded-lg">
                 <span>
                   <i className="pi pi-spinner text-primary-bg-teal text-4xl animate-spin" />
                 </span>
