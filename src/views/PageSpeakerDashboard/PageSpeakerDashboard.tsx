@@ -76,7 +76,7 @@ const PageSpeakerDashboard = () => {
   return (
     <UserDashboardLayout
       userInterfaceData={{
-        webinarData: speakerDashboardData,
+        dashboardData: speakerDashboardData,
         onClickWebinarCardHandler: onClickListCard,
         accordionTemplateData: accordionTemplateData,
       }}
