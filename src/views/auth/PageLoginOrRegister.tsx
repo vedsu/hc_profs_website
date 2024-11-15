@@ -186,15 +186,15 @@ const PageLoginOrRegister = () => {
       <div className="w-full flex flex-col gap-5">
         <div className="font-bold text-primary-pLabel text-base text-center">
           <h4>{"LOGIN HERE"}</h4>
-          <div className="my-1 font-normal text-sm text-primary-pText">
+          {/* <div className="my-1 font-normal text-sm text-primary-pText">
             <p>{"Already have an account ? Login Here"}</p>
-          </div>
+          </div> */}
         </div>
 
         <div className="w-full">
           <Input
             name={"email"}
-            placeholder="Your email"
+            placeholder="Email"
             label={""}
             value={loginFormData.email}
             handler={handleLoginFormInputChange}
@@ -203,7 +203,7 @@ const PageLoginOrRegister = () => {
         <div className="w-full">
           <InputPasswordCustom
             name="password"
-            placeholder="Your password"
+            placeholder="Password"
             label={""}
             value={loginFormData.password}
             handler={handleLoginFormInputChange}
@@ -213,7 +213,7 @@ const PageLoginOrRegister = () => {
         <div className="w-full flex items-center justify-between text-base">
           <div className="w-[50%]">
             <label htmlFor="checkbox-role-attendee" className="role-label">
-              {"Attendee"}
+              {"Customer"}
               <input
                 id="checkbox-role-attendee"
                 name="attendee"
@@ -247,7 +247,7 @@ const PageLoginOrRegister = () => {
 
         <div>
           <ButtonCustom
-            className={`w-full h-10 px-5 py-2 flex items-center justify-center gap-2 text-secondary-sLabel bg-primary-bg-interactiveBlue font-[600] text-xs border rounded-full hover:bg-primary-bg-interactiveBlueHover`}
+            className={`w-full h-10 px-5 py-2 flex items-center justify-center gap-2 text-secondary-sLabel bg-primary-bg-interactiveBlue font-[600] border rounded-full hover:bg-primary-bg-interactiveBlueHover !text-base`}
             label={"Login"}
             handleClickWithLoader={onLogin}
           />
@@ -271,16 +271,16 @@ const PageLoginOrRegister = () => {
       <div className="w-full flex flex-col gap-5">
         <div className="font-bold text-center text-primary-pLabel text-base">
           <h4>{"REGISTER HERE"}</h4>
-          <div className="my-1 font-normal text-sm text-primary-pText">
+          {/* <div className="my-1 font-normal text-sm text-primary-pText">
             <p>{"Don't have an account ? Register Here"}</p>
-          </div>
+          </div> */}
         </div>
 
         <div className="w-full">
           <Input
             label={""}
             name={"name"}
-            placeholder="Your name"
+            placeholder="Name"
             value={registerFormData.name}
             handler={handleRegisterFormInputChange}
           />
@@ -288,7 +288,7 @@ const PageLoginOrRegister = () => {
         <div className="w-full">
           <Input
             label={""}
-            placeholder="Your email"
+            placeholder="Email"
             name={"email"}
             value={registerFormData.email}
             handler={handleRegisterFormInputChange}
@@ -298,7 +298,7 @@ const PageLoginOrRegister = () => {
           <InputPasswordCustom
             label={""}
             name={"password"}
-            placeholder="Your password"
+            placeholder="Password"
             value={registerFormData.password}
             handler={handleRegisterFormInputChange}
           />
@@ -306,7 +306,7 @@ const PageLoginOrRegister = () => {
         <div className="w-full">
           <Input
             label={""}
-            placeholder="Your contact"
+            placeholder="Contact"
             name={"contact"}
             value={registerFormData.contact}
             handler={handleRegisterFormInputChange}
@@ -316,7 +316,7 @@ const PageLoginOrRegister = () => {
           <Input
             label={""}
             name={"registrationRole"}
-            placeholder="Your role"
+            placeholder="Role"
             value={registerFormData.registrationRole}
             handler={handleRegisterFormInputChange}
           />
@@ -325,7 +325,7 @@ const PageLoginOrRegister = () => {
         <div className="w-full flex items-center justify-between text-base">
           <div className="w-[50%]">
             <label htmlFor="checkbox-role-reg-attendee" className="role-label">
-              {"Attendee"}
+              {"Customer"}
               <input
                 id="checkbox-role-reg-attendee"
                 name="attendee"
@@ -359,7 +359,7 @@ const PageLoginOrRegister = () => {
 
         <div>
           <ButtonCustom
-            className={`w-full h-10 px-5 py-2 flex items-center justify-center gap-2 text-secondary-sLabel bg-primary-bg-interactiveBlue font-[600] text-xs border rounded-full hover:bg-primary-bg-interactiveBlueHover`}
+            className={`w-full h-10 px-5 py-2 flex items-center justify-center gap-2 text-secondary-sLabel bg-primary-bg-interactiveBlue font-[600] !text-base border rounded-full hover:bg-primary-bg-interactiveBlueHover`}
             label={"Register"}
             handleClickWithLoader={onRegister}
           />

@@ -172,14 +172,16 @@ const Footer = () => {
 
             <div className="mb-4 font-normal text-sm">
               <p className="org-address">
-                <span className="inline-block w-full">HC Profs,</span>
+                {/* <span className="inline-block w-full">HC Profs,</span>
                 <span className="inline-block w-full">
                   2438 Industrial Blvd #802,
                 </span>
-                <span className="inline-block w-full">Abilene, TX 79605,</span>
+                <span className="inline-block w-full">Abilene, TX 79605,</span> */}
                 <span className="inline-block w-full">
-                  Contact Us: +1-302-803-4775
+                  Contact Us: +1-830-256-0384
                 </span>
+                <span>Email Us:</span>
+                <span className="mx-1 text-sm">cs@hcprofs.com</span>
               </p>
             </div>
           </div>

@@ -60,6 +60,12 @@ nav {
   color: #0c0c0c;
 }
 
+.mob-accordion-content,
+.mob-accordion-content a {
+  font-family: "Alata-Regular", sans-serif;
+  font-size: 14px;
+}
+
 .nav-login-reg,
 .nav-logout {
   font-family: "Montserrat", sans-serif;
@@ -151,7 +157,8 @@ nav {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Alata-Regular", sans-serif;
+  font-size: 14px;
   color: #212427;
 }
 
@@ -582,7 +589,7 @@ input[type="checkbox"] {
   height: 16px;
   width: 16px;
   background-color: transparent;
-  border: 1px solid #e4e4e4;
+  border: 1px solid black;
 }
 
 .webinar-purchase-label:hover input ~ .check-mark,

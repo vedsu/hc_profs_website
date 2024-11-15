@@ -52,6 +52,7 @@ export const PURCHASE_TYPE_LITERAL: {
   WEBINAR: "WEBINAR",
 };
 
+let initialCartValue = 0;
 const PageCart: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,6 +74,8 @@ const PageCart: React.FC = () => {
   const [isCouponApplied, setIsCouponApplied] = useState(false);
   const [coupon, setCoupon] = useState("");
   const [couponList, setCouponList] = useState([]);
+  const [showCouponSuccessMessage, setShowCouponSuccessMessage] =
+    useState(false);
 
   /*---------------------------Service Calls------------------------------*/
   const getWebinarDetails = useCallback(async (webinarId: string) => {
@@ -140,6 +143,7 @@ const PageCart: React.FC = () => {
             const parsedPurchaseInfo = JSON.parse(purChaseInfo);
             setPurchaseWebinarData(parsedPurchaseInfo);
             getWebinarDetails(parsedPurchaseInfo.webinarId);
+            initialCartValue = parsedPurchaseInfo?.cartTotal;
           }
         } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
           const purchaseInfoNewsletterInfo = localStorage.getItem(
@@ -149,6 +153,7 @@ const PageCart: React.FC = () => {
             const parsedPurchaseInfo = JSON.parse(purchaseInfoNewsletterInfo);
             setPurchaseNewsletterData(parsedPurchaseInfo);
             getNewsletterDetails(parsedPurchaseInfo?.newsletterId);
+            initialCartValue = parsedPurchaseInfo?.cartTotal;
           }
         }
 
@@ -196,6 +201,7 @@ const PageCart: React.FC = () => {
           ...prev,
           cartTotal: Math.floor(cartOrderValue),
         }));
+        setShowCouponSuccessMessage(true);
       } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
         cartOrderValue = purchaseNewsletterData?.cartTotal;
         cartOrderValue =
@@ -204,6 +210,7 @@ const PageCart: React.FC = () => {
           ...prev,
           cartTotal: Math.floor(cartOrderValue),
         }));
+        setShowCouponSuccessMessage(true);
       }
     } else if (
       validSelectedCoupon &&
@@ -217,6 +224,7 @@ const PageCart: React.FC = () => {
           cartTotal:
             Math.floor(cartOrderValue) <= 0 ? 1 : Math.floor(cartOrderValue),
         }));
+        setShowCouponSuccessMessage(true);
       } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
         cartOrderValue = purchaseNewsletterData?.cartTotal;
         cartOrderValue = cartOrderValue - validSelectedCoupon?.amount;
@@ -225,6 +233,7 @@ const PageCart: React.FC = () => {
           cartTotal:
             Math.floor(cartOrderValue) <= 0 ? 1 : Math.floor(cartOrderValue),
         }));
+        setShowCouponSuccessMessage(true);
       }
     }
 
@@ -447,7 +456,9 @@ const PageCart: React.FC = () => {
                   <span className="text-sm">Order Amount</span>
                   <span className="text-lg">
                     {"$"}
-                    {purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR
+                    {initialCartValue
+                      ? initialCartValue
+                      : purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR
                       ? purchaseWebinarData?.cartTotal ?? "N.A."
                       : purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER
                       ? purchaseNewsletterData?.cartTotal
@@ -455,26 +466,53 @@ const PageCart: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="w-full flex items-center justify-between gap-5">
-                  <input
-                    className="app-input w-full h-8 p-2 border border-primary-light-900 !outline-none text-sm text-primary-pText"
-                    name={"coupon"}
-                    type={"text"}
-                    placeholder="Coupon code"
-                    value={coupon}
-                    disabled={isCouponApplied}
-                    onChange={(event: BaseSyntheticEvent) => {
-                      setCoupon(event.target.value);
-                    }}
-                  />
+                <div className="w-full">
+                  <div className="w-full flex items-center justify-between gap-5">
+                    <input
+                      className="app-input w-full h-8 p-2 border border-primary-light-900 !outline-none text-sm text-primary-pText"
+                      name={"coupon"}
+                      type={"text"}
+                      placeholder="Coupon code"
+                      value={coupon}
+                      disabled={isCouponApplied}
+                      onChange={(event: BaseSyntheticEvent) => {
+                        setCoupon(event.target.value);
+                      }}
+                    />
 
-                  <button
-                    className="w-24 h-full text-center leading-6 border rounded-full text-xs hover:bg-primary-bg-teal hover:text-white disabled:bg-disabled disabled:text-primary-dark-100"
-                    onClick={onApplyCoupon}
-                    disabled={isCouponApplied}
-                  >
-                    <span>Apply</span>
-                  </button>
+                    <button
+                      className="w-24 h-full text-center leading-6 border rounded-full text-xs hover:bg-primary-bg-teal hover:text-white disabled:bg-disabled disabled:text-primary-dark-100"
+                      onClick={onApplyCoupon}
+                      disabled={isCouponApplied}
+                    >
+                      <span>Apply</span>
+                    </button>
+                  </div>
+
+                  {showCouponSuccessMessage && (
+                    <React.Fragment>
+                      <div className="mt-1 mb-2">
+                        <p className="text-xs text-green-500">
+                          You have saved
+                          <span className="mx-1">
+                            ${initialCartValue - purchaseWebinarData?.cartTotal}
+                          </span>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between font-bold">
+                        <span className="text-sm">Final Amount</span>
+                        <span className="text-lg">
+                          {"$"}
+                          {purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR
+                            ? purchaseWebinarData?.cartTotal ?? "N.A."
+                            : purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER
+                            ? purchaseNewsletterData?.cartTotal
+                            : "N.A."}
+                        </span>
+                      </div>
+                    </React.Fragment>
+                  )}
                 </div>
 
                 <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-5">

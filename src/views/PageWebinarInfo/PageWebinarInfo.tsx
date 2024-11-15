@@ -1,12 +1,16 @@
 import React, { ReactNode, useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ButtonCustom from "../../components/ButtonCustom";
 import {
   HEALTH_PROFS,
   LOCAL_STORAGE_ITEMS,
   SESSION_STORAGE_ITEMS,
 } from "../../constant";
-import { LINK_PAGE_CART, LINK_PAGE_LOGIN_REG } from "../../routes";
+import {
+  LINK_PAGE_CART,
+  LINK_PAGE_LOGIN_REG,
+  LINK_PAGE_REFUND_AND_CANCELLATION,
+} from "../../routes";
 import WebinarService from "../../services/WebinarService";
 import {
   getInitialLetterUpperCase,
@@ -215,108 +219,130 @@ const PageWebinarInfo: React.FC = () => {
 
   const renderPurchaseDescription = (): ReactNode => {
     return (
-      <div className="webinar-reg-table">
-        <table className="w-full">
-          <thead>
-            <tr>
-              <th className="px-6">{"Session"}</th>
-              <th>{"Price ($)"}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {webinarData?.sessionLive && (
+      <React.Fragment>
+        <div className="w-full flex bg-blue-200 font-semibold text-base">
+          <div className="w-[50%] h-10">
+            <button
+              id="login-tab"
+              className={`log-reg-tab w-full h-full `}
+              // onClick={onTabClick}
+            >
+              Individual
+            </button>
+          </div>
+          <div className="w-[50%] h-10">
+            <button
+              id="register-tab"
+              className={`log-reg-tab w-full h-full `}
+              // onClick={onTabClick}
+            >
+              Corporate
+            </button>
+          </div>
+        </div>
+        <div className="webinar-reg-table px-2">
+          <table className="w-full">
+            <thead>
+              <tr>
+                <th className="px-6">{"Session"}</th>
+                <th>{"Price ($)"}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {webinarData?.sessionLive && (
+                <tr>
+                  <td>
+                    <label
+                      htmlFor="checkbox-buy-live"
+                      className="webinar-purchase-label"
+                    >
+                      {"Live"}
+                      <input
+                        id="checkbox-buy-live"
+                        type="checkbox"
+                        className="buy-webinar-input"
+                        onChange={handlePurchaseInput}
+                        value={webinarData?.priceLive}
+                      />
+                      <span className="check-mark"></span>
+                    </label>
+                  </td>
+                  <td>{webinarData?.priceLive}</td>
+                </tr>
+              )}
               <tr>
                 <td>
                   <label
-                    htmlFor="checkbox-buy-live"
+                    htmlFor="checkbox-buy-recording"
                     className="webinar-purchase-label"
                   >
-                    {"Live"}
+                    {"Recording"}
                     <input
-                      id="checkbox-buy-live"
+                      id="checkbox-buy-recording"
                       type="checkbox"
                       className="buy-webinar-input"
                       onChange={handlePurchaseInput}
-                      value={webinarData?.priceLive}
                     />
                     <span className="check-mark"></span>
                   </label>
                 </td>
-                <td>{webinarData?.priceLive}</td>
+                <td>{webinarData?.priceRecording}</td>
               </tr>
-            )}
-            <tr>
-              <td>
-                <label
-                  htmlFor="checkbox-buy-recording"
-                  className="webinar-purchase-label"
-                >
-                  {"Recording"}
-                  <input
-                    id="checkbox-buy-recording"
-                    type="checkbox"
-                    className="buy-webinar-input"
-                    onChange={handlePurchaseInput}
-                  />
-                  <span className="check-mark"></span>
-                </label>
-              </td>
-              <td>{webinarData?.priceRecording}</td>
-            </tr>
-            <tr>
-              <td>
-                <label
-                  htmlFor="checkbox-buy-dd"
-                  className="webinar-purchase-label"
-                >
-                  {"Digital Download"}
-                  <input
-                    id="checkbox-buy-dd"
-                    type="checkbox"
-                    className="buy-webinar-input"
-                    onChange={handlePurchaseInput}
-                  />
-                  <span className="check-mark"></span>
-                </label>
-              </td>
-              <td>{webinarData?.priceDigitalDownload}</td>
-            </tr>
-            <tr>
-              <td>
-                <label
-                  htmlFor="checkbox-buy-trans"
-                  className="webinar-purchase-label"
-                >
-                  {"Transcript"}
-                  <input
-                    id="checkbox-buy-trans"
-                    type="checkbox"
-                    className="buy-webinar-input"
-                    onChange={handlePurchaseInput}
-                  />
-                  <span className="check-mark"></span>
-                </label>
-              </td>
-              <td>{webinarData?.priceTranscript}</td>
-            </tr>
-          </tbody>
-        </table>
+              <tr>
+                <td>
+                  <label
+                    htmlFor="checkbox-buy-dd"
+                    className="webinar-purchase-label"
+                  >
+                    {"Digital Download"}
+                    <input
+                      id="checkbox-buy-dd"
+                      type="checkbox"
+                      className="buy-webinar-input"
+                      onChange={handlePurchaseInput}
+                    />
+                    <span className="check-mark"></span>
+                  </label>
+                </td>
+                <td>{webinarData?.priceDigitalDownload}</td>
+              </tr>
+              <tr>
+                <td>
+                  <label
+                    htmlFor="checkbox-buy-trans"
+                    className="webinar-purchase-label"
+                  >
+                    {"Transcript"}
+                    <input
+                      id="checkbox-buy-trans"
+                      type="checkbox"
+                      className="buy-webinar-input"
+                      onChange={handlePurchaseInput}
+                    />
+                    <span className="check-mark"></span>
+                  </label>
+                </td>
+                <td>{webinarData?.priceTranscript}</td>
+              </tr>
+            </tbody>
+          </table>
 
-        <div className="mt-2 px-6 w-full h-8 flex flex-col items-start justify-center">
-          <span className="text-xs font-bold">{"Order Amount"}</span>
-          <span className="text-base flex-grow h-8 px-2 font-bold leading-8">
-            {`$ ${cartTotal}`}
-          </span>
-        </div>
-
-        {showCartEmptyMessage ? (
-          <div className="my-1 px-6">
-            <small className="text-sm text-primary-error">
-              {"Webinar session not selected."}
-            </small>
+          <div className="mt-2 px-6 w-full h-8 flex flex-col items-start justify-center">
+            <span className="text-xs font-bold">{"Order Amount"}</span>
+            <span className="text-base flex-grow h-8 px-2 font-bold leading-8">
+              {`$ ${cartTotal}`}
+            </span>
           </div>
-        ) : null}
-      </div>
+
+          {showCartEmptyMessage ? (
+            <div className="my-1 px-6">
+              <small className="text-sm text-primary-error">
+                {"Webinar session not selected."}
+              </small>
+            </div>
+          ) : null}
+        </div>
+      </React.Fragment>
     );
   };
 
@@ -338,21 +364,59 @@ const PageWebinarInfo: React.FC = () => {
             </div>
 
             <div className="w-full flex flex-col-reverse gap-10 place-items-center screen_var_one:flex-row screen_var_one:place-items-start">
-              <div className="w-full screen_var_one:w-[60%] p-5 border border-primary-light-900">
+              <div className="w-full screen_var_one:w-[50%] p-5 border border-primary-light-900">
                 <div className="text-sm leading-6 text-justify text-pretty">
                   <h4 className="text-left">{"Description"}</h4>
                   <p>{webinarData?.description}</p>
                 </div>
               </div>
 
-              <div className="w-full screen_var_one:w-[40%] px-2 flex flex-col gap-5">
+              <div className="w-full screen_var_one:w-[50%] flex flex-col bg-primary-light-100">
                 {renderPurchaseDescription()}
-                <div className="px-4">
+
+                <div className="px-4 py-2">
                   <ButtonCustom
                     className="w-full h-8 py-2 bg-primary-bg-interactiveBlue font-semibold text-sm text-white rounded-full leading-3 hover:bg-primary-bg-interactiveBlueHover"
                     label={"Buy Now"}
                     handleClickWithLoader={onBuyNow}
                   />
+                </div>
+
+                <div className="py-2 self-center text-green-600 text-xs">
+                  <Link to={LINK_PAGE_REFUND_AND_CANCELLATION}>
+                    See Refund Policy
+                  </Link>
+                </div>
+
+                <div className="px-4 pb-4 flex flex-col text-sm">
+                  <h4>Please Note</h4>
+                  <ul className="py-2 list-none">
+                    <li className="mb-2">
+                      Live Webinar Training: A real-time virtual webinar link
+                      and instructions will be provided 24 hours before each
+                      session.
+                    </li>
+                    <li className="mb-2">
+                      Recorded Webinar: A pre-recorded event available for 30
+                      days. The recording will be sent 24-48 hours after the
+                      live session concludes.
+                    </li>
+                    <li className="mb-2">
+                      Digital Download: A file available for download,
+                      accessible for 30 days. It will be provided 3-7 working
+                      days after the live session.
+                    </li>
+                    <li className="mb-2">
+                      Transcript: A written form of the webinar, including
+                      participant questions and presenter comments, available
+                      for 30 days. It will be sent within 3-7 working days after
+                      the live session.
+                    </li>
+                    <li className="mb-2">
+                      Also, You can access the training information by login in
+                      your dashboard hcprofs .
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>

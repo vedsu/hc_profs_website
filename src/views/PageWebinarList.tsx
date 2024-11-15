@@ -1,7 +1,7 @@
 import { Button } from "primereact/button";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
-import React, { ReactNode } from "react";
+import React, { BaseSyntheticEvent, ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ButtonCustom from "../components/ButtonCustom";
 import {
@@ -38,6 +38,7 @@ const PageWebinarList: React.FC = () => {
   const queryParams = decodeURIComponent(location?.search);
 
   const [isLoadingWebinars, setIsLoadingWebinars] = React.useState(true);
+  const [webinarSearch, setWebinarSearch] = React.useState("");
   const [webinarsList, setWebinarsList] = React.useState([]);
   const [filteredWebinarsList, setFilteredWebinarsList] = React.useState([]);
   const [isListView, setIsListView] = React.useState(false);
@@ -120,16 +121,33 @@ const PageWebinarList: React.FC = () => {
     }
   }, [queryParams]);
 
+  React.useEffect(() => {
+    let timerId: any;
+    if (webinarsList?.length) {
+      timerId = setTimeout(() => {
+        const searchRegex = new RegExp(webinarSearch, "i");
+        const searchResults = webinarsList?.filter((webinar: any) =>
+          searchRegex.test(webinar?.topic)
+        );
+        setFilteredWebinarsList(searchResults);
+      }, 1000);
+
+      return () => {
+        clearTimeout(timerId);
+      };
+    }
+  }, [webinarSearch]);
+
   /*---------------------------Service Calls------------------------------*/
   const getAllWebinars = async () => {
     try {
       const res = await WebinarService.getWebinars();
       if (validateGetRequest(res)) {
-        const webinarsPharma = res?.data?.[0]?.filter(
+        const webinarHealthcare = res?.data?.[0]?.filter(
           (webinar: any) => webinar?.website === HEALTH_PROFS.WEBSITE
         );
         const webinarCategories: any = [];
-        webinarsPharma.forEach((webinar: any) => {
+        webinarHealthcare.forEach((webinar: any) => {
           if (webinar?.category) {
             if (
               webinarCategories?.find(
@@ -147,8 +165,8 @@ const PageWebinarList: React.FC = () => {
           }
         });
 
-        setWebinarsList(webinarsPharma);
-        setFilteredWebinarsList(webinarsPharma);
+        setWebinarsList(webinarHealthcare);
+        setFilteredWebinarsList(webinarHealthcare);
         setWebinarCategoriesList(webinarCategories);
         setIsLoadingWebinars(false);
       }
@@ -158,6 +176,11 @@ const PageWebinarList: React.FC = () => {
   };
 
   /*-----------------Event Handlers----------------------------- */
+
+  const handleWebinarSearch = (event: BaseSyntheticEvent) => {
+    setWebinarSearch(event.target.value);
+  };
+
   const handleWebinarCategoryChange = (e: DropdownChangeEvent) => {
     setWebinarCategory(e.value);
   };
@@ -180,11 +203,20 @@ const PageWebinarList: React.FC = () => {
             >
               <div
                 className={
-                  "card-scale card-scale-bg border border-primary-light-900 flex items-center justify-between cursor-pointer"
+                  "card-scale card-scale-bg border border-primary-light-900 flex items-center justify-between cursor-pointer bg-[#ddd]"
                 }
               >
                 <div className="p-3 flex flex-col gap-3">
-                  <div className="text-left font-semibold text-sm">
+                  <div className="flex items-center justify-start gap-2 text-left font-semibold">
+                    {webinar?.sessionLive ? (
+                      <div className="flex flex-col max-w-fit">
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ background: "#00fedc" }}
+                        />
+                        <div className="text-[8px] font-bold">LIVE</div>
+                      </div>
+                    ) : null}
                     <div>{webinar?.topic ?? "N.A."}</div>
                   </div>
 
@@ -253,11 +285,22 @@ const PageWebinarList: React.FC = () => {
                 className={`card-scale card-scale-bg col-span-1 h-full border-2 border-primary-light-900 flex flex-col items-start justify-between cursor-pointer`}
               >
                 <div className="grid-card-title text-sm text-left font-medium">
-                  <div>{webinar.topic ?? "N.A."}</div>
+                  <div className="flex gap-2">
+                    {webinar?.sessionLive ? (
+                      <div className="flex flex-col max-w-fit">
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ background: "#00fedc" }}
+                        />
+                        <div className="text-[8px] font-bold">(LIVE)</div>
+                      </div>
+                    ) : null}
+                    <div>{webinar.topic ?? "N.A."}</div>
+                  </div>
                 </div>
 
                 <div className="w-full p-3">
-                  <div className="mb-5 flex items-center justify-between font-medium text-xs">
+                  <div className="mb-2 flex items-center justify-between font-medium text-xs">
                     <span>
                       {getInitialLetterUpperCase(webinar?.category ?? "N.A")}
                     </span>
@@ -307,7 +350,9 @@ const PageWebinarList: React.FC = () => {
       <div className="w-full flex items-center justify-center">
         <InputText
           className="px-2 py-2 w-full min-w-64 screen_var_one:w-1/2 border border-primary-light-900 outline-none"
-          placeholder="Search Webinar..."
+          placeholder="Search webinar topic..."
+          value={webinarSearch}
+          onChange={handleWebinarSearch}
         />
       </div>
 

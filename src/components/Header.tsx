@@ -72,7 +72,7 @@ const Header = (props: IHeaderProps) => {
   };
 
   return (
-    <header className="navbar-wrapper font-bold text-sm">
+    <header className="navbar-wrapper font-bold">
       <nav>
         <div className="flex items-center justify-between">
           <div
@@ -92,17 +92,7 @@ const Header = (props: IHeaderProps) => {
             id="wrapper-primary-nav"
             className="flex items-center justify-between"
           >
-            <ul className="nav-links inline-flex items-center justify-center gap-4 text-primary-pLabel">
-              {isUserLoggedIn ? (
-                <li className="nav-link-item">
-                  <button
-                    className="hover:text-primary-link-500"
-                    onClick={gotoDashboard}
-                  >
-                    Dashboard
-                  </button>
-                </li>
-              ) : null}
+            <ul className="nav-links inline-flex items-center justify-center gap-4 text-primary-pLabel !text-base">
               <li className="nav-link-item">
                 <Link to={LINK_HOME}>Home</Link>
               </li>
@@ -120,7 +110,7 @@ const Header = (props: IHeaderProps) => {
                     <div className="mega-box-content-wrapper">
                       <div className="content">
                         <div className="mega-menu-intro-block">
-                          <h4 className="text-2xl">
+                          <h4 className="text-xl">
                             For Individuals & For Organizations
                           </h4>
                           <p className="text-sm font-normal">
@@ -274,7 +264,7 @@ const Header = (props: IHeaderProps) => {
                     <div className="mega-box-content-wrapper">
                       <div className="content">
                         <div className="mega-menu-intro-block">
-                          <h4 className="text-2xl">
+                          <h4 className="text-xl">
                             We are dedicated to advancing healthcare by bridging
                             the gap between clinical expertise and innovation
                           </h4>
@@ -325,7 +315,7 @@ const Header = (props: IHeaderProps) => {
                     <div className="mega-box-content-wrapper">
                       <div className="content">
                         <div className="mega-menu-intro-block">
-                          <h4 className="text-2xl">
+                          <h4 className="text-xl">
                             Explore career opportunities and resources to help
                             you grow professionally
                           </h4>
@@ -360,9 +350,7 @@ const Header = (props: IHeaderProps) => {
                             </div>
 
                             <div className="flex flex-col gap-3">
-                              <div className="font-bold">
-                                Publications (*coming soon)
-                              </div>
+                              <div className="font-bold">Publications</div>
                               <ul className="mega-menu-links resource-nav-links">
                                 <li>
                                   <Link
@@ -374,7 +362,7 @@ const Header = (props: IHeaderProps) => {
                                 </li>
                                 <li>
                                   <a className="font-thin" href={"#"}>
-                                    E-book
+                                    E-book (*coming soon)
                                   </a>
                                 </li>
                               </ul>
@@ -413,6 +401,16 @@ const Header = (props: IHeaderProps) => {
                   Order Form
                 </a>
               </li>
+              {isUserLoggedIn ? (
+                <li className="nav-link-item">
+                  <button
+                    className="hover:text-primary-link-500"
+                    onClick={gotoDashboard}
+                  >
+                    Dashboard
+                  </button>
+                </li>
+              ) : null}
             </ul>
 
             {isUserLoggedIn ? (
@@ -469,24 +467,11 @@ const Header = (props: IHeaderProps) => {
       >
         <div className="mobile-menu-wrapper">
           <ul className="p-5 flex flex-col items-center justify-center gap-4 text-primary-pLabel">
-            {isUserLoggedIn ? (
-              <li className="mob-nav-link-item px-1">
-                <button
-                  className="hover:text-primary-link-500"
-                  onClick={() => {
-                    gotoDashboard();
-                    window?.location?.reload();
-                  }}
-                >
-                  Dashboard
-                </button>
-              </li>
-            ) : null}
             <li className="mob-nav-link-item px-1">
               <a href={LINK_HOME}>Home</a>
             </li>
-            <li className="mob-nav-link-item">
-              <MobileAccordion
+            <li className="mob-nav-link-item px-1">
+              {/* <MobileAccordion
                 title={"Webinar"}
                 content={
                   <div>
@@ -557,14 +542,16 @@ const Header = (props: IHeaderProps) => {
                     </ul>
                   </div>
                 }
-              />
+              /> */}
+
+              <a href={`${LINK_PAGE_WEBINAR_LISTING}?category=all`}>Webinar</a>
             </li>
             <li className="mob-nav-link-item">
               <MobileAccordion
                 title={"Company"}
                 content={
                   <div>
-                    <ul className="px-5 flex flex-col gap-1">
+                    <ul className="mob-accordion-content px-5 flex flex-col gap-1">
                       <li>
                         <a href={LINK_PAGE_ABOUT_US}>About Us</a>
                       </li>
@@ -583,7 +570,7 @@ const Header = (props: IHeaderProps) => {
               <MobileAccordion
                 title={"Resources"}
                 content={
-                  <div className="flex flex-col gap-5">
+                  <div className="mob-accordion-content flex flex-col gap-5">
                     <div className="px-5">
                       <div>Demo Videos</div>
                       <ul className="px-5 py-1 flex flex-col gap-1">
@@ -603,13 +590,13 @@ const Header = (props: IHeaderProps) => {
                       </ul>
                     </div>
                     <div className="px-5">
-                      <div>Publications (*coming soon)</div>
+                      <div>Publications</div>
                       <ul className="px-5 py-1 flex flex-col gap-1">
                         <li>
                           <a href={LINK_PAGE_NEWSLETTERS}>Newsletter</a>
                         </li>
                         <li>
-                          <a href={"#"}>E-book</a>
+                          <a href={"#"}>E-book (*coming soon)</a>
                         </li>
                       </ul>
                     </div>
@@ -641,6 +628,20 @@ const Header = (props: IHeaderProps) => {
                 Subscribe
               </button>
             </li>
+
+            {isUserLoggedIn ? (
+              <li className="mob-nav-link-item px-1">
+                <button
+                  className="hover:text-primary-link-500"
+                  onClick={() => {
+                    gotoDashboard();
+                    window?.location?.reload();
+                  }}
+                >
+                  Dashboard
+                </button>
+              </li>
+            ) : null}
           </ul>
 
           {isUserLoggedIn ? (

@@ -155,45 +155,46 @@ const PageNewsletterInfo = () => {
   const renderNewsletterInfo = (): ReactNode => {
     return (
       <div className="p-5 w-full flex flex-col gap-6 screen_var_one:p-0">
-        <div className="w-[500px] h-[300px] flex items-center justify-center font-semibold text-xs">
-          <img
-            className="w-full h-full object-contain"
-            src={newsletterData?.thumbnail}
-            alt="newsletter-thumbnail"
-          />
-        </div>
+        <div className="flex flex-col-reverse items-start screen_var_one:flex-row screen_var_one:justify-between">
+          <div className="flex-grow flex flex-col gap-5">
+            <div className="text-left font-semibold">
+              <div>
+                {getInitialLetterUpperCase(newsletterData?.topic) ?? "N.A."}
+              </div>
+            </div>
+            <div className="text-left text-sm">
+              <span className="font-semibold">{"Category : "}</span>
+              <span>
+                {getInitialLetterUpperCase(newsletterData?.category) ?? "N.A."}
+              </span>
+            </div>
+            <div className="text-left text-sm">
+              <span className="font-semibold">{"Price : "}</span>
+              <span>
+                {newsletterData?.price ? `$${newsletterData?.price}` : "-"}
+              </span>
+            </div>
+            <div className="text-left text-sm">
+              <span className="font-semibold">{"Published Date : "}</span>
+              <span>{monDayYear(newsletterData?.published_at) ?? "N.A."}</span>
+            </div>
 
-        <div className="w-full sm:w-[300px] self-end">
-          <ButtonCustom
-            className="w-full h-8 py-2 bg-primary-bg-interactiveBlue font-semibold text-sm text-white rounded-full leading-3 hover:bg-primary-bg-interactiveBlueHover"
-            label={"Buy Now"}
-            handleClickWithLoader={onBuyNow}
-          />
-        </div>
-
-        <div className="text-left font-semibold">
-          <div>
-            {getInitialLetterUpperCase(newsletterData?.topic) ?? "N.A."}
+            <div className="w-full sm:w-[300px] self-start">
+              <ButtonCustom
+                className="w-full h-8 py-2 bg-primary-bg-interactiveBlue font-semibold text-sm text-white rounded-full leading-3 hover:bg-primary-bg-interactiveBlueHover"
+                label={"Read Now"}
+                handleClickWithLoader={onBuyNow}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="text-left text-sm">
-          <span className="font-semibold">{"Category : "}</span>
-          <span>
-            {getInitialLetterUpperCase(newsletterData?.category) ?? "N.A."}
-          </span>
-        </div>
-
-        <div className="text-left text-sm">
-          <span className="font-semibold">{"Price : "}</span>
-          <span>
-            {newsletterData?.price ? `$${newsletterData?.price}` : "-"}
-          </span>
-        </div>
-
-        <div className="text-left text-sm">
-          <span className="font-semibold">{"Published Date : "}</span>
-          <span>{monDayYear(newsletterData?.published_at) ?? "N.A."}</span>
+          <div className="w-full sm:w-[500px] h-[300px] flex items-center justify-center font-semibold text-xs">
+            <img
+              className="w-full h-full object-fill"
+              src={newsletterData?.thumbnail}
+              alt="newsletter-thumbnail"
+            />
+          </div>
         </div>
 
         <div className="flex flex-col gap-1 text-left text-sm">

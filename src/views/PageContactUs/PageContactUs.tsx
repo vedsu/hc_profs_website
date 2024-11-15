@@ -123,14 +123,26 @@ const PageContactUs: React.FC = () => {
               </p>
             </div>
 
-            <div className="px-5">
-              <div className="text-base font-normal leading-8">
-                <span>We are here to assist you</span>
-                <br />
-                <p className="text-primary-pLabel">Call Us</p>
-                <p className="text-sm">+1-830-256-0384</p>
-                <p className="text-primary-pLabel">Email Us</p>
-                <p className="text-sm">support@hcprofs.com</p>
+            <div className="flex flex-col gap-2 p-5">
+              <div>We are here to assist you</div>
+              <div className="flex flex-col items-stretch gap-5 screen_var_one:flex-row  screen_var_one:gap-20 text-base font-normal leading-8">
+                <div className="w-full border border-primary-light-900 p-5 rounded-lg bg-primary-light-100">
+                  <p className="text-primary-pLabel">Call Us</p>
+                  <p className="text-sm">+1-830-256-0384</p>
+                  <p className="text-primary-pLabel">Email Us</p>
+                  <p className="text-sm">cs@hcprofs.com</p>
+                </div>
+
+                <div className="w-full border border-primary-light-900 p-5 rounded-lg bg-primary-light-100">
+                  <p className="text-primary-pLabel">
+                    Address:
+                    <br />
+                    HC Profs <br />
+                    2438 Industrial Blvd #802 <br />
+                    Abilene
+                    <br /> TX 79605
+                  </p>
+                </div>
               </div>
             </div>
 
