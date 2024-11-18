@@ -21,7 +21,7 @@ import {
   validateGetRequest,
   validatePostRequest,
 } from "../../utils/commonUtils";
-import { PURCHASE_TYPE_LITERAL } from "../PageCart/PageCart";
+import { PURCHASE_ITEM } from "../PageCart/PageCart";
 
 const PageNewsletterInfo = () => {
   const params = useParams();
@@ -62,11 +62,11 @@ const PageNewsletterInfo = () => {
 
   /*--------------------------Event Handlers-----------------*/
 
-  const onBuyNow = async () => {
+  const onReadNow = async () => {
     const isUserLoggedIn = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
 
     if (isUserLoggedIn && parseInt(newsletterData?.price, 10) > 0) {
-      navigate(`${LINK_PAGE_CART}?purchase-category=newsletter`);
+      navigate(`${LINK_PAGE_CART}?purchase-item=newsletter`);
       localStorage.setItem(
         LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER,
         JSON.stringify({
@@ -135,14 +135,26 @@ const PageNewsletterInfo = () => {
           display: true,
         })
       );
+
       localStorage.setItem(
         LOCAL_STORAGE_ITEMS.CARD_CONTINUE_PURCHASE_NEWSLETTER,
         JSON.stringify({
           display: true,
-          ...newsletterData,
-          purchaseType: PURCHASE_TYPE_LITERAL.NEWSLETTER,
+          id: newsletterData?.id,
+          topic: newsletterData?.topic,
+          purchaseItem: PURCHASE_ITEM.NEWSLETTER,
         })
       );
+
+      localStorage.setItem(
+        LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER,
+        JSON.stringify({
+          ...newsletterData,
+          newsletterId: params?.newsletterId,
+          cartTotal: parseInt(newsletterData?.price, 10),
+        })
+      );
+
       navigate(LINK_PAGE_LOGIN_REG, {
         state: {
           showRegCheckOutBanner: true,
@@ -183,7 +195,7 @@ const PageNewsletterInfo = () => {
               <ButtonCustom
                 className="w-full h-8 py-2 bg-primary-bg-interactiveBlue font-semibold text-sm text-white rounded-full leading-3 hover:bg-primary-bg-interactiveBlueHover"
                 label={"Read Now"}
-                handleClickWithLoader={onBuyNow}
+                handleClickWithLoader={onReadNow}
               />
             </div>
           </div>

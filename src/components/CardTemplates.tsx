@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { CARD_SUGGESTIONS } from "../constant";
-import { LINK_PAGE_NEWSLETTERS, LINK_PAGE_WEBINAR_LISTING } from "../routes";
-import { PURCHASE_TYPE_LITERAL } from "../views/PageCart/PageCart";
-import ButtonCustom from "./ButtonCustom";
+import { LINK_PAGE_CART } from "../routes";
 import { getInitialLetterUpperCase } from "../utils/commonUtils";
+import { PURCHASE_ITEM } from "../views/PageCart/PageCart";
+import ButtonCustom from "./ButtonCustom";
 
 interface ICardTemplates {
   variant: string;
@@ -17,16 +17,17 @@ const CardTemplates = (props: ICardTemplates) => {
   const navigate = useNavigate();
 
   const handleCardBuyNow = (cardItem: any) => {
-    if (cardItem?.cardCategory === PURCHASE_TYPE_LITERAL.WEBINAR) {
-      navigate(LINK_PAGE_WEBINAR_LISTING + "/" + cardItem?.id);
-    } else if (cardItem?.cardCategory === PURCHASE_TYPE_LITERAL?.NEWSLETTER) {
-      navigate(LINK_PAGE_NEWSLETTERS + "/" + cardItem?.id);
+    if (cardItem?.cardCategory === PURCHASE_ITEM.WEBINAR) {
+      navigate(`${LINK_PAGE_CART}?purchase-item=webinar`);
+    } else if (cardItem?.cardCategory === PURCHASE_ITEM?.NEWSLETTER) {
+      navigate(`${LINK_PAGE_CART}?purchase-item=newsletter`);
     }
   };
+
   const handleCardNotInterested = (cardItem: any) => {
-    if (cardItem?.cardCategory === PURCHASE_TYPE_LITERAL.WEBINAR) {
+    if (cardItem?.cardCategory === PURCHASE_ITEM.WEBINAR) {
       localStorage.removeItem(CARD_SUGGESTIONS.CONTINUE_PURCHASE);
-    } else if (cardItem?.cardCategory === PURCHASE_TYPE_LITERAL?.NEWSLETTER) {
+    } else if (cardItem?.cardCategory === PURCHASE_ITEM?.NEWSLETTER) {
       localStorage.removeItem(CARD_SUGGESTIONS.CONTINUE_PURCHASE_NEWSLETTER);
     }
     if (callBack) {

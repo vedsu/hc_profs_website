@@ -2,6 +2,7 @@ import jsonToFormData from "json-form-data";
 import { InputTextarea } from "primereact/inputtextarea";
 import React, {
   BaseSyntheticEvent,
+  ReactNode,
   useCallback,
   useEffect,
   useState,
@@ -12,11 +13,14 @@ import ButtonCustom from "../../components/ButtonCustom";
 import CountrySelector from "../../components/CountrySelector";
 import Input from "../../components/Input";
 import {
+  COUPON_MESSAGE,
+  COUPON_STATUS,
   COUPON_TYPE,
   FORM_DATA_OPTIONS,
   HEALTH_PROFS,
   LOCAL_STORAGE_ITEMS,
   PAYMENT_STATUS,
+  PURCHASE_CATEGORY,
 } from "../../constant";
 import {
   LINK_PAGE_CHECKOUT,
@@ -37,6 +41,7 @@ type PURCHASE_TYPE = "NEWSLETTER" | "WEBINAR" | null;
 const initialCartFormData = {
   customerName: "",
   billingEmail: "",
+  participantsDetail: "",
   country: "",
   state: "",
   city: "",
@@ -44,7 +49,7 @@ const initialCartFormData = {
   address: "",
 };
 
-export const PURCHASE_TYPE_LITERAL: {
+export const PURCHASE_ITEM: {
   NEWSLETTER: PURCHASE_TYPE;
   WEBINAR: PURCHASE_TYPE;
 } = {
@@ -53,14 +58,21 @@ export const PURCHASE_TYPE_LITERAL: {
 };
 
 let initialCartValue = 0;
+
+const initialCouponMessage = {
+  showMessage: false,
+  success: false,
+  invalid: false,
+};
+
 const PageCart: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const purchaseType: PURCHASE_TYPE = location?.search?.includes(
-    "purchase-category=webinar"
+  const purchaseItem: PURCHASE_TYPE = location?.search?.includes(
+    "purchase-item=webinar"
   )
     ? "WEBINAR"
-    : location?.search?.includes("purchase-category=newsletter")
+    : location?.search?.includes("purchase-item=newsletter")
     ? "NEWSLETTER"
     : null;
   const [userData, setUserData] = useState<any>(null);
@@ -74,8 +86,9 @@ const PageCart: React.FC = () => {
   const [isCouponApplied, setIsCouponApplied] = useState(false);
   const [coupon, setCoupon] = useState("");
   const [couponList, setCouponList] = useState([]);
-  const [showCouponSuccessMessage, setShowCouponSuccessMessage] =
-    useState(false);
+  const [couponMessage, setCouponMessage] = useState({
+    ...initialCouponMessage,
+  });
 
   /*---------------------------Service Calls------------------------------*/
   const getWebinarDetails = useCallback(async (webinarId: string) => {
@@ -135,17 +148,18 @@ const PageCart: React.FC = () => {
       if (userInfo) {
         const parsedUserInfo = JSON.parse(userInfo);
         setUserData(parsedUserInfo);
-        if (purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR) {
+        if (purchaseItem === PURCHASE_ITEM.WEBINAR) {
           const purChaseInfo = localStorage.getItem(
             LOCAL_STORAGE_ITEMS.PURCHASE_INFO
           );
+
           if (purChaseInfo) {
             const parsedPurchaseInfo = JSON.parse(purChaseInfo);
             setPurchaseWebinarData(parsedPurchaseInfo);
             getWebinarDetails(parsedPurchaseInfo.webinarId);
             initialCartValue = parsedPurchaseInfo?.cartTotal;
           }
-        } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
+        } else if (purchaseItem === PURCHASE_ITEM.NEWSLETTER) {
           const purchaseInfoNewsletterInfo = localStorage.getItem(
             LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER
           );
@@ -186,58 +200,81 @@ const PageCart: React.FC = () => {
   const onApplyCoupon = async () => {
     let cartOrderValue = 0;
     const validSelectedCoupon: any = couponList?.find(
-      (couponItem: any) => couponItem?.coupon === coupon
+      (couponItem: any) =>
+        couponItem.status === COUPON_STATUS.ACTIVE &&
+        couponItem?.coupon === coupon
     );
 
-    if (
-      validSelectedCoupon &&
-      validSelectedCoupon?.type === COUPON_TYPE.BY_PERCENTAGE
-    ) {
-      if (purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR) {
-        cartOrderValue = purchaseWebinarData?.cartTotal;
-        cartOrderValue =
-          cartOrderValue - cartOrderValue * validSelectedCoupon?.amount * 0.01;
-        setPurchaseWebinarData((prev: any) => ({
-          ...prev,
-          cartTotal: Math.floor(cartOrderValue),
-        }));
-        setShowCouponSuccessMessage(true);
-      } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
-        cartOrderValue = purchaseNewsletterData?.cartTotal;
-        cartOrderValue =
-          cartOrderValue - cartOrderValue * validSelectedCoupon?.amount * 0.01;
-        setPurchaseNewsletterData((prev: any) => ({
-          ...prev,
-          cartTotal: Math.floor(cartOrderValue),
-        }));
-        setShowCouponSuccessMessage(true);
+    if (validSelectedCoupon) {
+      if (validSelectedCoupon?.type === COUPON_TYPE.BY_PERCENTAGE) {
+        if (purchaseItem === PURCHASE_ITEM.WEBINAR) {
+          cartOrderValue = purchaseWebinarData?.cartTotal;
+          cartOrderValue =
+            cartOrderValue -
+            cartOrderValue * validSelectedCoupon?.amount * 0.01;
+          setPurchaseWebinarData((prev: any) => ({
+            ...prev,
+            cartTotal: Math.floor(cartOrderValue),
+          }));
+          setCouponMessage({
+            ...initialCouponMessage,
+            showMessage: true,
+            success: true,
+          });
+        } else if (purchaseItem === PURCHASE_ITEM.NEWSLETTER) {
+          cartOrderValue = purchaseNewsletterData?.cartTotal;
+          cartOrderValue =
+            cartOrderValue -
+            cartOrderValue * validSelectedCoupon?.amount * 0.01;
+          setPurchaseNewsletterData((prev: any) => ({
+            ...prev,
+            cartTotal: Math.floor(cartOrderValue),
+          }));
+          setCouponMessage({
+            ...initialCouponMessage,
+            showMessage: true,
+            success: true,
+          });
+        }
+      } else if (validSelectedCoupon?.type === COUPON_TYPE.BY_AMOUNT) {
+        if (purchaseItem === PURCHASE_ITEM.WEBINAR) {
+          cartOrderValue = purchaseWebinarData?.cartTotal;
+          cartOrderValue = cartOrderValue - validSelectedCoupon?.amount;
+          setPurchaseWebinarData((prev: any) => ({
+            ...prev,
+            cartTotal:
+              Math.floor(cartOrderValue) <= 0 ? 1 : Math.floor(cartOrderValue),
+          }));
+          setCouponMessage({
+            ...initialCouponMessage,
+            showMessage: true,
+            success: true,
+          });
+        } else if (purchaseItem === PURCHASE_ITEM.NEWSLETTER) {
+          cartOrderValue = purchaseNewsletterData?.cartTotal;
+          cartOrderValue = cartOrderValue - validSelectedCoupon?.amount;
+          setPurchaseNewsletterData((prev: any) => ({
+            ...prev,
+            cartTotal:
+              Math.floor(cartOrderValue) <= 0 ? 1 : Math.floor(cartOrderValue),
+          }));
+          setCouponMessage({
+            ...initialCouponMessage,
+            showMessage: true,
+            success: true,
+          });
+        }
       }
-    } else if (
-      validSelectedCoupon &&
-      validSelectedCoupon?.type === COUPON_TYPE.BY_AMOUNT
-    ) {
-      if (purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR) {
-        cartOrderValue = purchaseWebinarData?.cartTotal;
-        cartOrderValue = cartOrderValue - validSelectedCoupon?.amount;
-        setPurchaseWebinarData((prev: any) => ({
-          ...prev,
-          cartTotal:
-            Math.floor(cartOrderValue) <= 0 ? 1 : Math.floor(cartOrderValue),
-        }));
-        setShowCouponSuccessMessage(true);
-      } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
-        cartOrderValue = purchaseNewsletterData?.cartTotal;
-        cartOrderValue = cartOrderValue - validSelectedCoupon?.amount;
-        setPurchaseNewsletterData((prev: any) => ({
-          ...prev,
-          cartTotal:
-            Math.floor(cartOrderValue) <= 0 ? 1 : Math.floor(cartOrderValue),
-        }));
-        setShowCouponSuccessMessage(true);
-      }
+      setIsCouponApplied(true);
     }
 
-    setIsCouponApplied(true);
+    if (!validSelectedCoupon && !couponMessage.invalid) {
+      setCouponMessage({
+        ...initialCouponMessage,
+        showMessage: true,
+        invalid: true,
+      });
+    }
   };
 
   const onCheckout = async () => {
@@ -246,9 +283,9 @@ const PageCart: React.FC = () => {
       customerName: cartFormData.customerName,
       email: cartFormData.billingEmail || userData.email,
       country: cartFormData?.country,
-      purchaseType: purchaseType,
+      purchaseItem: purchaseItem,
     };
-    if (purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR) {
+    if (purchaseItem === PURCHASE_ITEM.WEBINAR) {
       cartInfo = {
         ...cartInfo,
         ...webinarData,
@@ -258,7 +295,7 @@ const PageCart: React.FC = () => {
         ...stripePaymentInfo,
         amount: purchaseWebinarData?.cartTotal,
       };
-    } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
+    } else if (purchaseItem === PURCHASE_ITEM.NEWSLETTER) {
       cartInfo = { ...cartInfo, ...newsletterData, ...purchaseNewsletterData };
       stripePaymentInfo = {
         ...stripePaymentInfo,
@@ -279,7 +316,7 @@ const PageCart: React.FC = () => {
   };
 
   const onCancel = async () => {
-    if (purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR) {
+    if (purchaseItem === PURCHASE_ITEM.WEBINAR) {
       const webinarOrderPayloadJSON = prepareWebinarCancelPayload();
 
       const formDataPayload = jsonToFormData(
@@ -296,7 +333,7 @@ const PageCart: React.FC = () => {
       } catch (error) {
         console.error(error);
       }
-    } else if (purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER) {
+    } else if (purchaseItem === PURCHASE_ITEM.NEWSLETTER) {
       const newsletterOrderPayloadJSON = prepareNewsletterCancelPayload();
 
       const formDataPayload = jsonToFormData(
@@ -352,6 +389,42 @@ const PageCart: React.FC = () => {
     };
   };
 
+  const renderCouponMessage = (
+    messageType: "success" | "invalid"
+  ): ReactNode => {
+    return (
+      <div className="mt-1 mb-2">
+        {messageType === COUPON_MESSAGE.SUCCESS ? (
+          <React.Fragment>
+            <p className="text-xs text-green-500">
+              You have saved
+              <span className="mx-1">
+                {purchaseItem === PURCHASE_ITEM.WEBINAR
+                  ? `$${initialCartValue - purchaseWebinarData?.cartTotal}`
+                  : purchaseItem === PURCHASE_ITEM.NEWSLETTER
+                  ? `$${initialCartValue - purchaseNewsletterData?.cartTotal}`
+                  : "N.A."}
+              </span>
+            </p>
+            <div className="flex items-center justify-between font-bold">
+              <span className="text-sm">Final Amount</span>
+              <span className="text-lg">
+                {"$"}
+                {purchaseItem === PURCHASE_ITEM.WEBINAR
+                  ? purchaseWebinarData?.cartTotal ?? "N.A."
+                  : purchaseItem === PURCHASE_ITEM.NEWSLETTER
+                  ? purchaseNewsletterData?.cartTotal
+                  : "N.A."}
+              </span>
+            </div>
+          </React.Fragment>
+        ) : (
+          <p className="text-xs text-red-500">Invalid Coupon</p>
+        )}
+      </div>
+    );
+  };
+
   return (
     <AuthValidator>
       <div className="page-margin">
@@ -380,6 +453,29 @@ const PageCart: React.FC = () => {
                   mandatory
                 />
               </div>
+
+              {purchaseWebinarData?.purchaseCategory ===
+                PURCHASE_CATEGORY.CORPORATE && (
+                <div className="px-2 flex flex-col gap-1">
+                  <label>
+                    {"Participants Email"}
+                    <span className="text-xs">
+                      {`(Our Customer Support Team will reach out to you)`}
+                    </span>
+                  </label>
+                  <InputTextarea
+                    className={
+                      "w-full min-h-40 p-2 border border-primary-light-900"
+                    }
+                    placeholder="Please enter participants details such as email addresses, name etc. In case you don't have participants detail our customer support team will reach out to you"
+                    name="participantsDetail"
+                    value={cartFormData.participantsDetail}
+                    onChange={handleCartFormChange}
+                    maxLength={1000}
+                  />
+                </div>
+              )}
+
               <div className="px-2 flex flex-col gap-1">
                 <label>
                   {"Country"}
@@ -431,7 +527,7 @@ const PageCart: React.FC = () => {
                   name="address"
                   value={cartFormData.address}
                   onChange={handleCartFormChange}
-                  maxLength={2000}
+                  maxLength={500}
                 />
               </div>
             </div>
@@ -445,9 +541,9 @@ const PageCart: React.FC = () => {
             ) : (
               <div className="w-full screen_var_one:w-[50%] mt-5 p-5 flex flex-col gap-10 border border-primary-light-900 rounded-lg">
                 <div className="text-base">
-                  {purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR
+                  {purchaseItem === PURCHASE_ITEM.WEBINAR
                     ? webinarData?.topic ?? "N.A."
-                    : purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER
+                    : purchaseItem === PURCHASE_ITEM.NEWSLETTER
                     ? newsletterData?.topic ?? "N.A."
                     : "N.A"}
                 </div>
@@ -458,9 +554,9 @@ const PageCart: React.FC = () => {
                     {"$"}
                     {initialCartValue
                       ? initialCartValue
-                      : purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR
+                      : purchaseItem === PURCHASE_ITEM.WEBINAR
                       ? purchaseWebinarData?.cartTotal ?? "N.A."
-                      : purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER
+                      : purchaseItem === PURCHASE_ITEM.NEWSLETTER
                       ? purchaseNewsletterData?.cartTotal
                       : "N.A."}
                   </span>
@@ -477,6 +573,7 @@ const PageCart: React.FC = () => {
                       disabled={isCouponApplied}
                       onChange={(event: BaseSyntheticEvent) => {
                         setCoupon(event.target.value);
+                        setCouponMessage(initialCouponMessage);
                       }}
                     />
 
@@ -489,29 +586,12 @@ const PageCart: React.FC = () => {
                     </button>
                   </div>
 
-                  {showCouponSuccessMessage && (
-                    <React.Fragment>
-                      <div className="mt-1 mb-2">
-                        <p className="text-xs text-green-500">
-                          You have saved
-                          <span className="mx-1">
-                            ${initialCartValue - purchaseWebinarData?.cartTotal}
-                          </span>
-                        </p>
-                      </div>
+                  {couponMessage.showMessage && couponMessage.success && (
+                    <>{renderCouponMessage("success")}</>
+                  )}
 
-                      <div className="flex items-center justify-between font-bold">
-                        <span className="text-sm">Final Amount</span>
-                        <span className="text-lg">
-                          {"$"}
-                          {purchaseType === PURCHASE_TYPE_LITERAL.WEBINAR
-                            ? purchaseWebinarData?.cartTotal ?? "N.A."
-                            : purchaseType === PURCHASE_TYPE_LITERAL.NEWSLETTER
-                            ? purchaseNewsletterData?.cartTotal
-                            : "N.A."}
-                        </span>
-                      </div>
-                    </React.Fragment>
+                  {couponMessage.showMessage && couponMessage.invalid && (
+                    <>{renderCouponMessage("invalid")}</>
                   )}
                 </div>
 

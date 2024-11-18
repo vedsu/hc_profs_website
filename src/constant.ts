@@ -86,6 +86,11 @@ export const FORM_DATA_OPTIONS = {
   },
 };
 
+export const PURCHASE_CATEGORY = {
+  INDIVIDUAL: "INDIVIDUAL",
+  CORPORATE: "CORPORATE",
+};
+
 export const PAYMENT_STATUS = {
   PURCHASED: "purchased",
   PENDING: "pending",
@@ -94,4 +99,14 @@ export const PAYMENT_STATUS = {
 export const COUPON_TYPE = {
   BY_PERCENTAGE: "per",
   BY_AMOUNT: "dollar",
+};
+
+export const COUPON_MESSAGE = {
+  SUCCESS: "success",
+  INVALID: "invalid",
+};
+
+export const COUPON_STATUS = {
+  ACTIVE: "Active",
+  INACTIVE: "Inactive",
 };

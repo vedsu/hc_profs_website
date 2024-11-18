@@ -95,7 +95,7 @@ const UserDashboardLayout = (props: IUserDashboard) => {
                 return {
                   id: cardItem?.id,
                   title: cardItem?.topic,
-                  cardCategory: cardItem?.purchaseType,
+                  cardCategory: cardItem?.purchaseItem,
                 };
               }
             })

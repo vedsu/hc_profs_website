@@ -1,9 +1,16 @@
-import React, { ReactNode, useCallback, useEffect, useState } from "react";
+import React, {
+  BaseSyntheticEvent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ButtonCustom from "../../components/ButtonCustom";
 import {
   HEALTH_PROFS,
   LOCAL_STORAGE_ITEMS,
+  PURCHASE_CATEGORY,
   SESSION_STORAGE_ITEMS,
 } from "../../constant";
 import {
@@ -17,7 +24,7 @@ import {
   monDayYear,
   validateGetRequest,
 } from "../../utils/commonUtils";
-import { PURCHASE_TYPE_LITERAL } from "../PageCart/PageCart";
+import { PURCHASE_ITEM } from "../PageCart/PageCart";
 
 const initialPurchaseData = {
   webinarSessionLive: false,
@@ -26,16 +33,27 @@ const initialPurchaseData = {
   webinarSessionTranscript: false,
 };
 
+const initialCorporatePurchaseInfo = {
+  liveSessionCount: 1,
+  recordingSessionCount: 1,
+  ddSessionCount: 1,
+  transcriptSessionCount: 1,
+};
+
 const PageWebinarInfo: React.FC = () => {
   const params = useParams();
   const navigate = useNavigate();
 
   const [isLoadingWebinar, setIsLoadingWebinar] = useState(true);
+  const [activeTabId, setActiveTabId] = useState("individual-tab");
+  const [showCartEmptyMessage, setShowCartEmptyMessage] = useState(false);
   const [webinarData, setWebinarData] = useState<any>(null);
   const [speakerData, setSpeakerData] = useState<any>(null);
-  const [cartTotal, setCartTotal] = useState(0);
-  const [showCartEmptyMessage, setShowCartEmptyMessage] = useState(false);
+  const [corporatePurchaseTypeInfo, setCorporatePurchaseTypeInfo] = useState(
+    initialCorporatePurchaseInfo
+  );
   const [purchaseData, setPurchaseData] = useState(initialPurchaseData);
+  const [cartTotal, setCartTotal] = useState(0);
 
   /*---------------------------Service Calls------------------------------*/
   const getWebinarDetails = useCallback(async () => {
@@ -78,7 +96,55 @@ const PageWebinarInfo: React.FC = () => {
     onMount();
   }, [getWebinarDetails]);
 
+  useEffect(() => {
+    let amt = 0;
+    const isLiveChecked = (
+      document.getElementById("checkbox-buy-live") as HTMLInputElement
+    )?.checked;
+    const isRecordingChecked = (
+      document.getElementById("checkbox-buy-recording") as HTMLInputElement
+    )?.checked;
+    const isDDChecked = (
+      document.getElementById("checkbox-buy-dd") as HTMLInputElement
+    )?.checked;
+    const isTranscriptChecked = (
+      document.getElementById("checkbox-buy-trans") as HTMLInputElement
+    )?.checked;
+
+    const livePrice = Number(webinarData?.priceLive ?? "0");
+    const recordingPrice = Number(webinarData?.priceRecording ?? "0");
+    const ddPrice = Number(webinarData?.priceDigitalDownload ?? "0");
+    const transcriptPrice = Number(webinarData?.priceTranscript ?? "0");
+
+    if (isLiveChecked)
+      amt += livePrice * corporatePurchaseTypeInfo.liveSessionCount;
+    if (isRecordingChecked)
+      amt += recordingPrice * corporatePurchaseTypeInfo.recordingSessionCount;
+    if (isDDChecked) amt += ddPrice * corporatePurchaseTypeInfo.ddSessionCount;
+    if (isTranscriptChecked)
+      amt += transcriptPrice * corporatePurchaseTypeInfo.transcriptSessionCount;
+
+    setCartTotal(amt);
+    setPurchaseData({
+      webinarSessionLive: Number(livePrice) ? true : false,
+      webinarSessionRecording: Number(recordingPrice) ? true : false,
+      webinarSessionDD: Number(ddPrice) ? true : false,
+      webinarSessionTranscript: Number(transcriptPrice) ? true : false,
+    });
+    setShowCartEmptyMessage(false);
+  }, [
+    corporatePurchaseTypeInfo.liveSessionCount,
+    corporatePurchaseTypeInfo.recordingSessionCount,
+    corporatePurchaseTypeInfo.ddSessionCount,
+    corporatePurchaseTypeInfo.transcriptSessionCount,
+  ]);
+
   /*--------------------------Event Handlers-----------------*/
+  const onTabClick = (event: BaseSyntheticEvent) => {
+    setActiveTabId(event.target?.id ?? "");
+    setCorporatePurchaseTypeInfo(initialCorporatePurchaseInfo);
+  };
+
   const handlePurchaseInput = () => {
     let amt = 0;
     const isLiveChecked = (
@@ -99,10 +165,13 @@ const PageWebinarInfo: React.FC = () => {
     const ddPrice = Number(webinarData?.priceDigitalDownload ?? "0");
     const transcriptPrice = Number(webinarData?.priceTranscript ?? "0");
 
-    if (isLiveChecked) amt += livePrice;
-    if (isRecordingChecked) amt += recordingPrice;
-    if (isDDChecked) amt += ddPrice;
-    if (isTranscriptChecked) amt += transcriptPrice;
+    if (isLiveChecked)
+      amt += livePrice * corporatePurchaseTypeInfo.liveSessionCount;
+    if (isRecordingChecked)
+      amt += recordingPrice * corporatePurchaseTypeInfo.recordingSessionCount;
+    if (isDDChecked) amt += ddPrice * corporatePurchaseTypeInfo.ddSessionCount;
+    if (isTranscriptChecked)
+      amt += transcriptPrice * corporatePurchaseTypeInfo.transcriptSessionCount;
 
     setCartTotal(amt);
     setPurchaseData({
@@ -114,15 +183,28 @@ const PageWebinarInfo: React.FC = () => {
     setShowCartEmptyMessage(false);
   };
 
+  const handleCorporatePurchaseQuantities = (event: BaseSyntheticEvent) => {
+    setCorporatePurchaseTypeInfo((prev) => ({
+      ...prev,
+      [event.target.name]: parseInt(event.target.value),
+    }));
+  };
+
   const onBuyNow = async () => {
     const isUserLoggedIn = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
 
     if (isUserLoggedIn && cartTotal > 0) {
-      navigate(`${LINK_PAGE_CART}?purchase-category=webinar`);
+      navigate(`${LINK_PAGE_CART}?purchase-item=webinar`);
       localStorage.setItem(
         LOCAL_STORAGE_ITEMS.PURCHASE_INFO,
         JSON.stringify({
           ...purchaseData,
+          ...(activeTabId === "corporate-tab"
+            ? {
+                purchaseCategory: PURCHASE_CATEGORY.CORPORATE,
+                ...corporatePurchaseTypeInfo,
+              }
+            : {}),
           webinarId: params?.webinar,
           cartTotal: cartTotal,
         })
@@ -136,14 +218,32 @@ const PageWebinarInfo: React.FC = () => {
           display: true,
         })
       );
+
       localStorage.setItem(
         LOCAL_STORAGE_ITEMS.CARD_CONTINUE_PURCHASE,
         JSON.stringify({
           display: true,
-          ...webinarData,
-          purchaseType: PURCHASE_TYPE_LITERAL.WEBINAR,
+          id: webinarData?.id,
+          topic: webinarData?.topic,
+          purchaseItem: PURCHASE_ITEM.WEBINAR,
         })
       );
+
+      localStorage.setItem(
+        LOCAL_STORAGE_ITEMS.PURCHASE_INFO,
+        JSON.stringify({
+          ...purchaseData,
+          ...(activeTabId === "corporate-tab"
+            ? {
+                purchaseCategory: PURCHASE_CATEGORY.CORPORATE,
+                ...corporatePurchaseTypeInfo,
+              }
+            : {}),
+          webinarId: params?.webinar,
+          cartTotal: cartTotal,
+        })
+      );
+
       navigate(LINK_PAGE_LOGIN_REG, {
         state: {
           showRegCheckOutBanner: true,
@@ -220,32 +320,42 @@ const PageWebinarInfo: React.FC = () => {
   const renderPurchaseDescription = (): ReactNode => {
     return (
       <React.Fragment>
-        <div className="w-full flex bg-blue-200 font-semibold text-base">
+        <div className="w-full flex bg-primary-bg-limedSpruce font-semibold text-base text-white">
           <div className="w-[50%] h-10">
             <button
-              id="login-tab"
-              className={`log-reg-tab w-full h-full `}
-              // onClick={onTabClick}
+              id="individual-tab"
+              className={`purchase-type-tab w-full h-full ${
+                activeTabId === "individual-tab"
+                  ? "purchase-type-active-tab"
+                  : ""
+              }`}
+              onClick={onTabClick}
             >
               Individual
             </button>
           </div>
           <div className="w-[50%] h-10">
             <button
-              id="register-tab"
-              className={`log-reg-tab w-full h-full `}
-              // onClick={onTabClick}
+              id="corporate-tab"
+              className={`purchase-type-tab w-full h-full ${
+                activeTabId === "corporate-tab"
+                  ? "purchase-type-active-tab"
+                  : ""
+              }`}
+              onClick={onTabClick}
             >
               Corporate
             </button>
           </div>
         </div>
+
         <div className="webinar-reg-table px-2">
           <table className="w-full">
             <thead>
               <tr>
                 <th className="px-6">{"Session"}</th>
                 <th>{"Price ($)"}</th>
+                {activeTabId === "corporate-tab" ? <th>{"Qty"}</th> : null}
               </tr>
             </thead>
             <tbody>
@@ -268,6 +378,19 @@ const PageWebinarInfo: React.FC = () => {
                     </label>
                   </td>
                   <td>{webinarData?.priceLive}</td>
+
+                  {activeTabId === "corporate-tab" ? (
+                    <td>
+                      <input
+                        className="w-16 h-8 p-2 border border-primary-light-900 outline-none text-sm text-primary-pText"
+                        name="liveSessionCount"
+                        type="number"
+                        min={0}
+                        value={corporatePurchaseTypeInfo.liveSessionCount}
+                        onChange={handleCorporatePurchaseQuantities}
+                      />
+                    </td>
+                  ) : null}
                 </tr>
               )}
               <tr>
@@ -287,6 +410,18 @@ const PageWebinarInfo: React.FC = () => {
                   </label>
                 </td>
                 <td>{webinarData?.priceRecording}</td>
+                {activeTabId === "corporate-tab" ? (
+                  <td>
+                    <input
+                      className="w-16 h-8 p-2 border border-primary-light-900 outline-none text-sm text-primary-pText"
+                      name="recordingSessionCount"
+                      type="number"
+                      min={0}
+                      value={corporatePurchaseTypeInfo.recordingSessionCount}
+                      onChange={handleCorporatePurchaseQuantities}
+                    />
+                  </td>
+                ) : null}
               </tr>
               <tr>
                 <td>
@@ -305,6 +440,18 @@ const PageWebinarInfo: React.FC = () => {
                   </label>
                 </td>
                 <td>{webinarData?.priceDigitalDownload}</td>
+                {activeTabId === "corporate-tab" ? (
+                  <td>
+                    <input
+                      className="w-16 h-8 p-2 border border-primary-light-900 outline-none text-sm text-primary-pText"
+                      name="ddSessionCount"
+                      type="number"
+                      min={0}
+                      value={corporatePurchaseTypeInfo.ddSessionCount}
+                      onChange={handleCorporatePurchaseQuantities}
+                    />
+                  </td>
+                ) : null}
               </tr>
               <tr>
                 <td>
@@ -323,6 +470,18 @@ const PageWebinarInfo: React.FC = () => {
                   </label>
                 </td>
                 <td>{webinarData?.priceTranscript}</td>
+                {activeTabId === "corporate-tab" ? (
+                  <td>
+                    <input
+                      className="w-16 h-8 p-2 border border-primary-light-900 outline-none text-sm text-primary-pText"
+                      name="transcriptSessionCount"
+                      type="number"
+                      min={0}
+                      value={corporatePurchaseTypeInfo.transcriptSessionCount}
+                      onChange={handleCorporatePurchaseQuantities}
+                    />
+                  </td>
+                ) : null}
               </tr>
             </tbody>
           </table>

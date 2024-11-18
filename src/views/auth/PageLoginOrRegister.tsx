@@ -370,7 +370,7 @@ const PageLoginOrRegister = () => {
 
   /*-------------------------Main Render-----------------------------------*/
   return (
-    <div className="p-prof-login-wrapper flex items-center justify-center">
+    <div className="hc-prof-login-wrapper flex items-start justify-center">
       <div className="log-reg-box px-5 py-5 flex flex-col gap-10 text-primary-pText border border-primary-light-900">
         <div className="w-full flex bg-blue-200 font-semibold text-base">
           <div className="w-[50%] h-10">

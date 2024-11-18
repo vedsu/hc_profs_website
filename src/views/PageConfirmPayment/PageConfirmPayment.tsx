@@ -7,11 +7,12 @@ import {
   FORM_DATA_OPTIONS,
   LOCAL_STORAGE_ITEMS,
   PAYMENT_STATUS,
+  PURCHASE_CATEGORY,
 } from "../../constant";
 import { LINK_ATTENDEE_DASHBOARD, LINK_SPEAKER_DASHBOARD } from "../../routes";
 import OrderService from "../../services/OrderService";
 import { validatePostRequest } from "../../utils/commonUtils";
-import { PURCHASE_TYPE_LITERAL } from "../PageCart/PageCart";
+import { PURCHASE_ITEM } from "../PageCart/PageCart";
 
 const initialMessageData = {
   generatedInvoiceNum: "",
@@ -37,16 +38,12 @@ const PageConfirmPayment = () => {
       if (paymentSuccessInfo) {
         const parsedPaymentSuccessInfo = JSON.parse(paymentSuccessInfo);
 
-        if (
-          parsedPaymentSuccessInfo?.purchaseType ===
-          PURCHASE_TYPE_LITERAL.WEBINAR
-        ) {
+        if (parsedPaymentSuccessInfo?.purchaseItem === PURCHASE_ITEM.WEBINAR) {
           await createWebinarOrder();
         }
 
         if (
-          parsedPaymentSuccessInfo?.purchaseType ===
-          PURCHASE_TYPE_LITERAL.NEWSLETTER
+          parsedPaymentSuccessInfo?.purchaseItem === PURCHASE_ITEM.NEWSLETTER
         ) {
           await createNewsletterOrder();
         }
@@ -86,7 +83,7 @@ const PageConfirmPayment = () => {
       if (paymentSuccessInfo) {
         const parsedPaymentSuccessInfo = JSON.parse(paymentSuccessInfo);
 
-        const jsonPayloadWebinarOrder = {
+        let jsonPayloadWebinarOrder: any = {
           customeremail: parsedCartInfo?.email,
           paymentstatus: PAYMENT_STATUS.PURCHASED,
           billingemail: parsedPaymentSuccessInfo?.email,
@@ -114,6 +111,18 @@ const PageConfirmPayment = () => {
             ?.toUpperCase()}`,
         };
 
+        //extend payload for corporate purchase
+        if (parsedCartInfo?.purchaseCategory === PURCHASE_CATEGORY.CORPORATE) {
+          jsonPayloadWebinarOrder = {
+            ...jsonPayloadWebinarOrder,
+            quantityLive: parsedCartInfo?.liveSessionCount,
+            quantityRecording: parsedCartInfo?.recordingSessionCount,
+            quantityDigitalDownload: parsedCartInfo?.ddSessionCount,
+            quantityTranscript: parsedCartInfo?.transcriptSessionCount,
+            attendees: parsedCartInfo?.participantsDetail,
+          };
+        }
+
         const templateMessageData = {
           generatedInvoiceNum: jsonPayloadWebinarOrder.invoice_number,
           generatedDate: invoiceFormattedToday,
@@ -131,7 +140,15 @@ const PageConfirmPayment = () => {
         );
 
         try {
-          const response = await OrderService.createOrder(formDataPayload);
+          let response: any;
+          if (
+            parsedCartInfo?.purchaseCategory === PURCHASE_CATEGORY.CORPORATE
+          ) {
+            response = await OrderService.createOrderCorporate(formDataPayload);
+          } else {
+            response = await OrderService.createOrder(formDataPayload);
+          }
+
           if (validatePostRequest(response)) {
             localStorage.removeItem(LOCAL_STORAGE_ITEMS.PURCHASE_INFO);
             localStorage.removeItem(LOCAL_STORAGE_ITEMS.CART_DATA);

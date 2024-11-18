@@ -288,9 +288,9 @@ nav {
 
 /*-----------------------------Login/Register------------------------------------*/
 
-.p-prof-login-wrapper {
+.hc-prof-login-wrapper {
   width: 100%;
-  padding: 50px 5px;
+  padding: 80px 5px;
 }
 
 .log-reg-box {
@@ -307,6 +307,16 @@ nav {
 .log-reg-active-tab,
 .log-reg-active-tab:hover {
   background-color: #0071bc;
+}
+
+.purchase-type-tab:hover,
+.purchase-type-active-tab {
+  background-color: #25426e;
+}
+
+.purchase-type-active-tab,
+.purchase-type-active-tab:hover {
+  background-color: #0d2567d2;
 }
 
 /*--------------------------Webinar Listing----------------------------------------------*/
@@ -796,6 +806,10 @@ input[type="checkbox"] {
 
   .dashboard-navs {
     display: block;
+  }
+
+  .hc-prof-login-wrapper {
+    padding: 40px 5px;
   }
 
   .footer-social-group {
