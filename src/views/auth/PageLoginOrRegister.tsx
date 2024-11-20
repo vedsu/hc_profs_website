@@ -1,6 +1,7 @@
 import jsonToFormData from "json-form-data";
-import { BaseSyntheticEvent, ReactNode, useState } from "react";
+import { BaseSyntheticEvent, ReactNode, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SimpleReactValidator from "simple-react-validator";
 import ButtonCustom from "../../components/ButtonCustom";
 import Input from "../../components/Input";
 import InputPasswordCustom from "../../components/InputPassword";
@@ -48,6 +49,16 @@ const PageLoginOrRegister = () => {
     initialRegisterFormData
   );
   const [activeTabId, setActiveTabId] = useState("login-tab");
+  const [showError, setShowError] = useState(false);
+
+  const loginValidator = useRef(
+    new SimpleReactValidator({ className: "text-danger" })
+  );
+  const registerValidator = useRef(
+    new SimpleReactValidator({ className: "text-danger" })
+  );
+  const [_, forceUpdate] = useState<any>();
+  const [__, forceUpdateRegisterValidator] = useState<any>();
 
   /*----------------------------------------Event Handlers----------------------------------------*/
 
@@ -96,6 +107,13 @@ const PageLoginOrRegister = () => {
   };
 
   const onLogin = async () => {
+    const formValid = loginValidator.current.allValid();
+    if (!formValid) {
+      loginValidator.current.showMessages();
+      forceUpdate("");
+      return;
+    }
+
     const jsonPayload = prepareLoginPayload();
     const loginDataAsFormData = jsonToFormData(jsonPayload, FORM_DATA_OPTIONS);
 
@@ -137,6 +155,8 @@ const PageLoginOrRegister = () => {
         } else if (loginFormData.role.speaker) {
           navigate(`${LINK_SPEAKER_DASHBOARD}`);
         }
+      } else {
+        setShowError(true);
       }
     } catch (error) {
       console.error(error);
@@ -144,6 +164,13 @@ const PageLoginOrRegister = () => {
   };
 
   const onRegister = async () => {
+    const formValid = registerValidator.current.allValid();
+    if (!formValid) {
+      registerValidator.current.showMessages();
+      forceUpdateRegisterValidator("");
+      return;
+    }
+
     const jsonPayload = prepareRegisterPayload();
     const regFormData = jsonToFormData(jsonPayload, FORM_DATA_OPTIONS);
 
@@ -247,6 +274,14 @@ const PageLoginOrRegister = () => {
             label={""}
             value={loginFormData.email}
             handler={handleLoginFormInputChange}
+            onBlur={() => {
+              loginValidator.current.showMessageFor("email");
+            }}
+            validationMessage={loginValidator.current.message(
+              "email",
+              loginFormData.email,
+              "required|email"
+            )}
           />
         </div>
         <div className="w-full">
@@ -256,42 +291,59 @@ const PageLoginOrRegister = () => {
             label={""}
             value={loginFormData.password}
             handler={handleLoginFormInputChange}
+            onBlur={() => {
+              loginValidator.current.showMessageFor("password");
+            }}
+            validationMessage={loginValidator.current.message(
+              "password",
+              loginFormData.password,
+              "required"
+            )}
           />
         </div>
 
-        <div className="w-full flex items-center justify-between text-base">
-          <div className="w-[50%]">
-            <label htmlFor="checkbox-role-attendee" className="role-label">
-              {"Customer"}
-              <input
-                id="checkbox-role-attendee"
-                name="attendee"
-                type="checkbox"
-                className="user-role-input"
-                onChange={handleLoginFormInputChange}
-                checked={loginFormData.role.attendee}
-                value={USER_ROLE.ATTENDEE}
-                disabled={loginFormData.role.speaker}
-              />
-              <span className="check-mark"></span>
-            </label>
+        <div className="w-full">
+          <div className="w-full flex items-center justify-between text-base">
+            <div className="w-[50%]">
+              <label htmlFor="checkbox-role-attendee" className="role-label">
+                {"Customer"}
+                <input
+                  id="checkbox-role-attendee"
+                  name="attendee"
+                  type="checkbox"
+                  className="user-role-input"
+                  onChange={handleLoginFormInputChange}
+                  checked={loginFormData.role.attendee}
+                  value={USER_ROLE.ATTENDEE}
+                  disabled={loginFormData.role.speaker}
+                />
+                <span className="check-mark"></span>
+              </label>
+            </div>
+            <div className="w-[50%]">
+              <label htmlFor="checkbox-role-speaker" className="role-label">
+                {"Speaker"}
+                <input
+                  id="checkbox-role-speaker"
+                  name="speaker"
+                  type="checkbox"
+                  className="user-role-input"
+                  onChange={handleLoginFormInputChange}
+                  checked={loginFormData.role.speaker}
+                  value={USER_ROLE.SPEAKER}
+                  disabled={loginFormData.role.attendee}
+                />
+                <span className="check-mark"></span>
+              </label>
+            </div>
           </div>
-          <div className="w-[50%]">
-            <label htmlFor="checkbox-role-speaker" className="role-label">
-              {"Speaker"}
-              <input
-                id="checkbox-role-speaker"
-                name="speaker"
-                type="checkbox"
-                className="user-role-input"
-                onChange={handleLoginFormInputChange}
-                checked={loginFormData.role.speaker}
-                value={USER_ROLE.SPEAKER}
-                disabled={loginFormData.role.attendee}
-              />
-              <span className="check-mark"></span>
-            </label>
-          </div>
+
+          {loginFormData?.email &&
+            loginFormData?.password &&
+            !loginFormData?.role?.attendee &&
+            !loginFormData?.role?.speaker && (
+              <div className="text-red-500 text-xs">{"Select user type"}</div>
+            )}
         </div>
 
         <div>
@@ -301,6 +353,12 @@ const PageLoginOrRegister = () => {
             handleClickWithLoader={onLogin}
           />
         </div>
+
+        {showError && (
+          <div className="text-center text-red-500 text-xs">
+            <p>{"Invalid Credentials. Please try again!"}</p>
+          </div>
+        )}
 
         <div className="text-sm">
           <p>{"Forgot password?"}</p>
@@ -341,6 +399,14 @@ const PageLoginOrRegister = () => {
             name={"email"}
             value={registerFormData.email}
             handler={handleRegisterFormInputChange}
+            onBlur={() => {
+              registerValidator.current.showMessageFor("email");
+            }}
+            validationMessage={registerValidator.current.message(
+              "email",
+              registerFormData.email,
+              "required|email"
+            )}
           />
         </div>
         <div className="w-full">
@@ -350,6 +416,14 @@ const PageLoginOrRegister = () => {
             placeholder="Password"
             value={registerFormData.password}
             handler={handleRegisterFormInputChange}
+            onBlur={() => {
+              registerValidator.current.showMessageFor("password");
+            }}
+            validationMessage={registerValidator.current.message(
+              "password",
+              registerFormData.password,
+              "required"
+            )}
           />
         </div>
         <div className="w-full">
@@ -368,42 +442,62 @@ const PageLoginOrRegister = () => {
             placeholder="Role"
             value={registerFormData.registrationRole}
             handler={handleRegisterFormInputChange}
+            onBlur={() => {
+              registerValidator.current.showMessageFor("registrationRole");
+            }}
+            validationMessage={registerValidator.current.message(
+              "registrationRole",
+              registerFormData.registrationRole,
+              "required"
+            )}
           />
         </div>
 
-        <div className="w-full flex items-center justify-between text-base">
-          <div className="w-[50%]">
-            <label htmlFor="checkbox-role-reg-attendee" className="role-label">
-              {"Customer"}
-              <input
-                id="checkbox-role-reg-attendee"
-                name="attendee"
-                type="checkbox"
-                className="user-role-input"
-                onChange={handleRegisterFormInputChange}
-                checked={registerFormData.role.attendee}
-                value={USER_ROLE.ATTENDEE}
-                disabled={registerFormData.role.speaker}
-              />
-              <span className="check-mark"></span>
-            </label>
+        <div className="w-full">
+          <div className="w-full flex items-center justify-between text-base">
+            <div className="w-[50%]">
+              <label
+                htmlFor="checkbox-role-reg-attendee"
+                className="role-label"
+              >
+                {"Customer"}
+                <input
+                  id="checkbox-role-reg-attendee"
+                  name="attendee"
+                  type="checkbox"
+                  className="user-role-input"
+                  onChange={handleRegisterFormInputChange}
+                  checked={registerFormData.role.attendee}
+                  value={USER_ROLE.ATTENDEE}
+                  disabled={registerFormData.role.speaker}
+                />
+                <span className="check-mark"></span>
+              </label>
+            </div>
+            <div className="w-[50%]">
+              <label htmlFor="checkbox-role-reg-speaker" className="role-label">
+                {"Speaker"}
+                <input
+                  id="checkbox-role-reg-speaker"
+                  name="speaker"
+                  type="checkbox"
+                  className="user-role-input"
+                  onChange={handleRegisterFormInputChange}
+                  checked={registerFormData.role.speaker}
+                  value={USER_ROLE.SPEAKER}
+                  disabled={registerFormData.role.attendee}
+                />
+                <span className="check-mark"></span>
+              </label>
+            </div>
           </div>
-          <div className="w-[50%]">
-            <label htmlFor="checkbox-role-reg-speaker" className="role-label">
-              {"Speaker"}
-              <input
-                id="checkbox-role-reg-speaker"
-                name="speaker"
-                type="checkbox"
-                className="user-role-input"
-                onChange={handleRegisterFormInputChange}
-                checked={registerFormData.role.speaker}
-                value={USER_ROLE.SPEAKER}
-                disabled={registerFormData.role.attendee}
-              />
-              <span className="check-mark"></span>
-            </label>
-          </div>
+          {registerFormData?.email &&
+            registerFormData?.password &&
+            registerFormData?.registrationRole &&
+            !registerFormData?.role?.attendee &&
+            !registerFormData?.role?.speaker && (
+              <div className="text-red-500 text-xs">{"Select user type"}</div>
+            )}
         </div>
 
         <div>

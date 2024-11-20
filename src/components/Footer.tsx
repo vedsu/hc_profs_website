@@ -1,5 +1,6 @@
-import { BaseSyntheticEvent, ReactNode, useState } from "react";
+import { BaseSyntheticEvent, ReactNode, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import SimpleReactValidator from "simple-react-validator";
 import {
   LINK_PAGE_ABOUT_US,
   LINK_PAGE_CONTACT_US,
@@ -23,11 +24,22 @@ const Footer = () => {
     email: "",
   });
 
-  /*------------Event Handlers----------- */
+  const simpleValidator = useRef(
+    new SimpleReactValidator({ className: "text-danger" })
+  );
+  const [_, forceUpdate] = useState<any>();
 
+  /*-----------------------------------------Event Handlers------------------------------------------*/
   const onSubmitUnsubscribeForm = async () => {
+    const formValid = simpleValidator.current.allValid();
+    if (!formValid) {
+      simpleValidator.current.showMessages();
+      forceUpdate("");
+      return;
+    }
+
     const payload = {
-      email: formUnsubscribeData.email,
+      Unsubscriber: formUnsubscribeData.email,
     };
     try {
       const res = await SubscriptionService.unsubscribe(payload);
@@ -57,8 +69,15 @@ const Footer = () => {
               setFormUnsubscribeData({ email: e.target.value })
             }
             mandatory
+            onBlur={() => {
+              simpleValidator.current.showMessageFor("email");
+            }}
+            validationMessage={simpleValidator.current.message(
+              "email",
+              email,
+              "required|email"
+            )}
           />
-          {/* <small></small> */}
         </div>
         <div className="self-center">
           <ButtonCustom

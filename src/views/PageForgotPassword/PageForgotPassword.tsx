@@ -1,33 +1,45 @@
-import jsonToFormData from "json-form-data";
-import React, { BaseSyntheticEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { BaseSyntheticEvent, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import SimpleReactValidator from "simple-react-validator";
 import ButtonCustom from "../../components/ButtonCustom";
 import Input from "../../components/Input";
-import { FORM_DATA_OPTIONS, HEALTH_PROFS } from "../../constant";
+import { HEALTH_PROFS } from "../../constant";
 import { LINK_PAGE_LOGIN_REG } from "../../routes";
 import PasswordRecoveryService from "../../services/PasswordRecoveryService";
 import { validatePostRequest } from "../../utils/commonUtils";
 
 const PageForgotPassword: React.FC = () => {
+  const navigate = useNavigate();
+
   const [formForgotPassData, setFormForgotPassData] = useState({
     email: "",
   });
+  const simpleValidator = useRef(
+    new SimpleReactValidator({ className: "text-danger" })
+  );
+  const [_, forceUpdate] = useState<any>();
 
   /*---------------Event Handlers----------------*/
 
   const onSubmitForgotPassForm = async () => {
+    const formValid = simpleValidator.current.allValid();
+    if (!formValid) {
+      simpleValidator.current.showMessages();
+      forceUpdate("");
+      return;
+    }
+
     const jsonPayload = {
       Email: formForgotPassData.email,
       Website: HEALTH_PROFS.WEBSITE,
     };
-    const formDataPayload = jsonToFormData(jsonPayload, FORM_DATA_OPTIONS);
 
     try {
       const res = await PasswordRecoveryService.createRecoverRequest(
-        formDataPayload
+        jsonPayload
       );
       if (validatePostRequest(res)) {
-        setFormForgotPassData({ email: "" });
+        navigate(LINK_PAGE_LOGIN_REG);
       }
     } catch (error) {
       console.error(error);
@@ -35,10 +47,10 @@ const PageForgotPassword: React.FC = () => {
   };
 
   return (
-    <div className="page-margin ">
-      <section className="py-5 flex flex-col items-center justify-center gap-5">
-        <div className="w-full flex flex-col text-sm text-left">
-          <h4 className="font-semibold text-2xl text-primary-pTextTeal ">
+    <div className="page-margin  w-full">
+      <section className="px-10 py-5 flex flex-col items-start justify-center gap-5 screen_var_one:px-0">
+        <div className="w-full flex flex-col gap-5 text-sm text-left">
+          <h4 className="font-semibold text-2xl text-primary-pLabel">
             Forgot Password
           </h4>
           <div>
@@ -63,23 +75,30 @@ const PageForgotPassword: React.FC = () => {
                 setFormForgotPassData({ email: e.target.value })
               }
               mandatory
+              onBlur={() => {
+                simpleValidator.current.showMessageFor("email");
+              }}
+              validationMessage={simpleValidator.current.message(
+                "email",
+                formForgotPassData.email,
+                "required|email"
+              )}
             />
-            {/* <small></small> */}
           </div>
 
           <div className="px-2">
             <ButtonCustom
-              className="w-full h-8 px-2 flex gap-2 justify-center text-primary-pTextLight bg-primary-bg-teal border border-primary-light-900 hover:bg-primary-bg-lightTeal rounded-full"
+              className="w-full px-2 py-1 flex gap-2 justify-center text-primary-pTextLight bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-lightTeal hover:bg-primary-bg-interactiveBlueHover"
               label={"Submit"}
               handleClickWithLoader={onSubmitForgotPassForm}
             />
           </div>
 
           <div className="px-2">
-            <div className="w-full h-8 px-2 flex gap-2 justify-center bg-primary-bg-mintCream border border-primary-light-900 rounded-full leading-8">
+            <div className="w-full h-8 px-2 flex gap-2 justify-center bg-primary-light-100 border border-primary-light-900 rounded-full leading-8">
               <span>or</span>
               <Link to={LINK_PAGE_LOGIN_REG}>
-                <span className="mx-1 text-primary-bg-teal">Login</span>
+                <span className="mx-1 text-primary-link-500">Login</span>
               </Link>
             </div>
           </div>

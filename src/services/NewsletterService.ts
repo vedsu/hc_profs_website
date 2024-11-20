@@ -9,7 +9,7 @@ class NewsletterService extends BaseApiService {
   };
 
   getNewsletterById = (endPoint: any) => {
-    const path = DEFAULT_PATH + endPoint;
+    const path = "/newsletter" + "/" + endPoint;
     return this.makeGetRequest(path);
   };
 }

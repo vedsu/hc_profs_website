@@ -1,9 +1,11 @@
 import { InputTextarea } from "primereact/inputtextarea";
-import React, { BaseSyntheticEvent, ReactNode, useState } from "react";
+import React, { BaseSyntheticEvent, ReactNode, useRef, useState } from "react";
+import SimpleReactValidator from "simple-react-validator";
 import ButtonCustom from "../../components/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom";
 import Input from "../../components/Input";
 import ContactUsService from "../../services/ContactUsService";
+import { validatePostRequest } from "../../utils/commonUtils";
 
 const initialContactUsFormData = {
   name: "",
@@ -17,6 +19,11 @@ const PageContactUs: React.FC = () => {
     initialContactUsFormData
   );
 
+  const simpleValidator = useRef(
+    new SimpleReactValidator({ className: "text-danger" })
+  );
+  const [_, forceUpdate] = useState<any>();
+
   const handleContactUsFormChange = (e: BaseSyntheticEvent) => {
     setFormContactUsData((prev) => {
       return {
@@ -27,6 +34,13 @@ const PageContactUs: React.FC = () => {
   };
 
   const onSubmitContactUsForm = async () => {
+    const formValid = simpleValidator.current.allValid();
+    if (!formValid) {
+      simpleValidator.current.showMessages();
+      forceUpdate("");
+      return;
+    }
+
     const payload = {
       name: formContactUsData.name,
       email: formContactUsData.email,
@@ -34,7 +48,11 @@ const PageContactUs: React.FC = () => {
     };
 
     try {
-      await ContactUsService.contactUs(payload);
+      const response = await ContactUsService.contactUs(payload);
+
+      if (validatePostRequest(response)) {
+        setShowContactFormDialog(false);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -55,8 +73,15 @@ const PageContactUs: React.FC = () => {
             value={name}
             handler={handleContactUsFormChange}
             mandatory
+            onBlur={() => {
+              simpleValidator.current.showMessageFor("name");
+            }}
+            validationMessage={simpleValidator.current.message(
+              "name",
+              name,
+              "required"
+            )}
           />
-          {/* <small></small> */}
         </div>
         <div className="px-2">
           <Input
@@ -67,14 +92,19 @@ const PageContactUs: React.FC = () => {
             value={email}
             handler={handleContactUsFormChange}
             mandatory
+            onBlur={() => {
+              simpleValidator.current.showMessageFor("email");
+            }}
+            validationMessage={simpleValidator.current.message(
+              "email",
+              email,
+              "required|email"
+            )}
           />
-          {/* <small></small> */}
         </div>
+
         <div className="px-2 flex flex-col gap-1">
-          <label>
-            {"Message"}
-            <span className="text-primary-asterisk">*</span>
-          </label>
+          <label>{"Message"}</label>
           <InputTextarea
             className={"w-full min-h-40 p-2 border border-primary-light-900"}
             name="message"
@@ -82,12 +112,11 @@ const PageContactUs: React.FC = () => {
             onChange={handleContactUsFormChange}
             maxLength={5000}
           />
-          {/* <small>{"validationMessage"}</small> */}
         </div>
 
-        <div className="self-center">
+        <div className="w-full self-center">
           <ButtonCustom
-            className="w-32 h-8 px-2 flex gap-2 justify-center text-white bg-primary-bg-limedSpruce border border-primary-light-900 rounded-full hover:bg-primary-dark-100"
+            className="w-full px-2 py-1 flex gap-2 justify-center text-primary-pTextLight bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-lightTeal hover:bg-primary-bg-interactiveBlueHover"
             label={"Submit"}
             handleClickWithLoader={onSubmitContactUsForm}
           />
@@ -97,7 +126,7 @@ const PageContactUs: React.FC = () => {
   };
 
   return (
-    <div className="page-margin w-full ">
+    <div className="page-margin w-full">
       <section className="px-10 py-5 flex flex-col items-center justify-center screen_var_one:px-0">
         <div className="flex flex-col gap-5">
           <div className="mb-1 w-full text-left">
@@ -146,9 +175,9 @@ const PageContactUs: React.FC = () => {
               </div>
             </div>
 
-            <div>
+            <div className="w-full sm:w-64 self-center">
               <button
-                className="px-5 w-full h-8 border border-primary-light-900 rounded-full bg-primary-bg-limedSpruce text-white hover:bg-primary-dark-100 sm:max-w-fit"
+                className="w-full px-2 py-1 flex gap-2 justify-center text-primary-pTextLight bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-lightTeal hover:bg-primary-bg-interactiveBlueHover"
                 onClick={() => setShowContactFormDialog(true)}
               >
                 Contact Us
@@ -161,7 +190,7 @@ const PageContactUs: React.FC = () => {
       <DialogCustom
         dialogVisible={showContactFormDialog}
         containerClassName={
-          "max-w-[668px] p-5 border border-primary-light-900 rounded-lg bg-white"
+          "w-full screen_var_one:min-w-[500px] p-5 border border-primary-light-900 rounded-lg bg-white"
         }
         headerTemplate={<h1 className="text-2xl">Contact Us</h1>}
         headerTemplateClassName={`flex items-center justify-center`}

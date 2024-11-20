@@ -44,7 +44,7 @@ const PageNewsletterInfo = () => {
   const getNewsletterDetails = async () => {
     try {
       const response = await NewsletterService.getNewsletterById(
-        "/" + params?.newsletterId
+        params?.newsletterId
       );
       if (validateGetRequest(response)) {
         const newsletter = response?.data;

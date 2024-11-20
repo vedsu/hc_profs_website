@@ -21,7 +21,8 @@ interface IHeaderProps {
   subscribeButtonHandler: any;
 }
 
-const orderFormURL = getEnvVariableValues(ENV_VAR.VITE_ORDER_FORM_URL);
+const orderFormURL =
+  "https://webinarprofs.s3.us-east-1.amazonaws.com/misc/HCprofs.pdf";
 
 const resourcesVideos = [
   {

@@ -47,7 +47,9 @@ const InputPasswordCustom = (props: IInputPassword) => {
           )}
         </button>
       </div>
-      <small>{validationMessage}</small>
+      <div className="text-red-500 text-xs">
+        {validationMessage ? validationMessage : null}
+      </div>
     </div>
   );
 };

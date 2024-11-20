@@ -9,7 +9,7 @@ class WebinarService extends BaseApiService {
   };
 
   getWebinarById = (endPoint: any) => {
-    const path = DEFAULT_PATH + endPoint;
+    const path = DEFAULT_PATH + "webinar" + "/" + endPoint;
     return this.makeGetRequest(path);
   };
 }

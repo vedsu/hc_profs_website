@@ -12,6 +12,11 @@ class SpeakerService extends BaseApiService {
     let path = DEFAULT_PATH + endPoint;
     return this.makeGetRequest(path);
   };
+
+  createSpeakerOpportunity = (endPoint: any, payload: any) => {
+    let path = DEFAULT_PATH + endPoint;
+    return this.makePostRequest(path, payload);
+  };
 }
 
 export default new SpeakerService();

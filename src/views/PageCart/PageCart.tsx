@@ -5,9 +5,11 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import SimpleReactValidator from "simple-react-validator";
 import AuthValidator from "../../components/AuthValidator";
 import ButtonCustom from "../../components/ButtonCustom";
 import CountrySelector from "../../components/CountrySelector";
@@ -89,6 +91,11 @@ const PageCart: React.FC = () => {
   const [couponMessage, setCouponMessage] = useState({
     ...initialCouponMessage,
   });
+
+  const simpleValidator = useRef(
+    new SimpleReactValidator({ className: "text-danger" })
+  );
+  const [_, forceUpdate] = useState<any>();
 
   /*---------------------------Service Calls------------------------------*/
   const getWebinarDetails = useCallback(async (webinarId: string) => {
@@ -278,6 +285,13 @@ const PageCart: React.FC = () => {
   };
 
   const onCheckout = async () => {
+    const formValid = simpleValidator.current.allValid();
+    if (!formValid) {
+      simpleValidator.current.showMessages();
+      forceUpdate("");
+      return;
+    }
+
     let cartInfo = { ...userData, ...cartFormData };
     let stripePaymentInfo: any = {
       customerName: cartFormData.customerName,
@@ -440,7 +454,16 @@ const PageCart: React.FC = () => {
                   value={cartFormData.customerName}
                   handler={handleCartFormChange}
                   mandatory
+                  onBlur={() => {
+                    simpleValidator.current.showMessageFor("customerName");
+                  }}
+                  validationMessage={simpleValidator.current.message(
+                    "customerName",
+                    cartFormData.customerName,
+                    "required"
+                  )}
                 />
+                <small className="!text-primary-error"></small>
               </div>
               <div className="px-2">
                 <Input
@@ -451,6 +474,14 @@ const PageCart: React.FC = () => {
                   value={cartFormData.billingEmail}
                   handler={handleCartFormChange}
                   mandatory
+                  onBlur={() => {
+                    simpleValidator.current.showMessageFor("billingEmail");
+                  }}
+                  validationMessage={simpleValidator.current.message(
+                    "billingEmail",
+                    cartFormData.billingEmail,
+                    "required|email"
+                  )}
                 />
               </div>
 
@@ -481,9 +512,17 @@ const PageCart: React.FC = () => {
                   {"Country"}
                   <span className="text-primary-asterisk">*</span>
                 </label>
-                <CountrySelector getSelectedCountry={handleCountryChange} />
-                {/* <small></small> */}
+                <CountrySelector
+                  name="country"
+                  getSelectedCountry={handleCountryChange}
+                  validationMessage={simpleValidator.current.message(
+                    "country",
+                    cartFormData.country,
+                    "required"
+                  )}
+                />
               </div>
+
               <div className="px-2">
                 <Input
                   className=""
@@ -529,6 +568,13 @@ const PageCart: React.FC = () => {
                   onChange={handleCartFormChange}
                   maxLength={500}
                 />
+                <div className="text-red-500 text-xs">
+                  {simpleValidator.current.message(
+                    "address",
+                    cartFormData.address,
+                    "required"
+                  )}
+                </div>
               </div>
             </div>
 

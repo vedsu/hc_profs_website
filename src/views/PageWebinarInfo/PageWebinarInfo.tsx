@@ -280,90 +280,60 @@ const PageWebinarInfo: React.FC = () => {
 
   const renderWebinarInfo = (): ReactNode => {
     return (
-      <div className="p-5 w-full flex-grow flex flex-col gap-2 screen_var_one:p-0">
-        <div className="text-left font-semibold">
-          <div>{webinarData?.topic ?? "N.A."}</div>
-        </div>
-        <div className="text-left text-sm">
-          <span className="font-semibold">{"Industry : "}</span>
-          <span>
-            {`${getInitialLetterUpperCase(webinarData?.industry) ?? "N.A."}`}
-          </span>
-        </div>
-        <div className="text-left text-sm">
-          <span className="font-semibold">{"Category : "}</span>
-          <span>
-            {getInitialLetterUpperCase(webinarData?.category) ?? "N.A."}
-          </span>
-        </div>
-        <div className="text-left text-sm">
-          <span className="font-semibold">{"Date : "}</span>
-          <span>{monDayYear(webinarData?.date) ?? "N.A."}</span>
-        </div>
-        <div className="text-left text-sm">
-          <span className="font-semibold">{"Time : "}</span>
-          <span>
-            {`${getInitialLetterUpperCase(webinarData?.time) ?? "N.A."} ${
-              webinarData?.timeZone ?? "N.A."
-            }`}
-          </span>
-        </div>
-        <div className="text-left text-sm">
-          <span className="font-semibold">{"Duration : "}</span>
-          <span>
-            {`${
-              getInitialLetterUpperCase(webinarData?.duration) ?? "N.A."
-            } minutes`}
-          </span>
-        </div>
-
-        <div className="mt-5 w-full flex flex-col bg-primary-light-100">
-          {renderPurchaseDescription()}
-
-          <div className="px-4 py-2">
-            <ButtonCustom
-              className="w-full h-8 py-2 bg-primary-bg-interactiveBlue font-semibold text-sm text-white rounded-full leading-3 hover:bg-primary-bg-interactiveBlueHover"
-              label={"Buy Now"}
-              handleClickWithLoader={onBuyNow}
-            />
+      <>
+        <div className="w-full flex flex-col justify-between screen_var_one:flex-row">
+          <div className="w-full screen_var_one:min-w-[50%] flex flex-col gap-5 items-start justify-start">
+            <div className="w-full flex items-center justify-start text-xs">
+              <img
+                className="w-28 h-28 rounded-[50%]"
+                src={speakerData?.photo}
+                alt="speaker-image"
+              />
+            </div>
+            <div>
+              <div className="my-2 font-semibold text-xs">
+                {getInitialLetterUpperCase(speakerData?.name) ?? "N.A."}
+              </div>
+            </div>
           </div>
-
-          <div className="py-2 self-center text-green-600 text-xs">
-            <Link to={LINK_PAGE_REFUND_AND_CANCELLATION}>
-              See Refund Policy
-            </Link>
-          </div>
-
-          <div className="px-4 pb-4 flex flex-col text-sm">
-            <h4>Please Note</h4>
-            <ul className="py-2 list-none">
-              <li className="mb-2">
-                You can access the training information by login in to your
-                hcprofs dashboard.
-              </li>
-            </ul>
+          <div className="w-full screen_var_one:w-[50%] screen_var_one:p-5  flex flex-col gap-2">
+            <div className="text-left text-base">
+              <span className="font-semibold">{"Industry : "}</span>
+              <span>
+                {`${
+                  getInitialLetterUpperCase(webinarData?.industry) ?? "N.A."
+                }`}
+              </span>
+            </div>
+            <div className="text-left text-base">
+              <span className="font-semibold">{"Category : "}</span>
+              <span>
+                {getInitialLetterUpperCase(webinarData?.category) ?? "N.A."}
+              </span>
+            </div>
+            <div className="text-left text-base">
+              <span className="font-semibold">{"Date : "}</span>
+              <span>{monDayYear(webinarData?.date) ?? "N.A."}</span>
+            </div>
+            <div className="text-left text-base">
+              <span className="font-semibold">{"Time : "}</span>
+              <span>
+                {`${getInitialLetterUpperCase(webinarData?.time) ?? "N.A."} ${
+                  webinarData?.timeZone ?? "N.A."
+                }`}
+              </span>
+            </div>
+            <div className="text-left text-base">
+              <span className="font-semibold">{"Duration : "}</span>
+              <span>
+                {`${
+                  getInitialLetterUpperCase(webinarData?.duration) ?? "N.A."
+                } minutes`}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    );
-  };
-
-  const renderSpeakerInfo = (): ReactNode => {
-    return (
-      <div className="flex flex-col gap-5 items-center justify-center">
-        <div className="min-w-[300px] flex items-center justify-center text-xs">
-          <img
-            className="w-24 h-24 rounded-[50%]"
-            src={speakerData?.photo}
-            alt="speaker-image"
-          />
-        </div>
-        <div>
-          <div className="my-2 font-semibold text-xs">
-            {getInitialLetterUpperCase(speakerData?.name) ?? "N.A."}
-          </div>
-        </div>
-      </div>
+      </>
     );
   };
 
@@ -405,7 +375,7 @@ const PageWebinarInfo: React.FC = () => {
             <thead>
               <tr>
                 <th className="px-6">{"Session"}</th>
-                <th className="text-center">{"Price ($)"}</th>
+                <th className="text-center">{"Price"}</th>
                 {activeTabId === "corporate-tab" ? (
                   <th className="text-center">{"Qty"}</th>
                 ) : null}
@@ -419,7 +389,7 @@ const PageWebinarInfo: React.FC = () => {
                       htmlFor="checkbox-buy-live"
                       className="webinar-purchase-label"
                     >
-                      {"Live"}
+                      {"Live  (Inc. Transcript)"}
                       <input
                         id="checkbox-buy-live"
                         type="checkbox"
@@ -430,12 +400,16 @@ const PageWebinarInfo: React.FC = () => {
                       <span className="check-mark"></span>
                     </label>
                   </td>
-                  <td>{webinarData?.priceLive}</td>
+
+                  <td>
+                    <span className="mr-1">{"$"}</span>
+                    {webinarData?.priceLive}
+                  </td>
 
                   {activeTabId === "corporate-tab" ? (
                     <td>
                       <input
-                        className="w-16 h-8 p-2 border border-primary-light-900 outline-none text-sm text-primary-pText"
+                        className="w-12 h-8 px-1 py-2 border border-primary-light-900 outline-none text-sm text-primary-pText"
                         name="liveSessionCount"
                         type="number"
                         min={0}
@@ -452,7 +426,7 @@ const PageWebinarInfo: React.FC = () => {
                     htmlFor="checkbox-buy-recording"
                     className="webinar-purchase-label"
                   >
-                    {"Recording"}
+                    {"Recording (Inc. Transcript)"}
                     <input
                       id="checkbox-buy-recording"
                       type="checkbox"
@@ -462,11 +436,14 @@ const PageWebinarInfo: React.FC = () => {
                     <span className="check-mark"></span>
                   </label>
                 </td>
-                <td>{webinarData?.priceRecording}</td>
+                <td>
+                  <span className="mr-1">{"$"}</span>
+                  {webinarData?.priceRecording}
+                </td>
                 {activeTabId === "corporate-tab" ? (
                   <td>
                     <input
-                      className="w-16 h-8 p-2 border border-primary-light-900 outline-none text-sm text-primary-pText"
+                      className="w-12 h-8 px-1 py-2 border border-primary-light-900 outline-none text-sm text-primary-pText"
                       name="recordingSessionCount"
                       type="number"
                       min={0}
@@ -482,7 +459,7 @@ const PageWebinarInfo: React.FC = () => {
                     htmlFor="checkbox-buy-dd"
                     className="webinar-purchase-label"
                   >
-                    {"Digital Download"}
+                    {"Digital Download (Inc. Transcript)"}
                     <input
                       id="checkbox-buy-dd"
                       type="checkbox"
@@ -492,11 +469,16 @@ const PageWebinarInfo: React.FC = () => {
                     <span className="check-mark"></span>
                   </label>
                 </td>
-                <td>{webinarData?.priceDigitalDownload}</td>
+
+                <td>
+                  <span className="mr-1">{"$"}</span>
+                  {webinarData?.priceDigitalDownload}
+                </td>
+
                 {activeTabId === "corporate-tab" ? (
                   <td>
                     <input
-                      className="w-16 h-8 p-2 border border-primary-light-900 outline-none text-sm text-primary-pText"
+                      className="w-12 h-8 px-1 py-2 border border-primary-light-900 outline-none text-sm text-primary-pText"
                       name="ddSessionCount"
                       type="number"
                       min={0}
@@ -540,17 +522,49 @@ const PageWebinarInfo: React.FC = () => {
           </div>
         ) : (
           <React.Fragment>
-            <div className="w-full flex flex-col-reverse items-start justify-between screen_var_one:flex-row">
-              {renderWebinarInfo()}
-              {renderSpeakerInfo()}
+            <div className="w-full flex flex-col items-stretch justify-between gap-5 screen_var_one:flex-row screen_var_one:gap-0">
+              <div className="px-2 w-full screen_var_one:w-[60%] screen_var_one:px-5 flex flex-col gap-5">
+                <div className="mb-4 text-xl text-left font-semibold">
+                  <div>{webinarData?.topic ?? "N.A."}</div>
+                </div>
+                {renderWebinarInfo()}
+
+                <div className="py-4 px-2 pb-4 flex flex-col text-sm bg-primary-light-100">
+                  <h4>Please Note</h4>
+                  <ul className="py-2 list-none">
+                    <li className="mb-2">
+                      You can access the training information by login in to
+                      your hcprofs dashboard.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="w-full screen_var_one:w-[40%] flex flex-col bg-primary-light-100">
+                {renderPurchaseDescription()}
+
+                <div className="px-4 py-2">
+                  <ButtonCustom
+                    className="w-full h-8 py-2 bg-primary-bg-interactiveBlue font-semibold text-sm text-white rounded-full leading-3 hover:bg-primary-bg-interactiveBlueHover"
+                    label={"Buy Now"}
+                    handleClickWithLoader={onBuyNow}
+                  />
+                </div>
+
+                <div className="py-2 self-center text-green-600 text-xs">
+                  <Link to={LINK_PAGE_REFUND_AND_CANCELLATION}>
+                    See Refund Policy
+                  </Link>
+                </div>
+              </div>
             </div>
 
-            <div className="w-full flex flex-col gap-10 place-items-center screen_var_one:place-items-center">
-              <div className="w-full p-5 border border-primary-light-900">
-                <div className="text-sm leading-6 text-justify text-pretty">
-                  <h4 className="text-left">{"Description"}</h4>
-                  <p>{webinarData?.description}</p>
-                </div>
+            <div className="w-full p-5 border border-primary-light-900">
+              <div className="text-base leading-6 text-justify text-pretty">
+                <h4 className="font-bold text-left underline">
+                  {"Description"}
+                </h4>
+                <p className="mt-2">{webinarData?.description}</p>
               </div>
             </div>
           </React.Fragment>

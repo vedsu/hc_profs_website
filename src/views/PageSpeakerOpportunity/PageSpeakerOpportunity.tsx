@@ -1,8 +1,14 @@
-import React, { BaseSyntheticEvent } from "react";
-import Input from "../../components/Input";
+import jsonToFormData from "json-form-data";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
+import React, { BaseSyntheticEvent, useRef, useState } from "react";
+import SimpleReactValidator from "simple-react-validator";
 import ButtonCustom from "../../components/ButtonCustom";
+import DialogCustom from "../../components/DialogCustom";
+import Input from "../../components/Input";
+import { FORM_DATA_OPTIONS } from "../../constant";
+import SpeakerService from "../../services/SpeakerService";
+import { validatePostRequest } from "../../utils/commonUtils";
 
 const initialSpeakerFormData = {
   name: "",
@@ -10,14 +16,33 @@ const initialSpeakerFormData = {
   education: "",
   country: "",
   phone: "",
-  industry: "",
+  industry: "Others",
   bio: "",
 };
 
+const industryOptions = [
+  "Nursing",
+  "Healthcare Management",
+  "Medical Billing and Coding",
+  "HIPAA and Compliance",
+  "E/M Services",
+  "Hospital and Compliance",
+  "Hospice and Home Care",
+  "CMS Compliance",
+  "CPT/ ICD Updates",
+  "Others",
+];
+
 function PageSpeakerOpportunity() {
+  const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
   const [speakerFormData, setSpeakerFormData] = React.useState(
     initialSpeakerFormData
   );
+
+  const simpleValidator = useRef(
+    new SimpleReactValidator({ className: "text-danger" })
+  );
+  const [_, forceUpdate] = useState<any>();
 
   /*------------Event Handlers----------- */
 
@@ -27,6 +52,7 @@ function PageSpeakerOpportunity() {
       [e.target.name]: e.target.value,
     }));
   };
+
   const handleIndustryChange = (e: DropdownChangeEvent) => {
     setSpeakerFormData((prev) => ({
       ...prev,
@@ -34,8 +60,38 @@ function PageSpeakerOpportunity() {
     }));
   };
 
-  const onSubmitSpeakerOpportunityForm = () => {
-    //
+  const onSubmitSpeakerOpportunityForm = async () => {
+    const formValid = simpleValidator.current.allValid();
+    if (!formValid) {
+      simpleValidator.current.showMessages();
+      forceUpdate("");
+      return;
+    }
+
+    const jsonPayload = {
+      Name: speakerFormData.name,
+      Email: speakerFormData.email,
+      Education: speakerFormData.education,
+      Country: speakerFormData.country,
+      Phone: speakerFormData.phone,
+      Industries: speakerFormData.industry,
+      Bio: speakerFormData.bio,
+    };
+
+    const formDataPayload = jsonToFormData(jsonPayload, FORM_DATA_OPTIONS);
+
+    try {
+      const response = await SpeakerService.createSpeakerOpportunity(
+        "speakeropportunity",
+        formDataPayload
+      );
+
+      if (validatePostRequest(response)) {
+        setShowConfirmDialog(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -54,6 +110,15 @@ function PageSpeakerOpportunity() {
                 label={"Name"}
                 value={speakerFormData.name}
                 handler={handleSpeakerFormInputChange}
+                mandatory
+                onBlur={() => {
+                  simpleValidator.current.showMessageFor("name");
+                }}
+                validationMessage={simpleValidator.current.message(
+                  "name",
+                  speakerFormData.name,
+                  "required"
+                )}
               />
               <Input
                 className="col-span-1"
@@ -62,6 +127,15 @@ function PageSpeakerOpportunity() {
                 type={"email"}
                 value={speakerFormData.email}
                 handler={handleSpeakerFormInputChange}
+                mandatory
+                onBlur={() => {
+                  simpleValidator.current.showMessageFor("email");
+                }}
+                validationMessage={simpleValidator.current.message(
+                  "email",
+                  speakerFormData.email,
+                  "required|email"
+                )}
               />
             </div>
 
@@ -85,16 +159,13 @@ function PageSpeakerOpportunity() {
             <div className="flex flex-col gap-1">
               <label>{"Industry"}</label>
               <Dropdown
-                className="p-2 w-full border border-primary-light-900 text-gray-500 text-xs"
+                className="p-2 w-full border border-primary-light-900 text-xs"
                 name="industry"
                 placeholder="Select Industry"
-                options={[{ label: "Option1", value: "val1" }]}
-                optionLabel="label"
-                optionValue="value"
-                value={""}
+                options={industryOptions}
+                value={speakerFormData.industry}
                 onChange={handleIndustryChange}
               />
-              {/* <small>{"validationMessage"}</small> */}
             </div>
 
             <div className="w-full flex flex-col gap-1">
@@ -108,7 +179,6 @@ function PageSpeakerOpportunity() {
                 onChange={handleSpeakerFormInputChange}
                 maxLength={5000}
               />
-              {/* <small>{"validationMessage"}</small> */}
             </div>
 
             <div className="w-full flex items-center justify-center">
@@ -162,6 +232,28 @@ function PageSpeakerOpportunity() {
           </div>
         </div>
       </section>
+
+      <DialogCustom
+        position={"top"}
+        dialogVisible={showConfirmDialog}
+        containerClassName={
+          "max-w-[400px] p-5 border border-primary-light-900 rounded-lg bg-white"
+        }
+        headerTemplate={<h1 className="text-2xl">Thank You!</h1>}
+        headerTemplateClassName={`flex items-center justify-center`}
+        bodyTemplate={
+          <div className="text-xs">
+            <p>
+              Your request has been successfully received. Our team will reach
+              out to you shortly
+            </p>
+          </div>
+        }
+        onHideDialog={() => {
+          if (!showConfirmDialog) return;
+          setShowConfirmDialog(false);
+        }}
+      />
     </div>
   );
 }
