@@ -200,6 +200,14 @@ const PageWebinarInfo: React.FC = () => {
   const onBuyNow = async () => {
     const userInfo = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
 
+    if (userInfo) {
+      const parsedUserInfo = JSON.parse(userInfo);
+      if (parsedUserInfo?.role?.speaker) {
+        alert("Please register as an Attendee");
+        return;
+      }
+    }
+
     if (userInfo && cartTotal > 0) {
       let isWebinarPurchased: any;
 

@@ -157,49 +157,141 @@ const UserDashboardLayout = (props: IUserDashboard) => {
   };
 
   const renderWebinarCards = (data: any) => {
-    return (
-      <div
-        key={Math.random().toString(36)?.substring(2, 8)}
-        onClick={onClickWebinarCardHandler}
-      >
-        <div className="p-3 card-scale flex flex-col gap-2 border-2 text-sm rounded-md">
-          <h4 className="max-w-fit px-2 font-semibold border rounded-full bg-primary-bg-lightCyan text-white">
-            Webinar
-          </h4>
-          <div>
-            <span className="font-semibold">Topic : </span>
-            <span className="font-medium">{data?.webinar ?? "N.A."}</span>
-          </div>
-
-          <div className="grid grid-cols-3">
-            <div className="col-span-1">
-              <span className="font-semibold">Duration : </span>
-              <span className="">
-                {Number(data?.duration ?? "N.A.")} minutes
-              </span>
-            </div>
-            <div className="col-span-1">
-              <span className="font-semibold">Date : </span>
-              <span className="">{data?.date ?? "N.A."}</span>
-            </div>
-            <div className="col-span-1">
-              <span className="font-semibold">Time : </span>
-              <span className="">{`${data?.time ?? "-"} ${
-                data?.timeZone ?? "-"
-              }`}</span>
-            </div>
-          </div>
-
-          {data?.sessionLive && isRoleSpeaker ? (
+    if (data?.sessionLive && isRoleSpeaker) {
+      return (
+        <div
+          key={Math.random().toString(36)?.substring(2, 8)}
+          onClick={onClickWebinarCardHandler}
+        >
+          <div className="p-3 card-scale flex flex-col gap-2 border-2 text-sm rounded-md">
+            <h4 className="max-w-fit px-2 font-semibold border rounded-full bg-primary-bg-lightCyan text-white">
+              Webinar
+            </h4>
             <div>
-              <span className="font-semibold">Live URL : </span>
-              <a className="text-blue-500" href={data?.urlLive}>
-                {data?.urlLive ?? ""}
-              </a>
+              <span className="font-semibold">Topic : </span>
+              <span className="font-medium">{data?.webinar ?? "N.A."}</span>
             </div>
-          ) : null}
 
-          {!isRoleSpeaker && (
+            <div className="grid grid-cols-3">
+              <div className="col-span-1">
+                <span className="font-semibold">Duration : </span>
+                <span className="">
+                  {Number(data?.duration ?? "N.A.")} minutes
+                </span>
+              </div>
+              <div className="col-span-1">
+                <span className="font-semibold">Date : </span>
+                <span className="">{data?.date ?? "N.A."}</span>
+              </div>
+              <div className="col-span-1">
+                <span className="font-semibold">Time : </span>
+                <span className="">{`${data?.time ?? "-"} ${
+                  data?.timeZone ?? "-"
+                }`}</span>
+              </div>
+            </div>
+
+            {data?.sessionLive && isRoleSpeaker ? (
+              <div>
+                <span className="font-semibold">Live URL : </span>
+                <a className="text-blue-500" href={data?.urlLive}>
+                  {data?.urlLive ?? ""}
+                </a>
+              </div>
+            ) : null}
+
+            {!isRoleSpeaker && (
+              <React.Fragment>
+                {data?.live_url ? (
+                  <div>
+                    <span className="font-semibold">Live URL : </span>
+                    <a className="text-blue-500" href={data?.live_url}>
+                      {data?.live_url ?? ""}
+                    </a>
+                  </div>
+                ) : null}
+
+                {data?.recording_url ? (
+                  <div>
+                    <span className="font-semibold">Recording URL : </span>
+                    <a className="text-blue-500" href={data?.recording_url}>
+                      {data?.recording_url ?? ""}
+                    </a>
+                  </div>
+                ) : null}
+
+                {data?.digitaldownload_url ? (
+                  <div>
+                    <span className="font-semibold">DD URL : </span>
+                    <a
+                      className="text-blue-500"
+                      href={data?.digitaldownload_url}
+                    >
+                      {data?.digitaldownload_url ?? ""}
+                    </a>
+                  </div>
+                ) : null}
+
+                {data?.transcript_url ? (
+                  <div>
+                    <span className="font-semibold">Transcript URL : </span>
+                    <a className="text-blue-500" href={data?.transcript_url}>
+                      {data?.transcript_url ?? ""}
+                    </a>
+                  </div>
+                ) : null}
+
+                <div>
+                  <ButtonCustom
+                    className="py-1 px-2 max-w-fit font-semibold text-sm"
+                    handleClick={() => {
+                      window.location.href = data?.document;
+                    }}
+                    label={"Download Receipt"}
+                  >
+                    <i className="mx-1 pi pi-download text-sm"></i>
+                  </ButtonCustom>
+                </div>
+              </React.Fragment>
+            )}
+          </div>
+        </div>
+      );
+    }
+    if (!isRoleSpeaker) {
+      return (
+        <div
+          key={Math.random().toString(36)?.substring(2, 8)}
+          onClick={onClickWebinarCardHandler}
+        >
+          <div className="p-3 card-scale flex flex-col gap-2 border-2 text-sm rounded-md">
+            <h4 className="max-w-fit px-2 font-semibold border rounded-full bg-primary-bg-lightCyan text-white">
+              Webinar
+            </h4>
+            <div>
+              <span className="font-semibold">Topic : </span>
+              <span className="font-medium">{data?.webinar ?? "N.A."}</span>
+            </div>
+
+            <div className="grid grid-cols-3">
+              <div className="col-span-1">
+                <span className="font-semibold">Duration : </span>
+                <span className="">
+                  {Number(data?.duration ?? "N.A.")} minutes
+                </span>
+              </div>
+              <div className="col-span-1">
+                <span className="font-semibold">Date : </span>
+                <span className="">{data?.date ?? "N.A."}</span>
+              </div>
+              <div className="col-span-1">
+                <span className="font-semibold">Time : </span>
+                <span className="">{`${data?.time ?? "-"} ${
+                  data?.timeZone ?? "-"
+                }`}</span>
+              </div>
+            </div>
+
             <React.Fragment>
               {data?.live_url ? (
                 <div>
@@ -249,10 +341,10 @@ const UserDashboardLayout = (props: IUserDashboard) => {
                 </ButtonCustom>
               </div>
             </React.Fragment>
-          )}
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   };
 
   return (

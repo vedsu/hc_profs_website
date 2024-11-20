@@ -50,6 +50,7 @@ const PageLoginOrRegister = () => {
   );
   const [activeTabId, setActiveTabId] = useState("login-tab");
   const [showError, setShowError] = useState(false);
+  const [showRegistrationError, setShowRegistrationError] = useState(false);
 
   const loginValidator = useRef(
     new SimpleReactValidator({ className: "text-danger" })
@@ -107,8 +108,12 @@ const PageLoginOrRegister = () => {
   };
 
   const onLogin = async () => {
+    setShowError(false);
     const formValid = loginValidator.current.allValid();
-    if (!formValid) {
+    if (
+      !formValid ||
+      (!loginFormData.role.attendee && !loginFormData.role.speaker)
+    ) {
       loginValidator.current.showMessages();
       forceUpdate("");
       return;
@@ -164,8 +169,12 @@ const PageLoginOrRegister = () => {
   };
 
   const onRegister = async () => {
+    setShowRegistrationError(false);
     const formValid = registerValidator.current.allValid();
-    if (!formValid) {
+    if (
+      !formValid ||
+      (!registerFormData.role.attendee && !registerFormData.role.speaker)
+    ) {
       registerValidator.current.showMessages();
       forceUpdateRegisterValidator("");
       return;
@@ -213,6 +222,8 @@ const PageLoginOrRegister = () => {
         } else if (registerFormData.role.speaker) {
           navigate(`${LINK_SPEAKER_DASHBOARD}`);
         }
+      } else {
+        setShowRegistrationError(true);
       }
     } catch (error) {
       console.error(error);
@@ -507,6 +518,12 @@ const PageLoginOrRegister = () => {
             handleClickWithLoader={onRegister}
           />
         </div>
+
+        {showRegistrationError && (
+          <div className="text-center text-red-500 text-xs">
+            <p>{"User already registered. Please login."}</p>
+          </div>
+        )}
       </div>
     );
   };

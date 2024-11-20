@@ -86,6 +86,14 @@ const PageNewsletterInfo = () => {
   const onReadNow = async () => {
     const userInfo = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
 
+    if (userInfo) {
+      const parsedUserInfo = JSON.parse(userInfo);
+      if (parsedUserInfo?.role?.speaker) {
+        alert("Please register as an Attendee");
+        return;
+      }
+    }
+
     if (userInfo && parseInt(newsletterData?.price, 10) > 0) {
       if (!getAttendeeNewsletterList()) {
         navigate(`${LINK_PAGE_CART}?purchase-item=newsletter`);
