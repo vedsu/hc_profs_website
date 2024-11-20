@@ -357,7 +357,7 @@ const Header = (props: IHeaderProps) => {
                                     className="font-thin"
                                     to={LINK_PAGE_NEWSLETTERS}
                                   >
-                                    Newsletters
+                                    E-Newsletter
                                   </Link>
                                 </li>
                                 <li>
@@ -375,7 +375,7 @@ const Header = (props: IHeaderProps) => {
                               <ul className="mega-menu-links resource-nav-links">
                                 <li>
                                   <a className="font-thin" href={"#"}>
-                                    Blog
+                                    Podcast
                                   </a>
                                 </li>
                                 <li>
@@ -593,7 +593,7 @@ const Header = (props: IHeaderProps) => {
                       <div>Publications</div>
                       <ul className="px-5 py-1 flex flex-col gap-1">
                         <li>
-                          <a href={LINK_PAGE_NEWSLETTERS}>Newsletter</a>
+                          <a href={LINK_PAGE_NEWSLETTERS}>E-Newsletter</a>
                         </li>
                         <li>
                           <a href={"#"}>E-book (*coming soon)</a>
@@ -604,7 +604,7 @@ const Header = (props: IHeaderProps) => {
                       <div>Get Inspired (*coming soon)</div>
                       <ul className="px-5 py-1 flex flex-col gap-1">
                         <li>
-                          <a href={"#"}>Blog</a>
+                          <a href={"#"}>Podcast</a>
                         </li>
                         <li>
                           <a href={"#"}>Press</a>

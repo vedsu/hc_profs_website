@@ -174,7 +174,7 @@ const PageAttendeeDashboard = () => {
         if (validateGetRequest(res)) {
           //webinar and newsletter info
           setAttendeeDashboardInfo([...res?.data?.[0], ...res?.data?.[3]]);
-          //other necessary informations
+          //other necessary information
           setAttendeeDashboardHistoryPending(res?.data?.[1]);
           setAttendeeDashboardHistoryPurchased(res?.data?.[2]);
           setAttendeeDashboardNewsletterPurchased(res?.data[4]);

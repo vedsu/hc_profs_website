@@ -319,6 +319,10 @@ nav {
   background-color: #0d2567d2;
 }
 
+.purchase-type-tab:disabled {
+  background-color: #c2c2c2;
+}
+
 /*--------------------------Webinar Listing----------------------------------------------*/
 .webinar-wrapper,
 .newsletter-wrapper,
@@ -733,7 +737,7 @@ input[type="checkbox"] {
   outline: none;
 }
 .btn-custom:focus {
-  box-shadow: 0 0 0 0.1rem #0071bc;
+  box-shadow: 0 0 0 0.1rem #e0f0fb;
 }
 .btn-custom-secondary:focus {
   box-shadow: 0 0 0 0.1rem #efefefd4;

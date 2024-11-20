@@ -2,7 +2,6 @@ import jsonToFormData from "json-form-data";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthValidator from "../../components/AuthValidator";
-import ButtonCustom from "../../components/ButtonCustom";
 import {
   FORM_DATA_OPTIONS,
   LOCAL_STORAGE_ITEMS,
@@ -40,12 +39,14 @@ const PageConfirmPayment = () => {
 
         if (parsedPaymentSuccessInfo?.purchaseItem === PURCHASE_ITEM.WEBINAR) {
           await createWebinarOrder();
+          redirectToDashboard();
         }
 
         if (
           parsedPaymentSuccessInfo?.purchaseItem === PURCHASE_ITEM.NEWSLETTER
         ) {
           await createNewsletterOrder();
+          redirectToDashboard();
         }
       } else if (freeNewsletterPurchaseInfo) {
         const parsedFreeNewsletterPurchaseInfo = JSON.parse(
@@ -55,9 +56,9 @@ const PageConfirmPayment = () => {
         localStorage.removeItem(
           LOCAL_STORAGE_ITEMS.PURCHASE_INFO_FREE_NEWSLETTER
         );
+        redirectToDashboard();
       }
     };
-
     onMount();
   }, []);
 
@@ -97,8 +98,8 @@ const PageConfirmPayment = () => {
           priceRecording: parsedCartInfo?.priceRecording,
           sessionDigitalDownload: parsedCartInfo?.webinarSessionDD,
           priceDigitalDownload: parsedCartInfo?.priceDigitalDownload,
-          sessionTranscript: parsedCartInfo?.webinarSessionTranscript,
-          priceTranscript: parsedCartInfo?.priceTranscript,
+          sessionTranscript: true,
+          priceTranscript: 0,
           customername: parsedCartInfo?.customerName,
           country: parsedCartInfo?.country,
           state: parsedCartInfo?.state,
@@ -118,7 +119,7 @@ const PageConfirmPayment = () => {
             quantityLive: parsedCartInfo?.liveSessionCount,
             quantityRecording: parsedCartInfo?.recordingSessionCount,
             quantityDigitalDownload: parsedCartInfo?.ddSessionCount,
-            quantityTranscript: parsedCartInfo?.transcriptSessionCount,
+            quantityTranscript: 0,
             attendees: parsedCartInfo?.participantsDetail,
           };
         }
@@ -248,17 +249,21 @@ const PageConfirmPayment = () => {
     }
   };
 
+  const redirectToDashboard = () => {
+    setTimeout(onGotoDashboard, 3000);
+  };
+
   return (
     <AuthValidator>
       <div className="page-margin">
         <div className="p-5 w-full h-screen flex flex-col gap-2 items-center justify-start">
           <div className="text-2xl">
-            <h4 className="font-bold text-xl text-primary-bg-teal">
-              Your payment was successful !
+            <h4 className="font-bold  text-blue-400 text-xl">
+              Order Confirmation
             </h4>
           </div>
 
-          <div className="max-w-fit-content flex gap-5 font-semibold text-sm text-left leading-6">
+          <div className="max-w-[500px] font-normal text-sm text-left leading-6">
             <p>
               Thank you for placing an order with HCProfs. We are pleased to
               confirm the receipt of your order
@@ -275,22 +280,20 @@ const PageConfirmPayment = () => {
               or need further assistance, please do not hesitate to contact our
               customer service team at cs@hcprofs.com or +1-830-256-0384.
               <br />
-              Thank you for choosing HCProfs.
-              <br />
               We value your business and look forward to serving you again. A
               confirmation email has been sent to your registered email.
               <br />
-              Warm regards,
+              Thank you for choosing HCProfs. <br /> Warm regards,
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-1 cursor-pointer">
+          {/* <div className="flex flex-wrap gap-1 cursor-pointer">
             <ButtonCustom
               className="px-4 py-2 border rounded-full bg-primary-bg-purple text-white"
               label={"Go to dashboard"}
               handleClick={onGotoDashboard}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </AuthValidator>

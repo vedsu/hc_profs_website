@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { CARD_SUGGESTIONS } from "../constant";
-import { LINK_PAGE_CART } from "../routes";
+import { LINK_PAGE_NEWSLETTERS, LINK_PAGE_WEBINAR_LISTING } from "../routes";
 import { getInitialLetterUpperCase } from "../utils/commonUtils";
 import { PURCHASE_ITEM } from "../views/PageCart/PageCart";
 import ButtonCustom from "./ButtonCustom";
@@ -18,9 +18,9 @@ const CardTemplates = (props: ICardTemplates) => {
 
   const handleCardBuyNow = (cardItem: any) => {
     if (cardItem?.cardCategory === PURCHASE_ITEM.WEBINAR) {
-      navigate(`${LINK_PAGE_CART}?purchase-item=webinar`);
+      navigate(`${LINK_PAGE_WEBINAR_LISTING}/${cardItem?.id}`);
     } else if (cardItem?.cardCategory === PURCHASE_ITEM?.NEWSLETTER) {
-      navigate(`${LINK_PAGE_CART}?purchase-item=newsletter`);
+      navigate(`${LINK_PAGE_NEWSLETTERS}/${cardItem?.id}`);
     }
   };
 

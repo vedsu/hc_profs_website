@@ -12,12 +12,14 @@ import {
   LOCAL_STORAGE_ITEMS,
   PURCHASE_CATEGORY,
   SESSION_STORAGE_ITEMS,
+  USER_ROLE,
 } from "../../constant";
 import {
   LINK_PAGE_CART,
   LINK_PAGE_LOGIN_REG,
   LINK_PAGE_REFUND_AND_CANCELLATION,
 } from "../../routes";
+import DashboardService from "../../services/DashboardService";
 import WebinarService from "../../services/WebinarService";
 import {
   getInitialLetterUpperCase,
@@ -30,14 +32,12 @@ const initialPurchaseData = {
   webinarSessionLive: false,
   webinarSessionRecording: false,
   webinarSessionDD: false,
-  webinarSessionTranscript: false,
 };
 
 const initialCorporatePurchaseInfo = {
   liveSessionCount: 1,
   recordingSessionCount: 1,
   ddSessionCount: 1,
-  transcriptSessionCount: 1,
 };
 
 const PageWebinarInfo: React.FC = () => {
@@ -46,6 +46,8 @@ const PageWebinarInfo: React.FC = () => {
 
   const [isLoadingWebinar, setIsLoadingWebinar] = useState(true);
   const [activeTabId, setActiveTabId] = useState("individual-tab");
+  const [isWebinarAlreadyPurchased, setIsWebinarAlreadyPurchased] =
+    useState(false);
   const [showCartEmptyMessage, setShowCartEmptyMessage] = useState(false);
   const [webinarData, setWebinarData] = useState<any>(null);
   const [speakerData, setSpeakerData] = useState<any>(null);
@@ -107,37 +109,49 @@ const PageWebinarInfo: React.FC = () => {
     const isDDChecked = (
       document.getElementById("checkbox-buy-dd") as HTMLInputElement
     )?.checked;
-    const isTranscriptChecked = (
-      document.getElementById("checkbox-buy-trans") as HTMLInputElement
-    )?.checked;
 
     const livePrice = Number(webinarData?.priceLive ?? "0");
     const recordingPrice = Number(webinarData?.priceRecording ?? "0");
     const ddPrice = Number(webinarData?.priceDigitalDownload ?? "0");
-    const transcriptPrice = Number(webinarData?.priceTranscript ?? "0");
 
     if (isLiveChecked)
       amt += livePrice * corporatePurchaseTypeInfo.liveSessionCount;
     if (isRecordingChecked)
       amt += recordingPrice * corporatePurchaseTypeInfo.recordingSessionCount;
     if (isDDChecked) amt += ddPrice * corporatePurchaseTypeInfo.ddSessionCount;
-    if (isTranscriptChecked)
-      amt += transcriptPrice * corporatePurchaseTypeInfo.transcriptSessionCount;
 
     setCartTotal(amt);
     setPurchaseData({
       webinarSessionLive: Number(livePrice) ? true : false,
       webinarSessionRecording: Number(recordingPrice) ? true : false,
       webinarSessionDD: Number(ddPrice) ? true : false,
-      webinarSessionTranscript: Number(transcriptPrice) ? true : false,
     });
     setShowCartEmptyMessage(false);
   }, [
     corporatePurchaseTypeInfo.liveSessionCount,
     corporatePurchaseTypeInfo.recordingSessionCount,
     corporatePurchaseTypeInfo.ddSessionCount,
-    corporatePurchaseTypeInfo.transcriptSessionCount,
   ]);
+
+  const getAttendeeDashBoardInfo = async () => {
+    const userDataFromLocalStorage = localStorage.getItem(
+      LOCAL_STORAGE_ITEMS.USERINFO
+    );
+
+    if (userDataFromLocalStorage) {
+      const userInfo = JSON.parse(userDataFromLocalStorage);
+      const path = "/" + `${userInfo.email}` + "/" + USER_ROLE.ATTENDEE;
+      try {
+        const res = await DashboardService.getUserDashboardInfo(path);
+        if (validateGetRequest(res)) {
+          //return the purchased webinar info
+          return res?.data?.[0];
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
   /*--------------------------Event Handlers-----------------*/
   const onTabClick = (event: BaseSyntheticEvent) => {
@@ -156,29 +170,22 @@ const PageWebinarInfo: React.FC = () => {
     const isDDChecked = (
       document.getElementById("checkbox-buy-dd") as HTMLInputElement
     )?.checked;
-    const isTranscriptChecked = (
-      document.getElementById("checkbox-buy-trans") as HTMLInputElement
-    )?.checked;
 
     const livePrice = Number(webinarData?.priceLive ?? "0");
     const recordingPrice = Number(webinarData?.priceRecording ?? "0");
     const ddPrice = Number(webinarData?.priceDigitalDownload ?? "0");
-    const transcriptPrice = Number(webinarData?.priceTranscript ?? "0");
 
     if (isLiveChecked)
       amt += livePrice * corporatePurchaseTypeInfo.liveSessionCount;
     if (isRecordingChecked)
       amt += recordingPrice * corporatePurchaseTypeInfo.recordingSessionCount;
     if (isDDChecked) amt += ddPrice * corporatePurchaseTypeInfo.ddSessionCount;
-    if (isTranscriptChecked)
-      amt += transcriptPrice * corporatePurchaseTypeInfo.transcriptSessionCount;
 
     setCartTotal(amt);
     setPurchaseData({
       webinarSessionLive: Number(livePrice) ? true : false,
       webinarSessionRecording: Number(recordingPrice) ? true : false,
       webinarSessionDD: Number(ddPrice) ? true : false,
-      webinarSessionTranscript: Number(transcriptPrice) ? true : false,
     });
     setShowCartEmptyMessage(false);
   };
@@ -191,25 +198,42 @@ const PageWebinarInfo: React.FC = () => {
   };
 
   const onBuyNow = async () => {
-    const isUserLoggedIn = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
+    const userInfo = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
 
-    if (isUserLoggedIn && cartTotal > 0) {
-      navigate(`${LINK_PAGE_CART}?purchase-item=webinar`);
-      localStorage.setItem(
-        LOCAL_STORAGE_ITEMS.PURCHASE_INFO,
-        JSON.stringify({
-          ...purchaseData,
-          ...(activeTabId === "corporate-tab"
-            ? {
-                purchaseCategory: PURCHASE_CATEGORY.CORPORATE,
-                ...corporatePurchaseTypeInfo,
-              }
-            : {}),
-          webinarId: params?.webinar,
-          cartTotal: cartTotal,
-        })
-      );
-    } else if (isUserLoggedIn && cartTotal === 0) {
+    if (userInfo && cartTotal > 0) {
+      let isWebinarPurchased: any;
+
+      if (activeTabId === "individual-tab") {
+        const purchasedList = await getAttendeeDashBoardInfo();
+        isWebinarPurchased = purchasedList?.find(
+          (purchasedWebinar: any) =>
+            purchasedWebinar?.w_id === webinarData?.id &&
+            purchasedWebinar?.total_attendee === null
+        );
+      }
+
+      if (!isWebinarPurchased) {
+        navigate(`${LINK_PAGE_CART}?purchase-item=webinar`);
+        localStorage.setItem(
+          LOCAL_STORAGE_ITEMS.PURCHASE_INFO,
+          JSON.stringify({
+            ...purchaseData,
+            ...(activeTabId === "corporate-tab"
+              ? {
+                  purchaseCategory: PURCHASE_CATEGORY.CORPORATE,
+                  ...corporatePurchaseTypeInfo,
+                }
+              : {}),
+            webinarId: params?.webinar,
+            cartTotal: cartTotal,
+          })
+        );
+      } else {
+        alert("You have already purchased this webinar.");
+        setIsWebinarAlreadyPurchased(true);
+        setActiveTabId("corporate-tab");
+      }
+    } else if (userInfo && cartTotal === 0) {
       setShowCartEmptyMessage(true);
     } else {
       sessionStorage.setItem(
@@ -292,25 +316,51 @@ const PageWebinarInfo: React.FC = () => {
             } minutes`}
           </span>
         </div>
+
+        <div className="mt-5 w-full flex flex-col bg-primary-light-100">
+          {renderPurchaseDescription()}
+
+          <div className="px-4 py-2">
+            <ButtonCustom
+              className="w-full h-8 py-2 bg-primary-bg-interactiveBlue font-semibold text-sm text-white rounded-full leading-3 hover:bg-primary-bg-interactiveBlueHover"
+              label={"Buy Now"}
+              handleClickWithLoader={onBuyNow}
+            />
+          </div>
+
+          <div className="py-2 self-center text-green-600 text-xs">
+            <Link to={LINK_PAGE_REFUND_AND_CANCELLATION}>
+              See Refund Policy
+            </Link>
+          </div>
+
+          <div className="px-4 pb-4 flex flex-col text-sm">
+            <h4>Please Note</h4>
+            <ul className="py-2 list-none">
+              <li className="mb-2">
+                You can access the training information by login in to your
+                hcprofs dashboard.
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     );
   };
 
   const renderSpeakerInfo = (): ReactNode => {
     return (
-      <div>
-        <div className="w-full flex flex-col gap-5 items-center">
-          <div className="min-w-[300px] flex items-center justify-center text-xs">
-            <img
-              className="w-24 h-24 rounded-[50%]"
-              src={speakerData?.photo}
-              alt="speaker-image"
-            />
-          </div>
-          <div>
-            <div className="my-2 font-semibold text-xs">
-              {getInitialLetterUpperCase(speakerData?.name) ?? "N.A."}
-            </div>
+      <div className="flex flex-col gap-5 items-center justify-center">
+        <div className="min-w-[300px] flex items-center justify-center text-xs">
+          <img
+            className="w-24 h-24 rounded-[50%]"
+            src={speakerData?.photo}
+            alt="speaker-image"
+          />
+        </div>
+        <div>
+          <div className="my-2 font-semibold text-xs">
+            {getInitialLetterUpperCase(speakerData?.name) ?? "N.A."}
           </div>
         </div>
       </div>
@@ -330,6 +380,7 @@ const PageWebinarInfo: React.FC = () => {
                   : ""
               }`}
               onClick={onTabClick}
+              disabled={isWebinarAlreadyPurchased}
             >
               Individual
             </button>
@@ -354,8 +405,10 @@ const PageWebinarInfo: React.FC = () => {
             <thead>
               <tr>
                 <th className="px-6">{"Session"}</th>
-                <th>{"Price ($)"}</th>
-                {activeTabId === "corporate-tab" ? <th>{"Qty"}</th> : null}
+                <th className="text-center">{"Price ($)"}</th>
+                {activeTabId === "corporate-tab" ? (
+                  <th className="text-center">{"Qty"}</th>
+                ) : null}
               </tr>
             </thead>
             <tbody>
@@ -453,36 +506,6 @@ const PageWebinarInfo: React.FC = () => {
                   </td>
                 ) : null}
               </tr>
-              <tr>
-                <td>
-                  <label
-                    htmlFor="checkbox-buy-trans"
-                    className="webinar-purchase-label"
-                  >
-                    {"Transcript"}
-                    <input
-                      id="checkbox-buy-trans"
-                      type="checkbox"
-                      className="buy-webinar-input"
-                      onChange={handlePurchaseInput}
-                    />
-                    <span className="check-mark"></span>
-                  </label>
-                </td>
-                <td>{webinarData?.priceTranscript}</td>
-                {activeTabId === "corporate-tab" ? (
-                  <td>
-                    <input
-                      className="w-16 h-8 p-2 border border-primary-light-900 outline-none text-sm text-primary-pText"
-                      name="transcriptSessionCount"
-                      type="number"
-                      min={0}
-                      value={corporatePurchaseTypeInfo.transcriptSessionCount}
-                      onChange={handleCorporatePurchaseQuantities}
-                    />
-                  </td>
-                ) : null}
-              </tr>
             </tbody>
           </table>
 
@@ -517,65 +540,16 @@ const PageWebinarInfo: React.FC = () => {
           </div>
         ) : (
           <React.Fragment>
-            <div className="w-full flex flex-col items-center justify-between screen_var_one:flex-row">
-              {renderSpeakerInfo()}
+            <div className="w-full flex flex-col-reverse items-start justify-between screen_var_one:flex-row">
               {renderWebinarInfo()}
+              {renderSpeakerInfo()}
             </div>
 
-            <div className="w-full flex flex-col-reverse gap-10 place-items-center screen_var_one:flex-row screen_var_one:place-items-start">
-              <div className="w-full screen_var_one:w-[50%] p-5 border border-primary-light-900">
+            <div className="w-full flex flex-col gap-10 place-items-center screen_var_one:place-items-center">
+              <div className="w-full p-5 border border-primary-light-900">
                 <div className="text-sm leading-6 text-justify text-pretty">
                   <h4 className="text-left">{"Description"}</h4>
                   <p>{webinarData?.description}</p>
-                </div>
-              </div>
-
-              <div className="w-full screen_var_one:w-[50%] flex flex-col bg-primary-light-100">
-                {renderPurchaseDescription()}
-
-                <div className="px-4 py-2">
-                  <ButtonCustom
-                    className="w-full h-8 py-2 bg-primary-bg-interactiveBlue font-semibold text-sm text-white rounded-full leading-3 hover:bg-primary-bg-interactiveBlueHover"
-                    label={"Buy Now"}
-                    handleClickWithLoader={onBuyNow}
-                  />
-                </div>
-
-                <div className="py-2 self-center text-green-600 text-xs">
-                  <Link to={LINK_PAGE_REFUND_AND_CANCELLATION}>
-                    See Refund Policy
-                  </Link>
-                </div>
-
-                <div className="px-4 pb-4 flex flex-col text-sm">
-                  <h4>Please Note</h4>
-                  <ul className="py-2 list-none">
-                    <li className="mb-2">
-                      Live Webinar Training: A real-time virtual webinar link
-                      and instructions will be provided 24 hours before each
-                      session.
-                    </li>
-                    <li className="mb-2">
-                      Recorded Webinar: A pre-recorded event available for 30
-                      days. The recording will be sent 24-48 hours after the
-                      live session concludes.
-                    </li>
-                    <li className="mb-2">
-                      Digital Download: A file available for download,
-                      accessible for 30 days. It will be provided 3-7 working
-                      days after the live session.
-                    </li>
-                    <li className="mb-2">
-                      Transcript: A written form of the webinar, including
-                      participant questions and presenter comments, available
-                      for 30 days. It will be sent within 3-7 working days after
-                      the live session.
-                    </li>
-                    <li className="mb-2">
-                      Also, You can access the training information by login in
-                      your dashboard hcprofs .
-                    </li>
-                  </ul>
                 </div>
               </div>
             </div>

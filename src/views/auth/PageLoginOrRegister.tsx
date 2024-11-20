@@ -12,6 +12,8 @@ import {
 import {
   LINK_ATTENDEE_DASHBOARD,
   LINK_PAGE_FORGOT_PASSWORD,
+  LINK_PAGE_NEWSLETTERS,
+  LINK_PAGE_WEBINAR_LISTING,
   LINK_SPEAKER_DASHBOARD,
 } from "../../routes";
 import AuthService from "../../services/AuthService";
@@ -108,9 +110,33 @@ const PageLoginOrRegister = () => {
           })
         );
 
-        if (loginFormData.role.attendee) navigate(`${LINK_ATTENDEE_DASHBOARD}`);
-        else if (loginFormData.role.speaker)
+        if (loginFormData.role.attendee) {
+          const webinarPurchaseBeforeLogin = localStorage.getItem(
+            LOCAL_STORAGE_ITEMS.CARD_CONTINUE_PURCHASE
+          );
+          const newsletterPurchaseBeforeLogin = localStorage.getItem(
+            LOCAL_STORAGE_ITEMS.CARD_CONTINUE_PURCHASE_NEWSLETTER
+          );
+          if (webinarPurchaseBeforeLogin) {
+            const parsedWebinarPurchaseBeforeLogin = JSON.parse(
+              webinarPurchaseBeforeLogin
+            );
+            navigate(
+              `${LINK_PAGE_WEBINAR_LISTING}/${parsedWebinarPurchaseBeforeLogin?.id}`
+            );
+          } else if (newsletterPurchaseBeforeLogin) {
+            const parsedNewsletterPurchaseBeforeLogin = JSON.parse(
+              newsletterPurchaseBeforeLogin
+            );
+            navigate(
+              `${LINK_PAGE_NEWSLETTERS}/${parsedNewsletterPurchaseBeforeLogin?.id}`
+            );
+          } else {
+            navigate(`${LINK_ATTENDEE_DASHBOARD}`);
+          }
+        } else if (loginFormData.role.speaker) {
           navigate(`${LINK_SPEAKER_DASHBOARD}`);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -133,10 +159,33 @@ const PageLoginOrRegister = () => {
           })
         );
 
-        if (registerFormData.role.attendee)
-          navigate(`${LINK_ATTENDEE_DASHBOARD}`);
-        else if (registerFormData.role.speaker)
+        if (registerFormData.role.attendee) {
+          const webinarPurchaseBeforeLogin = localStorage.getItem(
+            LOCAL_STORAGE_ITEMS.CARD_CONTINUE_PURCHASE
+          );
+          const newsletterPurchaseBeforeLogin = localStorage.getItem(
+            LOCAL_STORAGE_ITEMS.CARD_CONTINUE_PURCHASE_NEWSLETTER
+          );
+          if (webinarPurchaseBeforeLogin) {
+            const parsedWebinarPurchaseBeforeLogin = JSON.parse(
+              webinarPurchaseBeforeLogin
+            );
+            navigate(
+              `${LINK_PAGE_WEBINAR_LISTING}/${parsedWebinarPurchaseBeforeLogin?.id}`
+            );
+          } else if (newsletterPurchaseBeforeLogin) {
+            const parsedNewsletterPurchaseBeforeLogin = JSON.parse(
+              newsletterPurchaseBeforeLogin
+            );
+            navigate(
+              `${LINK_PAGE_NEWSLETTERS}/${parsedNewsletterPurchaseBeforeLogin?.id}`
+            );
+          } else {
+            navigate(`${LINK_ATTENDEE_DASHBOARD}`);
+          }
+        } else if (registerFormData.role.speaker) {
           navigate(`${LINK_SPEAKER_DASHBOARD}`);
+        }
       }
     } catch (error) {
       console.error(error);

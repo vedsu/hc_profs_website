@@ -62,7 +62,7 @@ const ButtonCustom = (props: IButtonProps) => {
 
         {showLoader || isLoading ? (
           <i
-            className={`i-focus pi pi-spin pi-spinner text-xs ${
+            className={`mx-2 i-focus pi pi-spin pi-spinner text-xs ${
               loaderIconClassName ?? ""
             }`}
           ></i>

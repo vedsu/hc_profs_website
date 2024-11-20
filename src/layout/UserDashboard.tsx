@@ -20,7 +20,7 @@ const dashboardInstructionsAttendee = [
   "Live Webinar Training: A real-time virtual webinar link and instructions will be provided 24 hours before each session.",
   "Recorded Webinar: A pre-recorded event available for 30 days. The recording will be sent 24-48 hours after the live session concludes.",
   "Digital Download: A file available for download, accessible for 30 days. It will be provided 3-7 working days after the live session.",
-  "Transcript: A written form of the webinar, including participant questions and presenter comments, available for 30 days. It will be sent within 3-7 working days after the live session.",
+  "Transcript: A written form of the webinar, including participant questions and presenter comments, available for 30 days. It will be available within 3-7 working days after the live session and will be provided along side any of the above purchase.",
 ];
 
 const dashboardInstructionsSpeaker = [

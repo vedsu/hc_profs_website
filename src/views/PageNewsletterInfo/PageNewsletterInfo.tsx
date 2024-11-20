@@ -7,12 +7,14 @@ import {
   LOCAL_STORAGE_ITEMS,
   PAYMENT_STATUS,
   SESSION_STORAGE_ITEMS,
+  USER_ROLE,
 } from "../../constant";
 import {
   LINK_PAGE_CART,
   LINK_PAGE_CONFIRM_PAYMENT,
   LINK_PAGE_LOGIN_REG,
 } from "../../routes";
+import DashboardService from "../../services/DashboardService";
 import NewsletterService from "../../services/NewsletterService";
 import OrderService from "../../services/OrderService";
 import {
@@ -60,72 +62,95 @@ const PageNewsletterInfo = () => {
     }
   };
 
+  const getAttendeeDashBoardInfo = async () => {
+    const userDataFromLocalStorage = localStorage.getItem(
+      LOCAL_STORAGE_ITEMS.USERINFO
+    );
+
+    if (userDataFromLocalStorage) {
+      const userInfo = JSON.parse(userDataFromLocalStorage);
+      const path = "/" + `${userInfo.email}` + "/" + USER_ROLE.ATTENDEE;
+      try {
+        const res = await DashboardService.getUserDashboardInfo(path);
+        if (validateGetRequest(res)) {
+          //return the purchased webinar info
+          return res?.data?.[3];
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
   /*--------------------------Event Handlers-----------------*/
-
   const onReadNow = async () => {
-    const isUserLoggedIn = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
+    const userInfo = localStorage.getItem(LOCAL_STORAGE_ITEMS.USERINFO);
 
-    if (isUserLoggedIn && parseInt(newsletterData?.price, 10) > 0) {
-      navigate(`${LINK_PAGE_CART}?purchase-item=newsletter`);
-      localStorage.setItem(
-        LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER,
-        JSON.stringify({
-          ...newsletterData,
-          newsletterId: params?.newsletterId,
-          cartTotal: parseInt(newsletterData?.price, 10),
-        })
-      );
-    } else if (isUserLoggedIn && parseInt(newsletterData?.price, 10) === 0) {
-      const today = new Date();
-      const yyyy = today.getFullYear() % 100;
-      let mm: any = today.getMonth() + 1;
-      let dd: any = today.getDate();
-
-      if (dd < 10) dd = "0" + dd;
-      if (mm < 10) mm = "0" + mm;
-
-      const formattedToday = dd + mm + yyyy;
-      const invoiceFormattedToday = dd + "/" + mm + "/" + yyyy;
-
-      const userInfo = JSON.parse(isUserLoggedIn);
-      if (userInfo) {
-        const jsonPayloadNewsletterOrder = {
-          customeremail: userInfo?.email,
-          paymentstatus: PAYMENT_STATUS.PURCHASED,
-          topic: newsletterData?.topic,
-          orderamount: 0,
-          billingemail: userInfo?.email,
-          customername: null,
-          country: null,
-          order_datetimezone: new Date(),
-          invoice_number: `${formattedToday}_HCP_${Math.random()
-            .toString(36)
-            .substring(2, 10)
-            ?.toUpperCase()}`,
-        };
-
+    if (userInfo && parseInt(newsletterData?.price, 10) > 0) {
+      if (!getAttendeeNewsletterList()) {
+        navigate(`${LINK_PAGE_CART}?purchase-item=newsletter`);
         localStorage.setItem(
-          LOCAL_STORAGE_ITEMS.PURCHASE_INFO_FREE_NEWSLETTER,
+          LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER,
           JSON.stringify({
-            generatedInvoiceNum: jsonPayloadNewsletterOrder.invoice_number,
-            generatedDate: invoiceFormattedToday,
+            ...newsletterData,
+            newsletterId: params?.newsletterId,
+            cartTotal: parseInt(newsletterData?.price, 10),
           })
         );
+      }
+    } else if (userInfo && parseInt(newsletterData?.price, 10) === 0) {
+      if (!getAttendeeNewsletterList()) {
+        const today = new Date();
+        const yyyy = today.getFullYear() % 100;
+        let mm: any = today.getMonth() + 1;
+        let dd: any = today.getDate();
 
-        const formDataPayload = jsonToFormData(
-          jsonPayloadNewsletterOrder,
-          FORM_DATA_OPTIONS
-        );
+        if (dd < 10) dd = "0" + dd;
+        if (mm < 10) mm = "0" + mm;
 
-        try {
-          const response = await OrderService.createNewsletterOrder(
-            formDataPayload
+        const formattedToday = dd + mm + yyyy;
+        const invoiceFormattedToday = dd + "/" + mm + "/" + yyyy;
+
+        const parsedUserInfo = JSON.parse(userInfo);
+        if (parsedUserInfo) {
+          const jsonPayloadNewsletterOrder = {
+            customeremail: parsedUserInfo?.email,
+            paymentstatus: PAYMENT_STATUS.PURCHASED,
+            topic: newsletterData?.topic,
+            orderamount: 0,
+            billingemail: parsedUserInfo?.email,
+            customername: null,
+            country: null,
+            order_datetimezone: new Date(),
+            invoice_number: `${formattedToday}_HCP_${Math.random()
+              .toString(36)
+              .substring(2, 10)
+              ?.toUpperCase()}`,
+          };
+
+          localStorage.setItem(
+            LOCAL_STORAGE_ITEMS.PURCHASE_INFO_FREE_NEWSLETTER,
+            JSON.stringify({
+              generatedInvoiceNum: jsonPayloadNewsletterOrder.invoice_number,
+              generatedDate: invoiceFormattedToday,
+            })
           );
-          if (validatePostRequest(response)) {
-            navigate(LINK_PAGE_CONFIRM_PAYMENT);
+
+          const formDataPayload = jsonToFormData(
+            jsonPayloadNewsletterOrder,
+            FORM_DATA_OPTIONS
+          );
+
+          try {
+            const response = await OrderService.createNewsletterOrder(
+              formDataPayload
+            );
+            if (validatePostRequest(response)) {
+              navigate(LINK_PAGE_CONFIRM_PAYMENT);
+            }
+          } catch (error) {
+            console.error(error);
           }
-        } catch (error) {
-          console.error(error);
         }
       }
     } else {
@@ -146,21 +171,24 @@ const PageNewsletterInfo = () => {
         })
       );
 
-      localStorage.setItem(
-        LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER,
-        JSON.stringify({
-          ...newsletterData,
-          newsletterId: params?.newsletterId,
-          cartTotal: parseInt(newsletterData?.price, 10),
-        })
-      );
-
       navigate(LINK_PAGE_LOGIN_REG, {
         state: {
           showRegCheckOutBanner: true,
         },
       });
     }
+  };
+
+  const getAttendeeNewsletterList = async () => {
+    let isNewsletterPurchased: any;
+    const list = await getAttendeeDashBoardInfo();
+    isNewsletterPurchased = list?.find(
+      (newsletter: any) => newsletter?.w_id === newsletterData?.id
+    );
+    if (isNewsletterPurchased) {
+      alert("You have already purchased this newsletter");
+    }
+    return isNewsletterPurchased;
   };
 
   /*---------------------Sectional Renders------------------*/
@@ -195,7 +223,7 @@ const PageNewsletterInfo = () => {
               <ButtonCustom
                 className="w-full h-8 py-2 bg-primary-bg-interactiveBlue font-semibold text-sm text-white rounded-full leading-3 hover:bg-primary-bg-interactiveBlueHover"
                 label={"Read Now"}
-                handleClickWithLoader={onReadNow}
+                handleClick={onReadNow}
               />
             </div>
           </div>

@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import { InputText } from "primereact/inputtext";
+import React, { BaseSyntheticEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonCustom from "../../components/ButtonCustom";
 import { LINK_PAGE_NEWSLETTERS } from "../../routes";
@@ -14,6 +15,10 @@ const PageNewsletters = () => {
 
   const [isLoadingNewsletters, setIsLoadingNewsletters] = React.useState(true);
   const [newslettersList, setNewslettersList] = React.useState([]);
+  const [filteredNewslettersList, setFilteredNewslettersList] = React.useState(
+    []
+  );
+  const [newsletterSearch, setNewsletterSearch] = React.useState("");
 
   useEffect(() => {
     const onMount = async () => {
@@ -22,6 +27,24 @@ const PageNewsletters = () => {
     onMount();
   }, []);
 
+  React.useEffect(() => {
+    let timerId: any;
+    if (newslettersList?.length) {
+      timerId = setTimeout(() => {
+        const searchRegex = new RegExp(newsletterSearch, "i");
+        const searchResults = newslettersList?.filter((webinar: any) =>
+          searchRegex.test(webinar?.topic)
+        );
+
+        setFilteredNewslettersList(searchResults);
+      }, 1000);
+
+      return () => {
+        clearTimeout(timerId);
+      };
+    }
+  }, [newsletterSearch]);
+
   /*---------------------------Service Calls------------------------------*/
   const getAllNewsletters = async () => {
     try {
@@ -29,11 +52,18 @@ const PageNewsletters = () => {
       if (validateGetRequest(res)) {
         const newslettersHCProfs = res?.data;
         setNewslettersList(newslettersHCProfs);
+        setFilteredNewslettersList(newslettersHCProfs);
         setIsLoadingNewsletters(false);
       }
     } catch (error) {
       console.error(error);
     }
+  };
+
+  /*--------------------------Event Handlers------------------------------*/
+
+  const handleNewsletterSearch = (event: BaseSyntheticEvent) => {
+    setNewsletterSearch(event.target.value);
   };
 
   return (
@@ -50,8 +80,17 @@ const PageNewsletters = () => {
             <React.Fragment>
               {newslettersList?.length ? (
                 <React.Fragment>
+                  <div className="w-full flex items-center justify-center">
+                    <InputText
+                      className="px-2 py-2 w-full min-w-64 screen_var_one:w-1/2 border border-primary-light-900 outline-none"
+                      placeholder="Search newsletter topic..."
+                      value={newsletterSearch}
+                      onChange={handleNewsletterSearch}
+                    />
+                  </div>
+
                   <div className="w-full my-5 grid grid-cols-1 gap-5 md:grid-cols-2 screen_var_one:grid-cols-3 xl:grid-cols-4 auto-rows-fr ">
-                    {newslettersList?.map((newsletter: any) => {
+                    {filteredNewslettersList?.map((newsletter: any) => {
                       return (
                         <div
                           key={Math.random().toString(36).substring(2)}
@@ -70,7 +109,7 @@ const PageNewsletters = () => {
 
                             <div className="flex-grow flex items-center justify-center text-xs">
                               <img
-                                className="w-full h-full object-fill"
+                                className="w-full h-[200px] object-fill"
                                 src={newsletter?.thumbnail}
                                 alt="newsletter-image"
                               />
@@ -102,7 +141,7 @@ const PageNewsletters = () => {
                                 </span>
                               </div>
 
-                              <div className="w-full font-normal text-sm h-28 overflow-clip text-ellipsis">
+                              <div className="w-full font-normal text-sm h-16 overflow-clip text-ellipsis">
                                 {newsletter?.description}
                               </div>
 
