@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import brandLogo from "../assets/images/hc_profs_logo_variant1.png";
-import { ENV_VAR, LOCAL_STORAGE_ITEMS } from "../constant";
+import { LOCAL_STORAGE_ITEMS } from "../constant";
 import {
   LINK_ATTENDEE_DASHBOARD,
   LINK_HOME,
@@ -13,7 +13,6 @@ import {
   LINK_PAGE_WEBINAR_LISTING,
   LINK_SPEAKER_DASHBOARD,
 } from "../routes";
-import { getEnvVariableValues } from "../utils/commonUtils";
 import ButtonCustom from "./ButtonCustom";
 import MobileAccordion from "./MobileAccordion";
 
