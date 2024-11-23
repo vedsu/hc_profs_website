@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import AuthValidator from "../../components/AuthValidator";
 import { LOCAL_STORAGE_ITEMS, USER_ROLE } from "../../constant";
 import DashboardService from "../../services/DashboardService";
 import { validateGetRequest } from "../../utils/commonUtils";
-import AuthValidator from "../../components/AuthValidator";
 
 function PageUserHistory() {
   const [
@@ -51,7 +51,7 @@ function PageUserHistory() {
       <div className="w-full p-5 flex flex-col text-sm">
         <h4 className="font-semibold text-2xl text-primary-pLabel ">History</h4>
         {isLoading ? (
-          <div className="flex-grow flex items-center justify-center">
+          <div className="min-h-[40vh] flex-grow flex items-center justify-center">
             <span>
               <i className="pi pi-spinner text-primary-bg-teal text-4xl animate-spin" />
             </span>
@@ -93,7 +93,7 @@ function PageUserHistory() {
                   ) : null}
                 </div>
 
-                <div>
+                <div className="px-2">
                   <div className="my-2 text-left font-semibold text-sm">
                     <div className="px-2">Newsletter</div>
                   </div>

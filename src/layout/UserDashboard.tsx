@@ -17,19 +17,18 @@ interface IUserDashboard {
 }
 
 const dashboardInstructionsAttendee = [
-  "Live Webinar Training: A real-time virtual webinar link and instructions will be provided 24 hours before each session.",
-  "Recorded Webinar: A pre-recorded event available for 30 days. The recording will be sent 24-48 hours after the live session concludes.",
-  "Digital Download: A file available for download, accessible for 30 days. It will be provided 3-7 working days after the live session.",
-  "Transcript: A written form of the webinar, including participant questions and presenter comments, available for 30 days. It will be available within 3-7 working days after the live session and will be provided along side any of the above purchase.",
+  "Live: Access starts 24 hours before the session.",
+  "Recording, Digital Download & Transcript: Available 24–48 hours after the live session and accessible for 30 days.",
+  "Transcript: Transcripts will be provided alongside any of the above purchases.",
 ];
 
 const dashboardInstructionsSpeaker = [
-  "A link for every virtual live session will be provided alongside instructions 24 hours before the session begins. ",
+  "A link for every virtual live session will be provided alongside instructions 24 hours before the session begins.",
 ];
 
 const dashboardNavs = [
-  { title: "Recommendations", navigateTo: LINK_ATTENDEE_RECOMMENDATIONS },
   { title: "History", navigateTo: LINK_USER_HISTORY },
+  { title: "Recommendations", navigateTo: LINK_ATTENDEE_RECOMMENDATIONS },
 ];
 
 const UserDashboardLayout = (props: IUserDashboard) => {
@@ -38,16 +37,17 @@ const UserDashboardLayout = (props: IUserDashboard) => {
 
   const navigate = useNavigate();
 
-  //prepare data
-  const webinarData = dashboardData?.filter((data) => data?.webinar);
-  const newsletterData = dashboardData?.filter((data) => data?.newsletter);
-
+  const [profileInfo, setProfileInfo] = useState<any>({});
   const [isRoleSpeaker, setIsRoleSpeaker] = useState(false);
   const [userInstructions, setUserInstructions] = useState<string[]>([]);
   const [showCardContinuePurchase, setShowCardContinuePurchase] =
     useState(false);
   const [continuePurchaseCardData, setContinuePurchaseCardData] =
     useState<any>(null);
+
+  //prepare data
+  const webinarData = dashboardData?.filter((data) => data?.webinar);
+  const newsletterData = dashboardData?.filter((data) => data?.newsletter);
 
   useEffect(() => {
     const onMount = async () => {
@@ -103,6 +103,7 @@ const UserDashboardLayout = (props: IUserDashboard) => {
           setShowCardContinuePurchase(true);
           setContinuePurchaseCardData(cardsToDisplay);
         }
+        setProfileInfo(parsedUserInfo);
       }
     };
     onMount();
@@ -127,10 +128,10 @@ const UserDashboardLayout = (props: IUserDashboard) => {
             <span className="">{ddmmyy(data?.published_date) ?? "N.A."}</span>
           </div>
 
-          <div className="w-full flex items-center gap-10">
+          <div className="w-full flex items-center justify-between gap-10">
             <div>
               <ButtonCustom
-                className="py-1 px-2 max-w-fit font-semibold text-sm"
+                className="py-1 pr-2 max-w-fit font-semibold text-sm"
                 handleClick={() => {
                   window.open(data?.newsletter_doc, "_blank");
                 }}
@@ -193,67 +194,13 @@ const UserDashboardLayout = (props: IUserDashboard) => {
 
             {data?.sessionLive && isRoleSpeaker ? (
               <div>
-                <span className="font-semibold">Live URL : </span>
+                <span className="font-semibold">Live URL: </span>
                 <a className="text-blue-500" href={data?.urlLive}>
-                  {data?.urlLive ?? ""}
+                  {/* {data?.urlLive ?? ""} */}
+                  Click Here
                 </a>
               </div>
             ) : null}
-
-            {!isRoleSpeaker && (
-              <React.Fragment>
-                {data?.live_url ? (
-                  <div>
-                    <span className="font-semibold">Live URL : </span>
-                    <a className="text-blue-500" href={data?.live_url}>
-                      {data?.live_url ?? ""}
-                    </a>
-                  </div>
-                ) : null}
-
-                {data?.recording_url ? (
-                  <div>
-                    <span className="font-semibold">Recording URL : </span>
-                    <a className="text-blue-500" href={data?.recording_url}>
-                      {data?.recording_url ?? ""}
-                    </a>
-                  </div>
-                ) : null}
-
-                {data?.digitaldownload_url ? (
-                  <div>
-                    <span className="font-semibold">DD URL : </span>
-                    <a
-                      className="text-blue-500"
-                      href={data?.digitaldownload_url}
-                    >
-                      {data?.digitaldownload_url ?? ""}
-                    </a>
-                  </div>
-                ) : null}
-
-                {data?.transcript_url ? (
-                  <div>
-                    <span className="font-semibold">Transcript URL : </span>
-                    <a className="text-blue-500" href={data?.transcript_url}>
-                      {data?.transcript_url ?? ""}
-                    </a>
-                  </div>
-                ) : null}
-
-                <div>
-                  <ButtonCustom
-                    className="py-1 px-2 max-w-fit font-semibold text-sm"
-                    handleClick={() => {
-                      window.location.href = data?.document;
-                    }}
-                    label={"Download Receipt"}
-                  >
-                    <i className="mx-1 pi pi-download text-sm"></i>
-                  </ButtonCustom>
-                </div>
-              </React.Fragment>
-            )}
           </div>
         </div>
       );
@@ -295,41 +242,45 @@ const UserDashboardLayout = (props: IUserDashboard) => {
             <React.Fragment>
               {data?.live_url ? (
                 <div>
-                  <span className="font-semibold">Live URL : </span>
+                  <span className="font-semibold">Live URL: </span>
                   <a className="text-blue-500" href={data?.live_url}>
-                    {data?.live_url ?? ""}
+                    {/* {data?.live_url ?? ""} */}
+                    Click Here
                   </a>
                 </div>
               ) : null}
 
               {data?.recording_url ? (
                 <div>
-                  <span className="font-semibold">Recording URL : </span>
+                  <span className="font-semibold">Recording: </span>
                   <a className="text-blue-500" href={data?.recording_url}>
-                    {data?.recording_url ?? ""}
+                    {/* {data?.recording_url ?? ""} */}
+                    Click Here
                   </a>
                 </div>
               ) : null}
 
               {data?.digitaldownload_url ? (
                 <div>
-                  <span className="font-semibold">DD URL : </span>
+                  <span className="font-semibold">Digital Download: </span>
                   <a className="text-blue-500" href={data?.digitaldownload_url}>
-                    {data?.digitaldownload_url ?? ""}
+                    {/* {data?.digitaldownload_url ?? ""} */}
+                    Click Here
                   </a>
                 </div>
               ) : null}
 
               {data?.transcript_url ? (
                 <div>
-                  <span className="font-semibold">Transcript URL : </span>
+                  <span className="font-semibold">Transcript: </span>
                   <a className="text-blue-500" href={data?.transcript_url}>
-                    {data?.transcript_url ?? ""}
+                    {/* {data?.transcript_url ?? ""} */}
+                    Click Here
                   </a>
                 </div>
               ) : null}
 
-              <div>
+              <div className="w-full flex justify-end">
                 <ButtonCustom
                   className="py-1 px-2 max-w-fit font-semibold text-sm"
                   handleClick={() => {
@@ -370,6 +321,27 @@ const UserDashboardLayout = (props: IUserDashboard) => {
           ) : null}
 
           <div className="dashboard-navs">
+            <div className="w-full flex items-center justify-start">
+              <div className="py-3 px-4 font-normal text-sm">
+                <div>
+                  <span className="mr-1 font-semibold">Name:</span>
+                  <span>{profileInfo?.name ?? "N.A"}</span>
+                </div>
+                <div>
+                  <span className="mr-1 font-semibold">Email:</span>
+                  <span>{profileInfo?.email ?? "N.A"}</span>
+                </div>
+                <div>
+                  <span className="mr-1 font-semibold">Role:</span>
+                  <span>{profileInfo?.jobProfile ?? "N.A"}</span>
+                </div>
+                <div>
+                  <span className="mr-1 font-semibold">Contact:</span>
+                  <span>{profileInfo?.contact ?? "N.A"}</span>
+                </div>
+              </div>
+            </div>
+
             <div className="text-sm text-primary-pText">
               {dashboardNavs?.map((navItem, idx) => (
                 <button
@@ -383,25 +355,25 @@ const UserDashboardLayout = (props: IUserDashboard) => {
             </div>
           </div>
 
+          <div className="w-full p-6 border border-primary-light-900 rounded-lg">
+            <h4 className="font-bold text-xl">INSTRUCTIONS :</h4>
+            <ol className="list-decimal">
+              {userInstructions?.map((instruction, idx) => (
+                <li key={`${idx + 1}`} className="my-2 font-bold text-sm">
+                  {instruction}
+                </li>
+              ))}
+            </ol>
+            <p className="mt-2 font-bold text-sm">
+              {isRoleSpeaker
+                ? "For any queries, please contact Brian at brian@profstraining.com"
+                : "For any queries, please contact the Webinar Team at cs@hcprofs.com."}
+            </p>
+          </div>
+
           {webinarData?.length ? (
             <div className="user-webinar-list flex flex-col gap-4">
               <React.Fragment>
-                <div className="w-full p-6 border border-primary-light-900 rounded-lg">
-                  <h4 className="font-bold text-xl">INSTRUCTIONS :</h4>
-                  <ol className="list-decimal">
-                    {userInstructions?.map((instruction, idx) => (
-                      <li key={`${idx + 1}`} className="my-2 font-bold text-sm">
-                        {instruction}
-                      </li>
-                    ))}
-                  </ol>
-                  <p className="mt-2 font-bold text-sm">
-                    {isRoleSpeaker
-                      ? "For any queries, please contact Brian at brian@profstraining.com"
-                      : "For any queries, please contact the Webinar Team at cs@hcprofs.com."}
-                  </p>
-                </div>
-
                 {newsletterData?.length
                   ? newsletterData?.map((data) => {
                       return renderNewsletterCards(data);

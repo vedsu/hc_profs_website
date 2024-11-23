@@ -130,6 +130,9 @@ const PageLoginOrRegister = () => {
           JSON.stringify({
             email: loginFormData.email,
             role: loginFormData.role,
+            name: res?.data?.message?.name,
+            contact: res?.data?.message?.contact,
+            jobProfile: res?.data?.message?.role,
           })
         );
 
@@ -192,6 +195,8 @@ const PageLoginOrRegister = () => {
             name: registerFormData.name,
             email: registerFormData.email,
             role: registerFormData.role,
+            contact: res?.data?.message?.contact,
+            jobProfile: res?.data?.message?.role,
           })
         );
 
@@ -202,6 +207,7 @@ const PageLoginOrRegister = () => {
           const newsletterPurchaseBeforeLogin = localStorage.getItem(
             LOCAL_STORAGE_ITEMS.CARD_CONTINUE_PURCHASE_NEWSLETTER
           );
+
           if (webinarPurchaseBeforeLogin) {
             const parsedWebinarPurchaseBeforeLogin = JSON.parse(
               webinarPurchaseBeforeLogin

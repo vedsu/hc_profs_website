@@ -14,6 +14,7 @@ import {
 const PageAttendeeDashboard = () => {
   const navigate = useNavigate();
 
+  const [profileInfo, setProfileInfo] = useState<any>({});
   const [attendeeDashboardData, setAttendeeDashboardInfo] = useState<any[]>([]);
   const [
     attendeeDashboardHistoryPurchased,
@@ -32,6 +33,31 @@ const PageAttendeeDashboard = () => {
   const [loadingRecommendations, setLoadingRecommendations] = useState(true);
 
   const accordionTemplateData = [
+    {
+      title: "Profile",
+      description: (
+        <React.Fragment>
+          <div className="py-3 px-5 font-normal text-sm">
+            <div>
+              <span className="mr-1 font-semibold">Name:</span>
+              <span>{profileInfo?.name ?? "N.A"}</span>
+            </div>
+            <div>
+              <span className="mr-1 font-semibold">Email:</span>
+              <span>{profileInfo?.email ?? "N.A"}</span>
+            </div>
+            <div>
+              <span className="mr-1 font-semibold">Role:</span>
+              <span>{profileInfo?.jobProfile ?? "N.A"}</span>
+            </div>
+            <div>
+              <span className="mr-1 font-semibold">Contact:</span>
+              <span>{profileInfo?.contact ?? "N.A"}</span>
+            </div>
+          </div>
+        </React.Fragment>
+      ),
+    },
     {
       title: "History",
       description: (
@@ -168,10 +194,13 @@ const PageAttendeeDashboard = () => {
 
     if (userDataFromLocalStorage) {
       const userInfo = JSON.parse(userDataFromLocalStorage);
+
       const path = "/" + `${userInfo.email}` + "/" + USER_ROLE.ATTENDEE;
       try {
         const res = await DashboardService.getUserDashboardInfo(path);
         if (validateGetRequest(res)) {
+          //profile info
+          setProfileInfo(userInfo);
           //webinar and newsletter info
           setAttendeeDashboardInfo([...res?.data?.[0], ...res?.data?.[3]]);
           //other necessary information

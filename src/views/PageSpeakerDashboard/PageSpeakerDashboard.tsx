@@ -5,11 +5,36 @@ import DashboardService from "../../services/DashboardService";
 import { validateGetRequest } from "../../utils/commonUtils";
 
 const PageSpeakerDashboard = () => {
+  const [profileInfo, setProfileInfo] = useState<any>({});
   const [speakerDashboardData, setSpeakerDashboardInfo] = useState([]);
-
   const [speakerDashboardHistory, setSpeakerDashboardHistory] = useState([]);
 
   const accordionTemplateData = [
+    {
+      title: "Profile",
+      description: (
+        <React.Fragment>
+          <div className="py-3 px-5 font-normal text-sm">
+            <div>
+              <span className="mr-1 font-semibold">Name:</span>
+              <span>{profileInfo?.name ?? "N.A"}</span>
+            </div>
+            <div>
+              <span className="mr-1 font-semibold">Email:</span>
+              <span>{profileInfo?.email ?? "N.A"}</span>
+            </div>
+            <div>
+              <span className="mr-1 font-semibold">Role:</span>
+              <span>{profileInfo?.jobProfile ?? "N.A"}</span>
+            </div>
+            <div>
+              <span className="mr-1 font-semibold">Contact:</span>
+              <span>{profileInfo?.contact ?? "N.A"}</span>
+            </div>
+          </div>
+        </React.Fragment>
+      ),
+    },
     {
       title: "History",
       description: (
@@ -58,6 +83,7 @@ const PageSpeakerDashboard = () => {
         const res = await DashboardService.getUserDashboardInfo(path);
 
         if (validateGetRequest(res)) {
+          setProfileInfo(userInfo);
           setSpeakerDashboardInfo(res?.data?.[0]);
           setSpeakerDashboardHistory(res?.data?.[1]);
         }

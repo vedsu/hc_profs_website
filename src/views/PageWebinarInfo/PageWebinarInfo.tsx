@@ -18,6 +18,7 @@ import {
   LINK_PAGE_CART,
   LINK_PAGE_LOGIN_REG,
   LINK_PAGE_REFUND_AND_CANCELLATION,
+  LINK_PAGE_SPEAKERS,
 } from "../../routes";
 import DashboardService from "../../services/DashboardService";
 import WebinarService from "../../services/WebinarService";
@@ -289,22 +290,30 @@ const PageWebinarInfo: React.FC = () => {
   const renderWebinarInfo = (): ReactNode => {
     return (
       <>
-        <div className="w-full flex flex-col justify-between screen_var_one:flex-row">
-          <div className="w-full screen_var_one:min-w-[50%] flex flex-col gap-5 items-start justify-start">
+        <div className="w-full flex flex-col screen_var_one:flex-row">
+          <div className="w-full screen_var_one:min-w-[30%] flex flex-col gap-5 items-start justify-start">
             <div className="w-full flex items-center justify-start text-xs">
               <img
-                className="w-28 h-28 rounded-[50%]"
+                className="w-28 h-28 rounded-full cursor-pointer"
                 src={speakerData?.photo}
                 alt="speaker-image"
+                onClick={() => {
+                  navigate(`${LINK_PAGE_SPEAKERS}/${webinarData?.speaker_id}`);
+                }}
               />
             </div>
-            <div>
-              <div className="my-2 font-semibold text-xs">
+            <div className="w-full">
+              <div
+                className="w-28 my-2 font-semibold text-center text-xs cursor-pointer"
+                onClick={() => {
+                  navigate(`${LINK_PAGE_SPEAKERS}/${webinarData?.speaker_id}`);
+                }}
+              >
                 {getInitialLetterUpperCase(speakerData?.name) ?? "N.A."}
               </div>
             </div>
           </div>
-          <div className="w-full screen_var_one:w-[50%] screen_var_one:p-5  flex flex-col gap-2">
+          <div className="w-full py-5 px-2 screen_var_one:min-w-[70%] screen_var_one:px-2 screen_var_one:py-0 flex flex-col gap-2">
             <div className="text-left text-base">
               <span className="font-semibold">{"Industry : "}</span>
               <span>
