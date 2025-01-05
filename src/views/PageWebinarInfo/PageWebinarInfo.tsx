@@ -100,6 +100,7 @@ const PageWebinarInfo: React.FC = () => {
   }, [getWebinarDetails]);
 
   useEffect(() => {
+     if (webinarData) {
     let amt = 0;
     const isLiveChecked = (
       document.getElementById("checkbox-buy-live") as HTMLInputElement
@@ -123,11 +124,12 @@ const PageWebinarInfo: React.FC = () => {
 
     setCartTotal(amt);
     setPurchaseData({
-      webinarSessionLive: Number(livePrice) ? true : false,
-      webinarSessionRecording: Number(recordingPrice) ? true : false,
-      webinarSessionDD: Number(ddPrice) ? true : false,
+        webinarSessionLive: isLiveChecked ? true : false,
+        webinarSessionRecording: isRecordingChecked ? true : false,
+        webinarSessionDD: isDDChecked ? true : false,
     });
     setShowCartEmptyMessage(false);
+     }
   }, [
     corporatePurchaseTypeInfo.liveSessionCount,
     corporatePurchaseTypeInfo.recordingSessionCount,
@@ -184,9 +186,9 @@ const PageWebinarInfo: React.FC = () => {
 
     setCartTotal(amt);
     setPurchaseData({
-      webinarSessionLive: Number(livePrice) ? true : false,
-      webinarSessionRecording: Number(recordingPrice) ? true : false,
-      webinarSessionDD: Number(ddPrice) ? true : false,
+     webinarSessionLive: isLiveChecked ? true : false,
+      webinarSessionRecording: isRecordingChecked ? true : false,
+      webinarSessionDD: isDDChecked ? true : false,
     });
     setShowCartEmptyMessage(false);
   };
