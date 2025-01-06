@@ -94,8 +94,9 @@ const PageNewsletterInfo = () => {
       }
     }
 
-    if (userInfo && parseInt(newsletterData?.price, 10) > 0) {
-      if (!getAttendeeNewsletterList()) {
+    if (userInfo && parseInt(newsletterData?.price, 10) > 0) {    
+      const isNewsletterPurchased = await getAttendeeNewsletterList();
+      if (!isNewsletterPurchased) {
         navigate(`${LINK_PAGE_CART}?purchase-item=newsletter`);
         localStorage.setItem(
           LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER,
@@ -107,7 +108,8 @@ const PageNewsletterInfo = () => {
         );
       }
     } else if (userInfo && parseInt(newsletterData?.price, 10) === 0) {
-      if (!getAttendeeNewsletterList()) {
+      const isNewsletterPurchased = await getAttendeeNewsletterList();
+      if (!isNewsletterPurchased) {
         const today = new Date();
         const yyyy = today.getFullYear() % 100;
         let mm: any = today.getMonth() + 1;
@@ -231,7 +233,7 @@ const PageNewsletterInfo = () => {
               <ButtonCustom
                 className="w-full h-8 py-2 bg-primary-bg-interactiveBlue font-semibold text-sm text-white rounded-full leading-3 hover:bg-primary-bg-interactiveBlueHover"
                 label={"Read Now"}
-                handleClick={onReadNow}
+                handleClickWithLoader={onReadNow}
               />
             </div>
           </div>
