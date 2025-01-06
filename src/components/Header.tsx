@@ -26,15 +26,15 @@ const orderFormURL =
 const resourcesVideos = [
   {
     title: "CMS 2024",
-    url: "https://vedsubrandwebsite.s3.amazonaws.com/demo/Human+Factors+Usability+Studies+following+ISO62366%2C+the+FDA+Guidance%2C+and+the+new+FDA+Draft+Guidance.mp4",
+    url: "https://webinarprofs.s3.us-east-1.amazonaws.com/misc/CMS+2024.mp4"
   },
   {
     title: "HIPAA 2025",
-    url: "https://vedsubrandwebsite.s3.amazonaws.com/demo/How+to+Write+SOPs+(Procedures)+for+Human+Error+Reduction+Prevention.mp4",
+    url: "https://webinarprofs.s3.us-east-1.amazonaws.com/misc/HIPAA+2025.mp4",
   },
   {
     title: "MEDICARE E&R",
-    url: "https://vedsubrandwebsite.s3.amazonaws.com/demo/Data+Integrity+and+Privacy+Compliance+with+21+CFR+Part+11%2C+SaaSCloud%2C+EU+GDPR.mp4",
+    url: "https://webinarprofs.s3.us-east-1.amazonaws.com/misc/MEDICARE+E%26R.mp4",
   },
 ];
 
