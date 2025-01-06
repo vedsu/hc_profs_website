@@ -371,7 +371,7 @@ const UserDashboardLayout = (props: IUserDashboard) => {
             </p>
           </div>
 
-          <div>
+          <div className="user-webinar-list flex flex-col gap-4">
                 {newsletterData?.length
                   ? newsletterData?.map((data) => {
                       return renderNewsletterCards(data);
