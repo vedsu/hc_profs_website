@@ -34,11 +34,16 @@ const industryOptions = [
 ];
 
 function PageSpeakerOpportunity() {
-  const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
   const [speakerFormData, setSpeakerFormData] = React.useState(
     initialSpeakerFormData
   );
-
+  const [showSpeakerOpportunityPopUp, setShowSpeakerOpportunityPopUp] =
+    useState({
+      isSuccess: false,
+      showPopUp: false,
+      headerContent: <div />,
+      bodyContent: <div />,
+    });
   const simpleValidator = useRef(
     new SimpleReactValidator({ className: "text-danger" })
   );
@@ -87,7 +92,16 @@ function PageSpeakerOpportunity() {
       );
 
       if (validatePostRequest(response)) {
-        setShowConfirmDialog(true);
+        setShowSpeakerOpportunityPopUp({
+          isSuccess: true,
+          showPopUp: true,
+          headerContent: <h1 className="text-2xl">Thank You!</h1>,
+          bodyContent: (
+            <div className="p-5">
+              <p>{response?.data?.Message}.</p>
+            </div>
+          ),
+        });
       }
     } catch (error) {
       console.error(error);
@@ -233,25 +247,19 @@ function PageSpeakerOpportunity() {
         </div>
       </section>
 
-      <DialogCustom
-        position={"top"}
-        dialogVisible={showConfirmDialog}
+     <DialogCustom
+        dialogVisible={showSpeakerOpportunityPopUp.showPopUp}
         containerClassName={
-          "max-w-[400px] p-5 border border-primary-light-900 rounded-lg bg-white"
+          "max-w-[500px] p-5 border border-primary-light-900 rounded-lg bg-white"
         }
-        headerTemplate={<h1 className="text-2xl">Thank You!</h1>}
+        headerTemplate={showSpeakerOpportunityPopUp.headerContent}
         headerTemplateClassName={`flex items-center justify-center`}
-        bodyTemplate={
-          <div className="text-xs">
-            <p>
-              Your request has been successfully received. Our team will reach
-              out to you shortly
-            </p>
-          </div>
-        }
+        bodyTemplate={showSpeakerOpportunityPopUp.bodyContent}
         onHideDialog={() => {
-          if (!showConfirmDialog) return;
-          setShowConfirmDialog(false);
+          setShowSpeakerOpportunityPopUp((prev) => ({
+            ...prev,
+            showPopUp: false,
+          }));
         }}
       />
     </div>
