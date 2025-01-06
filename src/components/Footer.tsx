@@ -23,7 +23,12 @@ const Footer = () => {
   const [formUnsubscribeData, setFormUnsubscribeData] = useState({
     email: "",
   });
-
+  const [showUnsubscribePopUp, setShowUnsubscribePopUp] = useState({
+    isSuccess: false,
+    showPopUp: false,
+    headerContent: <div />,
+    bodyContent: <div />,
+  });
   const simpleValidator = useRef(
     new SimpleReactValidator({ className: "text-danger" })
   );
@@ -41,9 +46,20 @@ const Footer = () => {
     const payload = {
       Unsubscriber: formUnsubscribeData.email,
     };
+    
     try {
       const res = await SubscriptionService.unsubscribe(payload);
       if (validatePostRequest(res)) {
+        setShowUnsubscribePopUp({
+          isSuccess: true,
+          showPopUp: true,
+          headerContent: <h1 className="text-2xl" />,
+          bodyContent: (
+            <div className="p-5">
+              <p>You have {res?.data?.message}.</p>
+            </div>
+          ),
+        });
         setShowUnsubscribeForm(false);
         setFormUnsubscribeData({ email: "" });
       }
@@ -224,6 +240,19 @@ const Footer = () => {
         onHideDialog={() => {
           if (!showUnsubscribeForm) return;
           setShowUnsubscribeForm(false);
+        }}
+      />
+      
+      <DialogCustom
+        dialogVisible={showUnsubscribePopUp.showPopUp}
+        containerClassName={
+          "max-w-[500px] p-5 border border-primary-light-900 rounded-lg bg-white"
+        }
+        headerTemplate={showUnsubscribePopUp.headerContent}
+        headerTemplateClassName={`flex items-center justify-center`}
+        bodyTemplate={showUnsubscribePopUp.bodyContent}
+        onHideDialog={() => {
+          setShowUnsubscribePopUp((prev) => ({ ...prev, showPopUp: false }));
         }}
       />
     </footer>
