@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import SimpleReactValidator from "simple-react-validator";
 import ButtonCustom from "../components/ButtonCustom";
 import DialogCustom from "../components/DialogCustom";
 import Footer from "../components/Footer";
@@ -17,7 +18,6 @@ import { SESSION_STORAGE_ITEMS, SUBSCRIPTION_TYPE } from "../constant";
 import { LINK_PAGE_CHECKOUT } from "../routes";
 import SubscriptionService from "../services/SubscriptionService";
 import { validatePostRequest } from "../utils/commonUtils";
-import SimpleReactValidator from "simple-react-validator";
 
 const registerBeforeCheckOutBanner = (
   <div className="site-banner">
@@ -37,14 +37,18 @@ const initialSubscribeFormData = {
 const HCPWebsite: React.FC = () => {
   const location = useLocation();
   const [showRegistrationBanner, setShowRegistrationBanner] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState(true);
   const [showSubscriptionTypeNotSelected, setShowSubscriptionTypeNotSelected] =
     useState(false);
   const [showSubscribeFormDialog, setShowSubscribeFormDialog] = useState(false);
   const [subscribeFormData, setSubscribeFormData] = useState(
     initialSubscribeFormData
   );
-
+  const [showSubscribePopUp, setShowSubscribePopUp] = useState({
+    isSuccess: false,
+    showPopUp: false,
+    headerContent: <div />,
+    bodyContent: <div />,
+  });
   const simpleValidator = useRef(
     new SimpleReactValidator({ className: "text-danger" })
   );
@@ -103,11 +107,31 @@ const HCPWebsite: React.FC = () => {
     try {
       const res = await SubscriptionService.subscribe(payload);
       if (validatePostRequest(res)) {
+        setShowSubscribePopUp({
+          isSuccess: true,
+          showPopUp: true,
+          headerContent: <h1 className="text-2xl">Thank You!</h1>,
+          bodyContent: (
+            <div className="p-5">
+              <p>You have {res?.data?.message}.</p>
+            </div>
+          ),
+        });
         setShowSubscribeFormDialog(false);
-        setIsSubscribed(true);
         setSubscribeFormData(initialSubscribeFormData);
       }
     } catch (error) {
+      setShowSubscribePopUp({
+        isSuccess: false,
+        showPopUp: true,
+        headerContent: <h1 className="text-xl">Something went wrong!</h1>,
+        bodyContent: (
+          <div className="p-5">
+            <p>Please retry after sometime.</p>
+          </div>
+        ),
+      });
+      setShowSubscribeFormDialog(false);
       console.error(error);
     }
 
@@ -250,9 +274,8 @@ const HCPWebsite: React.FC = () => {
       <main>
         <Outlet />
       </main>
-
-      {isSubscribed ? (
-        <div>
+    
+      <div>
           <button
             className="vertical-btn"
             onClick={() => {
@@ -261,8 +284,7 @@ const HCPWebsite: React.FC = () => {
           >
             {"Subscribe"}
           </button>
-        </div>
-      ) : null}
+      </div>
 
       <DialogCustom
         dialogVisible={showSubscribeFormDialog}
@@ -277,7 +299,19 @@ const HCPWebsite: React.FC = () => {
           setShowSubscribeFormDialog(false);
         }}
       />
-
+      
+      <DialogCustom
+        dialogVisible={showSubscribePopUp.showPopUp}
+        containerClassName={
+          "max-w-[500px] p-5 border border-primary-light-900 rounded-lg bg-white"
+        }
+        headerTemplate={showSubscribePopUp.headerContent}
+        headerTemplateClassName={`flex items-center justify-center`}
+        bodyTemplate={showSubscribePopUp.bodyContent}
+        onHideDialog={() => {
+          setShowSubscribePopUp((prev) => ({ ...prev, showPopUp: false }));
+        }}
+      />
       {location?.pathname?.includes(LINK_PAGE_CHECKOUT) ? null : <Footer />}
     </React.Fragment>
   );
