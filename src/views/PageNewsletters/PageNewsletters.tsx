@@ -149,7 +149,8 @@ const PageNewsletters = () => {
                                 <ButtonCustom
                                   className="w-full px-4 py-1 bg-white border  text-primary-pText font-semibold text-xs"
                                   label={"Read More"}
-                                  handleClick={() => {
+                                  handleClick={(event: BaseSyntheticEvent) => {
+                                    event.stopPropagation();
                                     navigate(
                                       `${
                                         LINK_PAGE_NEWSLETTERS + newsletter?.id
