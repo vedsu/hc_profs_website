@@ -21,7 +21,7 @@ interface IHeaderProps {
 }
 
 const orderFormURL =
-  "https://webinarprofs.s3.us-east-1.amazonaws.com/misc/HCprofs.pdf";
+  "https://webinarprofs.s3.us-east-1.amazonaws.com/misc/hcprofs_orderform.pdf";
 
 const resourcesVideos = [
   {
