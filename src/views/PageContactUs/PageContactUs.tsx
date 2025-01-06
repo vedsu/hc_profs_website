@@ -18,7 +18,12 @@ const PageContactUs: React.FC = () => {
   const [formContactUsData, setFormContactUsData] = useState(
     initialContactUsFormData
   );
-
+  const [showContactUsPopUp, setShowContactUsPopUp] = useState({
+    isSuccess: false,
+    showPopUp: false,
+    headerContent: <div />,
+    bodyContent: <div />,
+  });
   const simpleValidator = useRef(
     new SimpleReactValidator({ className: "text-danger" })
   );
@@ -51,6 +56,16 @@ const PageContactUs: React.FC = () => {
       const response = await ContactUsService.contactUs(payload);
 
       if (validatePostRequest(response)) {
+        setShowContactUsPopUp({
+          isSuccess: true,
+          showPopUp: true,
+          headerContent: <h1 className="text-2xl" />,
+          bodyContent: (
+            <div className="p-5">
+              <p>{response?.data?.Message}.</p>
+            </div>
+          ),
+        });
         setShowContactFormDialog(false);
       }
     } catch (error) {
@@ -198,6 +213,19 @@ const PageContactUs: React.FC = () => {
         onHideDialog={() => {
           if (!showContactFormDialog) return;
           setShowContactFormDialog(false);
+        }}
+      />
+      
+      <DialogCustom
+        dialogVisible={showContactUsPopUp.showPopUp}
+        containerClassName={
+          "max-w-[500px] p-5 border border-primary-light-900 rounded-lg bg-white"
+        }
+        headerTemplate={showContactUsPopUp.headerContent}
+        headerTemplateClassName={`flex items-center justify-center`}
+        bodyTemplate={showContactUsPopUp.bodyContent}
+        onHideDialog={() => {
+          setShowContactUsPopUp((prev) => ({ ...prev, showPopUp: false }));
         }}
       />
     </div>
