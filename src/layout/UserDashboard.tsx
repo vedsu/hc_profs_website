@@ -371,19 +371,19 @@ const UserDashboardLayout = (props: IUserDashboard) => {
             </p>
           </div>
 
-          {webinarData?.length ? (
-            <div className="user-webinar-list flex flex-col gap-4">
-              <React.Fragment>
+          <div>
                 {newsletterData?.length
                   ? newsletterData?.map((data) => {
                       return renderNewsletterCards(data);
                     })
                   : null}
-
+          </div>
+          
+          {webinarData?.length ? (
+            <div className="user-webinar-list flex flex-col gap-4">
                 {webinarData?.map((data) => {
                   return renderWebinarCards(data);
                 })}
-              </React.Fragment>
             </div>
           ) : (
             <div className="w-full h-screen flex items-center justify-center relative">
