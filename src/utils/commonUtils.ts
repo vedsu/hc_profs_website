@@ -1,3 +1,5 @@
+import { LOCAL_STORAGE_ITEMS, SESSION_STORAGE_ITEMS } from "../constant";
+
 export const getEnvVariableValues = (key: any) => {
   if (!key) throw new Error("Please pass the env key to get value");
   else return import.meta.env[key];
@@ -62,6 +64,13 @@ export const monDayYear = (date: Date) => {
       day: "numeric",
     });
   }
+};
+
+export const clearLocalAndSessionStorage = () => {
+  localStorage.removeItem(LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER);
+  localStorage.removeItem(LOCAL_STORAGE_ITEMS.CART_DATA);
+  localStorage.removeItem(LOCAL_STORAGE_ITEMS.PAYMENT_STATUS_SUCCESS);
+  sessionStorage.removeItem(SESSION_STORAGE_ITEMS.INVOICE_NUMBER);
 };
 
 export const validateGetRequest = (res: any) => {
