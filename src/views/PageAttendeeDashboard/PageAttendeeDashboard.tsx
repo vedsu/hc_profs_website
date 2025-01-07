@@ -62,22 +62,25 @@ const PageAttendeeDashboard = () => {
       title: "History",
       description: (
         <React.Fragment>
+          <div className="px-2 flex flex-col">
+            <div>
+              <div className="my-2 text-left font-semibold text-sm">
+                <div className="px-2">{`Purchased newsletter(s)`}</div>
+              </div>
+              <ul className="text-sm font-normal">
+                {attendeeDashboardNewsletterPurchased?.map(
+                  (newsletterPurchased: any, idx: number) => (
+                    <li key={idx + 1} className="my-2 px-2">
+                      <span>◈ {newsletterPurchased}</span>
+                    </li>
+                  )
+                )}
+              </ul>
+            </div>
+          </div>
+          
           {attendeeDashboardHistoryPurchased?.length ? (
             <div className="px-2 flex flex-col gap-5">
-              <div>
-                <div className="my-2 text-left font-semibold text-sm">
-                  <div className="px-2">{`Purchased newsletter(s)`}</div>
-                </div>
-                <ul className="text-sm font-normal">
-                  {attendeeDashboardNewsletterPurchased?.map(
-                    (newsletterPurchased: any, idx: number) => (
-                      <li key={idx + 1} className="my-2 px-2">
-                        <span>◈ {newsletterPurchased}</span>
-                      </li>
-                    )
-                  )}
-                </ul>
-              </div>
               <div>
                 <div className="my-2 text-left font-semibold text-sm">
                   <div className="px-2">{`Purchased webinar(s)`}</div>
