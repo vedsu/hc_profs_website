@@ -72,6 +72,7 @@ export const LOCAL_STORAGE_ITEMS = {
 
 export const SESSION_STORAGE_ITEMS = {
   REG_BANNER: "regBanner",
+  INVOICE_NUMBER: "invoice_num",
 };
 
 export const FORM_DATA_OPTIONS = {
