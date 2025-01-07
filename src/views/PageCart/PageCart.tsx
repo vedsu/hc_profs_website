@@ -23,6 +23,7 @@ import {
   LOCAL_STORAGE_ITEMS,
   PAYMENT_STATUS,
   PURCHASE_CATEGORY,
+  SESSION_STORAGE_ITEMS,
 } from "../../constant";
 import {
   LINK_PAGE_CHECKOUT,
@@ -299,6 +300,20 @@ const PageCart: React.FC = () => {
       country: cartFormData?.country,
       purchaseItem: purchaseItem,
     };
+    
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm: any = today.getMonth() + 1;
+    let dd: any = today.getDate();
+
+    if (dd < 10) dd = "0" + dd;
+    if (mm < 10) mm = "0" + mm;
+    const formattedToday = dd + mm + yyyy;
+    const generatedInvoice = `${formattedToday}_HCP_${Math.random()
+      .toString(36)
+      .substring(2, 10)
+      ?.toUpperCase()}`;
+    
     if (purchaseItem === PURCHASE_ITEM.WEBINAR) {
       cartInfo = {
         ...cartInfo,
@@ -320,6 +335,11 @@ const PageCart: React.FC = () => {
     localStorage.setItem(
       LOCAL_STORAGE_ITEMS.CART_DATA,
       JSON.stringify(cartInfo)
+    );
+
+    sessionStorage.setItem(
+      SESSION_STORAGE_ITEMS.INVOICE_NUMBER,
+      generatedInvoice
     );
 
     navigate(LINK_PAGE_CHECKOUT, {
