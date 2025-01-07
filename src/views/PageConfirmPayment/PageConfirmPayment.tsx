@@ -7,10 +7,14 @@ import {
   LOCAL_STORAGE_ITEMS,
   PAYMENT_STATUS,
   PURCHASE_CATEGORY,
+  SESSION_STORAGE_ITEMS,
 } from "../../constant";
 import { LINK_ATTENDEE_DASHBOARD, LINK_SPEAKER_DASHBOARD } from "../../routes";
 import OrderService from "../../services/OrderService";
-import { validatePostRequest } from "../../utils/commonUtils";
+import {
+  clearLocalAndSessionStorage,
+  validatePostRequest,
+} from "../../utils/commonUtils";
 import { PURCHASE_ITEM } from "../PageCart/PageCart";
 
 const initialMessageData = {
@@ -76,10 +80,9 @@ const PageConfirmPayment = () => {
 
       if (dd < 10) dd = "0" + dd;
       if (mm < 10) mm = "0" + mm;
-
-      const formattedToday = dd + mm + yyyy;
+      
       const invoiceFormattedToday = dd + "/" + mm + "/" + yyyy;
-
+      
       const parsedCartInfo = JSON.parse(cartData);
       if (paymentSuccessInfo) {
         const parsedPaymentSuccessInfo = JSON.parse(paymentSuccessInfo);
@@ -106,10 +109,9 @@ const PageConfirmPayment = () => {
           city: parsedCartInfo?.city,
           zipcode: parsedCartInfo?.zipcode,
           address: parsedCartInfo?.address,
-          invoice_number: `${formattedToday}_HCP_${Math.random()
-            .toString(36)
-            .substring(2, 10)
-            ?.toUpperCase()}`,
+          invoice_number: `${sessionStorage.getItem(
+            SESSION_STORAGE_ITEMS.INVOICE_NUMBER
+          )}`,
         };
 
         //extend payload for corporate purchase
@@ -151,9 +153,7 @@ const PageConfirmPayment = () => {
           }
 
           if (validatePostRequest(response)) {
-            localStorage.removeItem(LOCAL_STORAGE_ITEMS.PURCHASE_INFO);
-            localStorage.removeItem(LOCAL_STORAGE_ITEMS.CART_DATA);
-            localStorage.removeItem(LOCAL_STORAGE_ITEMS.PAYMENT_STATUS_SUCCESS);
+            clearLocalAndSessionStorage();
           }
         } catch (error) {
           console.error(error);
@@ -177,7 +177,6 @@ const PageConfirmPayment = () => {
       if (dd < 10) dd = "0" + dd;
       if (mm < 10) mm = "0" + mm;
 
-      const formattedToday = dd + mm + yyyy;
       const invoiceFormattedToday = dd + "/" + mm + "/" + yyyy;
 
       const parsedCartInfo = JSON.parse(cartData);
@@ -194,10 +193,9 @@ const PageConfirmPayment = () => {
           customername: parsedCartInfo?.customerName,
           country: parsedCartInfo?.country,
           order_datetimezone: parsedPaymentSuccessInfo?.date_time,
-          invoice_number: `${formattedToday}_HCP_${Math.random()
-            .toString(36)
-            .substring(2, 10)
-            ?.toUpperCase()}`,
+          invoice_number: `${sessionStorage.getItem(
+            SESSION_STORAGE_ITEMS.INVOICE_NUMBER
+          )}`,
         };
 
         const templateMessageData = {
@@ -222,11 +220,7 @@ const PageConfirmPayment = () => {
             formDataPayload
           );
           if (validatePostRequest(response)) {
-            localStorage.removeItem(
-              LOCAL_STORAGE_ITEMS.PURCHASE_INFO_NEWSLETTER
-            );
-            localStorage.removeItem(LOCAL_STORAGE_ITEMS.CART_DATA);
-            localStorage.removeItem(LOCAL_STORAGE_ITEMS.PAYMENT_STATUS_SUCCESS);
+            clearLocalAndSessionStorage();
           }
         } catch (error) {
           console.error(error);
