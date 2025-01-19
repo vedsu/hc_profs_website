@@ -128,10 +128,10 @@ const UserDashboardLayout = (props: IUserDashboard) => {
             <span className="">{ddmmyy(data?.published_date) ?? "N.A."}</span>
           </div>
 
-          <div className="w-full flex items-center justify-between gap-10">
-            <div>
+          <div className="w-full flex flex-col gap-5 sm:flex-row items-center justify-between">
+            <div className="w-full sm:max-w-fit">
               <ButtonCustom
-                className="py-1 pr-2 max-w-fit font-semibold text-sm"
+                className="w-full py-1 px-2 font-semibold text-sm border border-primary-light-900 rounded-full bg-primary-bg-interactiveBlue text-primary-light-200"
                 handleClick={() => {
                   window.open(data?.newsletter_doc, "_blank");
                 }}
@@ -140,9 +140,9 @@ const UserDashboardLayout = (props: IUserDashboard) => {
                 <i className="mx-1 pi pi-book text-sm"></i>
               </ButtonCustom>
             </div>
-            <div>
+            <div className="w-full sm:max-w-fit">
               <ButtonCustom
-                className="py-1 px-2 max-w-fit font-semibold text-sm"
+                className="w-full py-1 px-2 font-semibold text-sm"
                 handleClick={() => {
                   window.location.href = data?.document;
                 }}
@@ -322,7 +322,7 @@ const UserDashboardLayout = (props: IUserDashboard) => {
 
           <div className="dashboard-navs">
             <div className="w-full flex items-center justify-start">
-              <div className="py-3 px-4 font-normal text-sm">
+              <div className="pb-3 px-4 font-normal text-sm">
                 <div>
                   <span className="mr-1 font-semibold">Name:</span>
                   <span>{profileInfo?.name ?? "N.A"}</span>
@@ -372,18 +372,18 @@ const UserDashboardLayout = (props: IUserDashboard) => {
           </div>
 
           <div className="user-webinar-list py-4 flex flex-col gap-4">
-                {newsletterData?.length
-                  ? newsletterData?.map((data) => {
-                      return renderNewsletterCards(data);
-                    })
-                  : null}
+            {newsletterData?.length
+              ? newsletterData?.map((data) => {
+                  return renderNewsletterCards(data);
+                })
+              : null}
           </div>
-          
+
           {webinarData?.length ? (
             <div className="user-webinar-list flex flex-col gap-4">
-                {webinarData?.map((data) => {
-                  return renderWebinarCards(data);
-                })}
+              {webinarData?.map((data) => {
+                return renderWebinarCards(data);
+              })}
             </div>
           ) : (
             <div className="w-full h-screen flex items-center justify-center relative">

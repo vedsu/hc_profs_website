@@ -329,11 +329,6 @@ const PageWebinarList: React.FC = () => {
                     <ButtonCustom
                       className="px-2 py-1 bg-white border rounded-full text-primary-pText font-semibold text-xs"
                       label={"Read More"}
-                      handleClick={() => {
-                        navigate(
-                          `${LINK_PAGE_WEBINAR_LISTING + webinar?.webinar_url}`
-                        );
-                      }}
                     />
                   </div>
                 </div>

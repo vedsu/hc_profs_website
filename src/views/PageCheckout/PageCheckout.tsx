@@ -11,7 +11,11 @@ import hcpLogo from "../../assets/images/hc_profs_logo_variant1.png";
 import AuthValidator from "../../components/AuthValidator";
 import ButtonCustom from "../../components/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom";
-import { ENV_VAR, LOCAL_STORAGE_ITEMS } from "../../constant";
+import {
+  ENV_VAR,
+  LOCAL_STORAGE_ITEMS,
+  SESSION_STORAGE_ITEMS,
+} from "../../constant";
 import { LINK_PAGE_CONFIRM_PAYMENT } from "../../routes";
 import PaymentService from "../../services/PaymentService";
 import {
@@ -54,6 +58,9 @@ const CheckoutForm = (props: any) => {
               name: checkoutInfo?.customerName,
               email: checkoutInfo?.email,
               country: checkoutInfo?.country,
+              invoice_number: sessionStorage.getItem(
+                SESSION_STORAGE_ITEMS.INVOICE_NUMBER
+              ),
             }),
             {
               "Content-Type": "application/json",

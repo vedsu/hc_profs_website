@@ -16,7 +16,7 @@ const CardTemplates = (props: ICardTemplates) => {
 
   const navigate = useNavigate();
 
-  const handleCardBuyNow = (cardItem: any) => {
+  const handleBuyNow = (cardItem: any) => {
     if (cardItem?.cardCategory === PURCHASE_ITEM.WEBINAR) {
       navigate(`${LINK_PAGE_WEBINAR_LISTING}/${cardItem?.id}`);
     } else if (cardItem?.cardCategory === PURCHASE_ITEM?.NEWSLETTER) {
@@ -24,7 +24,7 @@ const CardTemplates = (props: ICardTemplates) => {
     }
   };
 
-  const handleCardNotInterested = (cardItem: any) => {
+  const handleNotInterested = (cardItem: any) => {
     if (cardItem?.cardCategory === PURCHASE_ITEM.WEBINAR) {
       localStorage.removeItem(CARD_SUGGESTIONS.CONTINUE_PURCHASE);
     } else if (cardItem?.cardCategory === PURCHASE_ITEM?.NEWSLETTER) {
@@ -52,7 +52,7 @@ const CardTemplates = (props: ICardTemplates) => {
                 )})`}</span>
               </p>
             </div>
-            <div className="self-end flex items-center gap-5">
+            <div className="pt-2 self-end flex items-center gap-5">
               <ButtonCustom
                 containerClassName={
                   "bg-primary-bg-purple text-center text-primary-pTextLight rounded-full"
@@ -60,7 +60,7 @@ const CardTemplates = (props: ICardTemplates) => {
                 className="max-w-fit h-6 px-2 text-xs !shadow-none"
                 label={"Buy Now"}
                 handleClick={() => {
-                  handleCardBuyNow(cardItem);
+                  handleBuyNow(cardItem);
                 }}
               />
 
@@ -70,7 +70,7 @@ const CardTemplates = (props: ICardTemplates) => {
                   label={"Not Interested"}
                   type="button"
                   handleClick={() => {
-                    handleCardNotInterested(cardItem);
+                    handleNotInterested(cardItem);
                   }}
                 />
               </div>
