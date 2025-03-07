@@ -80,9 +80,9 @@ const PageConfirmPayment = () => {
 
       if (dd < 10) dd = "0" + dd;
       if (mm < 10) mm = "0" + mm;
-      
+
       const invoiceFormattedToday = dd + "/" + mm + "/" + yyyy;
-      
+
       const parsedCartInfo = JSON.parse(cartData);
       if (paymentSuccessInfo) {
         const parsedPaymentSuccessInfo = JSON.parse(paymentSuccessInfo);
@@ -192,6 +192,7 @@ const PageConfirmPayment = () => {
           billingemail: parsedPaymentSuccessInfo?.email,
           customername: parsedCartInfo?.customerName,
           country: parsedCartInfo?.country,
+          zipcode: parsedCartInfo?.zipcode,
           order_datetimezone: parsedPaymentSuccessInfo?.date_time,
           invoice_number: `${sessionStorage.getItem(
             SESSION_STORAGE_ITEMS.INVOICE_NUMBER

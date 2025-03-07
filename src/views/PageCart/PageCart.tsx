@@ -300,7 +300,7 @@ const PageCart: React.FC = () => {
       country: cartFormData?.country,
       purchaseItem: purchaseItem,
     };
-    
+
     const today = new Date();
     const yyyy = today.getFullYear();
     let mm: any = today.getMonth() + 1;
@@ -313,7 +313,7 @@ const PageCart: React.FC = () => {
       .toString(36)
       .substring(2, 10)
       ?.toUpperCase()}`;
-    
+
     if (purchaseItem === PURCHASE_ITEM.WEBINAR) {
       cartInfo = {
         ...cartInfo,
@@ -571,6 +571,15 @@ const PageCart: React.FC = () => {
                   type={"text"}
                   value={cartFormData.zipcode}
                   handler={handleCartFormChange}
+                  mandatory
+                  onBlur={() => {
+                    simpleValidator.current.showMessageFor("zipcode");
+                  }}
+                  validationMessage={simpleValidator.current.message(
+                    "zipcode",
+                    cartFormData.zipcode,
+                    "required"
+                  )}
                 />
               </div>
 

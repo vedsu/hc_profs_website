@@ -94,7 +94,7 @@ const PageNewsletterInfo = () => {
       }
     }
 
-    if (userInfo && parseInt(newsletterData?.price, 10) > 0) {    
+    if (userInfo && parseInt(newsletterData?.price, 10) > 0) {
       const isNewsletterPurchased = await getAttendeeNewsletterList();
       if (!isNewsletterPurchased) {
         navigate(`${LINK_PAGE_CART}?purchase-item=newsletter`);
@@ -249,7 +249,10 @@ const PageNewsletterInfo = () => {
 
         <div className="flex flex-col gap-1 text-left text-sm">
           <div className="w-full font-semibold">{"Description : "}</div>
-          <p className="w-full">{newsletterData?.description ?? "N.A."}</p>
+          <p
+            className="w-full"
+            dangerouslySetInnerHTML={{ __html: newsletterData?.description }}
+          />
         </div>
       </div>
     );

@@ -78,7 +78,11 @@ const PageSpeakerInfo: React.FC = () => {
                     </div>
 
                     <div className="text-sm leading-6">
-                      <p>{speakerData?.bio}</p>
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: speakerData?.bio,
+                        }}
+                      />
                     </div>
                   </div>
                 </React.Fragment>

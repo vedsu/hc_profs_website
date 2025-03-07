@@ -100,36 +100,37 @@ const PageWebinarInfo: React.FC = () => {
   }, [getWebinarDetails]);
 
   useEffect(() => {
-     if (webinarData) {
-    let amt = 0;
-    const isLiveChecked = (
-      document.getElementById("checkbox-buy-live") as HTMLInputElement
-    )?.checked;
-    const isRecordingChecked = (
-      document.getElementById("checkbox-buy-recording") as HTMLInputElement
-    )?.checked;
-    const isDDChecked = (
-      document.getElementById("checkbox-buy-dd") as HTMLInputElement
-    )?.checked;
+    if (webinarData) {
+      let amt = 0;
+      const isLiveChecked = (
+        document.getElementById("checkbox-buy-live") as HTMLInputElement
+      )?.checked;
+      const isRecordingChecked = (
+        document.getElementById("checkbox-buy-recording") as HTMLInputElement
+      )?.checked;
+      const isDDChecked = (
+        document.getElementById("checkbox-buy-dd") as HTMLInputElement
+      )?.checked;
 
-    const livePrice = Number(webinarData?.priceLive ?? "0");
-    const recordingPrice = Number(webinarData?.priceRecording ?? "0");
-    const ddPrice = Number(webinarData?.priceDigitalDownload ?? "0");
+      const livePrice = Number(webinarData?.priceLive ?? "0");
+      const recordingPrice = Number(webinarData?.priceRecording ?? "0");
+      const ddPrice = Number(webinarData?.priceDigitalDownload ?? "0");
 
-    if (isLiveChecked)
-      amt += livePrice * corporatePurchaseTypeInfo.liveSessionCount;
-    if (isRecordingChecked)
-      amt += recordingPrice * corporatePurchaseTypeInfo.recordingSessionCount;
-    if (isDDChecked) amt += ddPrice * corporatePurchaseTypeInfo.ddSessionCount;
+      if (isLiveChecked)
+        amt += livePrice * corporatePurchaseTypeInfo.liveSessionCount;
+      if (isRecordingChecked)
+        amt += recordingPrice * corporatePurchaseTypeInfo.recordingSessionCount;
+      if (isDDChecked)
+        amt += ddPrice * corporatePurchaseTypeInfo.ddSessionCount;
 
-    setCartTotal(amt);
-    setPurchaseData({
+      setCartTotal(amt);
+      setPurchaseData({
         webinarSessionLive: isLiveChecked ? true : false,
         webinarSessionRecording: isRecordingChecked ? true : false,
         webinarSessionDD: isDDChecked ? true : false,
-    });
-    setShowCartEmptyMessage(false);
-     }
+      });
+      setShowCartEmptyMessage(false);
+    }
   }, [
     corporatePurchaseTypeInfo.liveSessionCount,
     corporatePurchaseTypeInfo.recordingSessionCount,
@@ -186,7 +187,7 @@ const PageWebinarInfo: React.FC = () => {
 
     setCartTotal(amt);
     setPurchaseData({
-     webinarSessionLive: isLiveChecked ? true : false,
+      webinarSessionLive: isLiveChecked ? true : false,
       webinarSessionRecording: isRecordingChecked ? true : false,
       webinarSessionDD: isDDChecked ? true : false,
     });
@@ -583,7 +584,12 @@ const PageWebinarInfo: React.FC = () => {
                 <h4 className="font-bold text-left underline">
                   {"Description"}
                 </h4>
-                <p className="mt-2">{webinarData?.description}</p>
+                <p
+                  className="mt-2"
+                  dangerouslySetInnerHTML={{
+                    __html: webinarData?.description,
+                  }}
+                />
               </div>
             </div>
           </React.Fragment>
