@@ -24,7 +24,7 @@ import {
 } from "../../utils/commonUtils";
 
 const stripePromise = loadStripe(
-  getEnvVariableValues(ENV_VAR.VITE_REACT_APP_STRIPE_PUBLISHABLE_KEY)
+  getEnvVariableValues(ENV_VAR.VITE_REACT_APP_STRIPE_PUBLISHABLE)
 );
 
 const CheckoutForm = (props: any) => {
