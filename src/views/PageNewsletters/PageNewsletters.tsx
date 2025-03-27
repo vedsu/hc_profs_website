@@ -142,7 +142,10 @@ const PageNewsletters = () => {
                               </div>
 
                               <div className="w-full font-normal text-sm h-16 overflow-clip text-ellipsis">
-                                {newsletter?.description}
+                                 <p
+                                  className="w-full"
+                                  dangerouslySetInnerHTML={{ __html: newsletter?.description }}
+                                 />
                               </div>
 
                               <div className="w-full">
