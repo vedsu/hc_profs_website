@@ -212,10 +212,6 @@ const PageContactUs: React.FC = () => {
         bodyTemplate={renderContactUsForm()}
         onHideDialog={() => {
           if (!showContactFormDialog) return;
-          simpleValidator.current = new SimpleReactValidator({
-            className: "text-danger",
-          });
-          forceUpdate("");
           setShowContactFormDialog(false);
         }}
       />
