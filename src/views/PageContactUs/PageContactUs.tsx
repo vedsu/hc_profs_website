@@ -131,7 +131,7 @@ const PageContactUs: React.FC = () => {
 
         <div className="w-full self-center">
           <ButtonCustom
-            className="w-full px-2 py-1 flex gap-2 justify-center text-primary-pTextLight bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-lightTeal hover:bg-primary-bg-interactiveBlueHover"
+            className="w-full px-2 py-1 flex gap-2 justify-center text-primary-pTextLight bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-interactiveBlueHover"
             label={"Submit"}
             handleClickWithLoader={onSubmitContactUsForm}
           />
@@ -192,7 +192,7 @@ const PageContactUs: React.FC = () => {
 
             <div className="w-full sm:w-64 self-center">
               <button
-                className="w-full px-2 py-1 flex gap-2 justify-center text-primary-pTextLight bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-lightTeal hover:bg-primary-bg-interactiveBlueHover"
+                className="w-full px-2 py-1 flex gap-2 justify-center text-primary-pTextLight bg-primary-bg-interactiveBlue border border-primary-light-900 rounded-full hover:bg-primary-bg-interactiveBlueHover"
                 onClick={() => setShowContactFormDialog(true)}
               >
                 Contact Us
@@ -215,7 +215,7 @@ const PageContactUs: React.FC = () => {
           setShowContactFormDialog(false);
         }}
       />
-      
+
       <DialogCustom
         dialogVisible={showContactUsPopUp.showPopUp}
         containerClassName={

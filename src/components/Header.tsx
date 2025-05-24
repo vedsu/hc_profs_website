@@ -26,7 +26,7 @@ const orderFormURL =
 const resourcesVideos = [
   {
     title: "CMS 2024",
-    url: "https://webinarprofs.s3.us-east-1.amazonaws.com/misc/CMS+2024.mp4"
+    url: "https://webinarprofs.s3.us-east-1.amazonaws.com/misc/CMS+2024.mp4",
   },
   {
     title: "HIPAA 2025",
@@ -471,79 +471,6 @@ const Header = (props: IHeaderProps) => {
               <a href={LINK_HOME}>Home</a>
             </li>
             <li className="mob-nav-link-item px-1">
-              {/* <MobileAccordion
-                title={"Webinar"}
-                content={
-                  <div>
-                    <ul className="px-5 flex flex-col gap-3">
-                      <li>
-                        <a
-                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=nursing`}
-                        >
-                          Nursing
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=healthcare management`}
-                        >
-                          Healthcare Management
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=medical billing and coding`}
-                        >
-                          Medical Billing and Coding
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=hipaa and compliance`}
-                        >
-                          HIPAA and Compliance
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=e/m services`}
-                        >
-                          E/M Services
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=hospital and compliance`}
-                        >
-                          Hospital and Compliance
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=hospice and home care`}
-                        >
-                          Hospice and Home Care
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=cms compliance`}
-                        >
-                          CMS Compliance
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href={`${LINK_PAGE_WEBINAR_LISTING}?category=cpt/icd updates`}
-                        >
-                          CPT/ ICD Updates
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                }
-              /> */}
-
               <a href={`${LINK_PAGE_WEBINAR_LISTING}?category=all`}>Webinar</a>
             </li>
             <li className="mob-nav-link-item">

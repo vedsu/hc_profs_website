@@ -136,7 +136,9 @@ const HCPWebsite: React.FC = () => {
     }
 
     if (window.innerWidth <= 980) {
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     }
   };
 
@@ -274,16 +276,16 @@ const HCPWebsite: React.FC = () => {
       <main>
         <Outlet />
       </main>
-    
+
       <div>
-          <button
-            className="vertical-btn"
-            onClick={() => {
-              setShowSubscribeFormDialog(true);
-            }}
-          >
-            {"Subscribe"}
-          </button>
+        <button
+          className="vertical-btn"
+          onClick={() => {
+            setShowSubscribeFormDialog(true);
+          }}
+        >
+          {"Subscribe"}
+        </button>
       </div>
 
       <DialogCustom
@@ -299,7 +301,7 @@ const HCPWebsite: React.FC = () => {
           setShowSubscribeFormDialog(false);
         }}
       />
-      
+
       <DialogCustom
         dialogVisible={showSubscribePopUp.showPopUp}
         containerClassName={

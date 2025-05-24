@@ -50,6 +50,9 @@ const DialogCustom = (props: IDialogCustomProps) => {
       style={{ width: "50rem" }}
       onHide={onHideDialog}
       position={position ? position : "center"}
+      resizable={false}
+      closeOnEscape={true}
+      draggable={false}
     >
       {bodyTemplate}
     </Dialog>
