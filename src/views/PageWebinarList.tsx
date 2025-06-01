@@ -201,11 +201,7 @@ const PageWebinarList: React.FC = () => {
                 navigate(LINK_PAGE_WEBINAR_LISTING + "/" + webinar?.id);
               }}
             >
-              <div
-                className={
-                  "card-scale card-scale-bg border border-primary-light-900 flex items-center justify-between cursor-pointer bg-[#ddd]"
-                }
-              >
+              <div className="card-scale card-scale-bg border border-primary-light-900 flex items-center justify-between cursor-pointer bg-[#ddd]">
                 <div className="p-3 flex flex-col gap-3">
                   <div className="flex items-center justify-start gap-2 text-left font-semibold">
                     {webinar?.sessionLive ? (
@@ -281,9 +277,7 @@ const PageWebinarList: React.FC = () => {
                 navigate(LINK_PAGE_WEBINAR_LISTING + "/" + webinar?.id);
               }}
             >
-              <div
-                className={`card-scale card-scale-bg col-span-1 h-full border-2 border-primary-light-900 flex flex-col items-start justify-between cursor-pointer`}
-              >
+              <div className="card-scale card-scale-bg col-span-1 h-full border-2 border-primary-light-900 flex flex-col items-start justify-between cursor-pointer">
                 <div className="grid-card-title text-sm text-left font-medium">
                   <div className="flex gap-2">
                     {webinar?.sessionLive ? (

@@ -73,14 +73,14 @@ const PageFAQ: React.FC = () => {
 
   return (
     <div className="page-margin w-full ">
-      <div className="px-10 py-5 w-full screen_var_one:px-0">
+      <div className="px-10 py-2 sm:py-5 w-full screen_var_one:px-0">
         <h4 className="font-semibold text-2xl text-primary-pLabel">FAQ</h4>
         <p className="text-sm font-semibold text-primary-pText">
           Here are answers to some of our most common questions.
         </p>
       </div>
-      <div className="px-10 py-5 w-full flex flex-col gap-2 items-center justify-center screen_var_one:px-0">
-        <h4 className="font-semibold text-2xl text-primary-pLabel">
+      <div className="px-10 py-2 sm:py-5 w-full flex flex-col gap-2 items-center justify-center screen_var_one:px-0">
+        <h4 className="w-full font-semibold text-2xl text-primary-pLabel text-start sm:text-center">
           Frequently asked questions
         </h4>
         <p className="text-primary-pText text-sm">

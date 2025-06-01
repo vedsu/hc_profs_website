@@ -98,7 +98,9 @@ const PageForgotPassword: React.FC = () => {
             <div className="w-full h-8 px-2 flex gap-2 justify-center bg-primary-light-100 border border-primary-light-900 rounded-full leading-8">
               <span>or</span>
               <Link to={LINK_PAGE_LOGIN_REG}>
-                <span className="mx-1 text-primary-link-500">Login</span>
+                <span className="mx-1 text-primary-link-500 underline">
+                  Login
+                </span>
               </Link>
             </div>
           </div>

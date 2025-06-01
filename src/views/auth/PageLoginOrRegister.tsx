@@ -365,7 +365,7 @@ const PageLoginOrRegister = () => {
 
         <div>
           <ButtonCustom
-            className={`w-full h-10 px-5 py-2 flex items-center justify-center gap-2 text-secondary-sLabel bg-primary-bg-interactiveBlue font-[600] border rounded-full hover:bg-primary-bg-interactiveBlueHover !text-base`}
+            className="w-full h-10 px-5 py-2 flex items-center justify-center gap-2 text-secondary-sLabel bg-primary-bg-interactiveBlue font-[600] border rounded-full hover:bg-primary-bg-interactiveBlueHover !text-base"
             label={"Login"}
             handleClickWithLoader={onLogin}
           />
@@ -519,7 +519,7 @@ const PageLoginOrRegister = () => {
 
         <div>
           <ButtonCustom
-            className={`w-full h-10 px-5 py-2 flex items-center justify-center gap-2 text-secondary-sLabel bg-primary-bg-interactiveBlue font-[600] !text-base border rounded-full hover:bg-primary-bg-interactiveBlueHover`}
+            className="w-full h-10 px-5 py-2 flex items-center justify-center gap-2 text-secondary-sLabel bg-primary-bg-interactiveBlue font-[600] !text-base border rounded-full hover:bg-primary-bg-interactiveBlueHover"
             label={"Register"}
             handleClickWithLoader={onRegister}
           />
